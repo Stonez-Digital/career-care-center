@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" fill="none">
+  <!-- CAREER text -->
+  <text x="0" y="52" font-family="Poppins, Arial, sans-serif" font-size="36" font-weight="700" fill="#0D2175" letter-spacing="-1">CAREER</text>
+  <!-- CARE text -->
+  <text x="155" y="52" font-family="Poppins, Arial, sans-serif" font-size="36" font-weight="700" fill="#0D2175" letter-spacing="-1">CARE</text>
+  <!-- Red necktie graphic -->
+  <g transform="translate(262, 12)">
+    <!-- Knot -->
+    <path d="M8 0 L16 0 L18 8 L14 12 L10 12 L6 8 Z" fill="#CB101D"/>
+    <!-- Tie body -->
+    <path d="M10 12 L14 12 L18 40 L12 56 L6 40 Z" fill="#CB101D"/>
+    <!-- Highlight -->
+    <path d="M11 14 L13 14 L14 38 L12 50 L10 38 Z" fill="#E11B28" opacity="0.5"/>
+  </g>
+</svg>
