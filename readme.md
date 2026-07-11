@@ -1,4 +1,4 @@
-# Career Care Center (CCC)
+# Career Care Center
 
 A comprehensive career development platform that empowers students, graduates, mentors, volunteers, and administrators through mentorship, career guidance, events, learning resources, and application management.
 
