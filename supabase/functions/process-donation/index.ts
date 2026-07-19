@@ -90,10 +90,62 @@ Deno.serve(async (req: Request) => {
       return json({ error: "Failed to record donation. Please try again." }, 500);
     }
 
-    console.log(`[process-donation] Donation ${donation.id} recorded — ₦${numAmount} (${is_anonymous ? "anonymous" : donor_email})`);
+    // Initialize Paystack transaction
+    const paystackKey = Deno.env.get("PAYSTACK_SECRET_KEY");
+    if (!paystackKey) {
+      console.error("[process-donation] PAYSTACK_SECRET_KEY not configured");
+      return json({
+        success: true,
+        donation_id: donation.id,
+        message: "Donation recorded. Payment gateway not configured — you will be contacted to complete payment.",
+      });
+    }
+
+    const paystackPayload = {
+      email: is_anonymous ? "anonymous@careercarecenter.com" : String(donor_email).trim().toLowerCase(),
+      amount: Math.round(numAmount * 100), // Paystack expects amount in kobo
+      currency: String(currency),
+      reference: `CCC-${donation.id}`,
+      callback_url: `${new URL(req.url).origin}/donate?status=success&ref=CCC-${donation.id}`,
+      metadata: {
+        donation_id: donation.id,
+        donor_name: is_anonymous ? "Anonymous" : String(donor_name).trim(),
+        frequency: String(frequency),
+        custom_fields: [
+          { display_name: "Donation ID", variable_name: "donation_id", value: donation.id },
+          { display_name: "Frequency", variable_name: "frequency", value: String(frequency) },
+        ],
+      },
+    };
+
+    const paystackRes = await fetch("https://api.paystack.co/transaction/initialize", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${paystackKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(paystackPayload),
+    });
+
+    const paystackData = await paystackRes.json();
+
+    if (!paystackRes.ok || !paystackData.status) {
+      console.error("[process-donation] Paystack init failed:", JSON.stringify(paystackData));
+      return json({
+        success: true,
+        donation_id: donation.id,
+        message: "Donation recorded. Payment initialization failed — you will be contacted to complete payment.",
+      });
+    }
+
+    console.log(`[process-donation] Donation ${donation.id} recorded — ₦${numAmount} (${is_anonymous ? "anonymous" : donor_email}). Paystack authorization URL generated.`);
+
     return json({
       success: true,
       donation_id: donation.id,
+      authorization_url: paystackData.data.authorization_url,
+      access_code: paystackData.data.access_code,
+      reference: paystackData.data.reference,
       message: is_anonymous
         ? "Thank you for your anonymous donation. Your generosity is greatly appreciated."
         : `Thank you for your donation of ${currency} ${numAmount.toLocaleString()}.`,
