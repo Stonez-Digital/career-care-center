@@ -48,15 +48,32 @@ export default function Donate() {
       payload.donor_email = donation.donor_email;
     }
 
-    const { error } = await supabase.from('donations').insert(payload);
+    const { data: funcData, error: funcError } = await supabase.functions.invoke('process-donation', {
+      body: payload,
+    });
+
     setDonating(false);
-    if (error) setDonationError(error.message);
-    else {
-      setDonationSuccess(true);
-      setDonation({ donor_name: '', donor_email: '', amount: 10000, frequency: 'one_time', message: '' });
-      setCustomAmount('');
-      setAnonymous(false);
+
+    if (funcError) {
+      setDonationError(funcError.message);
+      return;
     }
+
+    const result = funcData as { authorization_url?: string; error?: string };
+    if (result.error) {
+      setDonationError(result.error);
+      return;
+    }
+
+    if (result.authorization_url) {
+      window.location.href = result.authorization_url;
+      return;
+    }
+
+    setDonationSuccess(true);
+    setDonation({ donor_name: '', donor_email: '', amount: 10000, frequency: 'one_time', message: '' });
+    setCustomAmount('');
+    setAnonymous(false);
   };
 
   const submitPartner = async (e: React.FormEvent) => {
@@ -204,7 +221,7 @@ export default function Donate() {
                     <button type="submit" disabled={donating} className="btn-secondary w-full">
                       {donating ? <Spinner /> : <><Heart className="h-4 w-4" /> Donate Now</>}
                     </button>
-                    <p className="text-center text-xs text-ink-400">Payment integration coming soon. Your pledge will be recorded and we'll contact you to complete it.</p>
+                    <p className="text-center text-xs text-ink-400">Secure payment powered by Paystack. You will be redirected to complete your donation.</p>
                   </form>
                 </>
               )}
