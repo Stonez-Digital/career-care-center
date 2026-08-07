@@ -3,7 +3,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
@@ -52,7 +52,7 @@ Deno.serve(async (req: Request) => {
       }
       // Reactivate
       await supabase.from("newsletter_subscribers").update({ is_active: true }).eq("id", existing.id);
-      console.log(`[newsletter] Reactivated: ${email}`);
+      console.log("[newsletter] Subscription reactivated");
       return json({ success: true, message: "Welcome back! Your subscription has been reactivated." });
     }
 
@@ -66,7 +66,7 @@ Deno.serve(async (req: Request) => {
       return json({ error: "Failed to subscribe. Please try again." }, 500);
     }
 
-    console.log(`[newsletter] New subscriber: ${email}`);
+    console.log("[newsletter] New subscription created");
     return json({ success: true, message: "Thank you for subscribing to our newsletter!" });
   } catch (err) {
     console.error("[newsletter] Unexpected error:", err);

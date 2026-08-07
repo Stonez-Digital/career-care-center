@@ -5,12 +5,13 @@ import { useAuth } from '@/lib/auth';
 import { isAdminRole } from '@/lib/supabase';
 import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
+import { safeInternalPath } from '@/lib/navigation';
 
 export default function AdminLogin() {
   const { signIn, user, profile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as { from?: string })?.from ?? '/admin';
+  const from = safeInternalPath((location.state as { from?: string })?.from, '/admin');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
