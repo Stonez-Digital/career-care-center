@@ -31,7 +31,9 @@ jobs:
 
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          # 2.112.0 currently rejects one Management API key timestamp for
+          # this project during `supabase link`. Keep CI on the verified CLI.
+          version: 2.101.0
 
       - name: Validate protected configuration
         shell: bash
