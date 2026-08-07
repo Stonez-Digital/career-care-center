@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'robots.txt', 'career-care-logo.png'],
+      includeAssets: ['favicon.svg', 'robots.txt', 'career-care-logo-v2.png'],
       manifest: {
         name: 'Career Care Center',
         short_name: 'CCC',

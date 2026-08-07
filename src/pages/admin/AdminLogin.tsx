@@ -46,7 +46,7 @@ export default function AdminLogin() {
 
       <div className="relative w-full max-w-md">
         <Link to="/" className="mb-8 flex justify-center" aria-label="Career Care Center home">
-          <img src="/career-care-logo.png" alt="Career Care Center — uplifting talents to make a meaningful impact" className="h-28 w-auto" />
+          <img src="/career-care-logo-v2.png" alt="Career Care Center — uplifting talents to make a meaningful impact" className="h-28 w-auto" />
         </Link>
 
         <div className="card p-8 shadow-lift">

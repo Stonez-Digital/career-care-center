@@ -12,7 +12,7 @@ export default function Logo({ variant = 'full', className = '', textClassName =
   return (
     <Link to={to} className={`inline-block ${className}`} aria-label="Career Care Center home">
       <img
-        src="/career-care-logo.png"
+        src="/career-care-logo-v2.png"
         alt="Career Care Center — uplifting talents to make a meaningful impact"
         className={variant === 'compact' ? `h-14 w-auto ${textClassName}` : `h-24 w-auto ${textClassName}`}
       />

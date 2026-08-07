@@ -89,6 +89,18 @@ export default function Resources() {
                   </button>
                 </div>
               )}
+              {r.type === 'video' && (
+                <video
+                  src={r.url}
+                  controls
+                  preload="metadata"
+                  playsInline
+                  className="w-full bg-black"
+                  aria-label={r.title}
+                >
+                  Your browser does not support video playback. Use the download link below.
+                </video>
+              )}
               <div className="p-5">
                 <div className="flex items-center gap-2">
                   <Icon className="h-4 w-4 text-secondary-500" />

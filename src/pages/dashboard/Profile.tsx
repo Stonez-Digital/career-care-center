@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Save, User } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
+import MediaUpload from '@/components/MediaUpload';
+import { IMAGE_TYPES } from '@/lib/media';
 
 export default function Profile() {
   const { profile, user, refreshProfile } = useAuth();
@@ -17,6 +19,18 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [avatarError, setAvatarError] = useState(false);
+
+  useEffect(() => {
+    setForm({
+      full_name: profile?.full_name ?? '',
+      phone: profile?.phone ?? '',
+      location: profile?.location ?? '',
+      bio: profile?.bio ?? '',
+      avatar_url: profile?.avatar_url ?? '',
+    });
+    setAvatarError(false);
+  }, [profile]);
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,9 +55,13 @@ export default function Profile() {
 
       <div className="card p-6">
         <div className="flex items-center gap-4 border-b border-ink-100 pb-6">
-          <div className="grid h-16 w-16 place-items-center rounded-full bg-primary-100 text-primary-700 font-heading text-2xl font-bold">
-            {profile?.full_name?.[0]?.toUpperCase() ?? 'U'}
-          </div>
+          {form.avatar_url && !avatarError ? (
+            <img src={form.avatar_url} alt="Profile" className="h-16 w-16 rounded-full object-cover" onError={() => setAvatarError(true)} />
+          ) : (
+            <div className="grid h-16 w-16 place-items-center rounded-full bg-primary-100 text-primary-700 font-heading text-2xl font-bold">
+              {profile?.full_name?.[0]?.toUpperCase() ?? 'U'}
+            </div>
+          )}
           <div>
             <p className="font-heading text-lg font-semibold text-ink-900">{profile?.full_name}</p>
             <p className="text-sm text-ink-500">{profile?.email}</p>
@@ -68,8 +86,20 @@ export default function Profile() {
               <input className="input" placeholder="City, State" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
             </div>
             <div>
-              <label className="label">Avatar URL</label>
-              <input className="input" placeholder="https://..." value={form.avatar_url} onChange={(e) => setForm({ ...form, avatar_url: e.target.value })} />
+              <label className="label">Profile Image</label>
+              <div className="flex flex-wrap items-center gap-2">
+                <MediaUpload
+                  bucket="profile-images"
+                  folder={user!.id}
+                  accept="image/jpeg,image/png,image/webp"
+                  allowedTypes={IMAGE_TYPES}
+                  maxBytes={5 * 1024 * 1024}
+                  label="Upload Image"
+                  onUploaded={(avatar_url) => { setForm({ ...form, avatar_url }); setAvatarError(false); }}
+                  onError={setError}
+                />
+                {form.avatar_url && <button type="button" className="btn-ghost btn-sm" onClick={() => setForm({ ...form, avatar_url: '' })}>Remove</button>}
+              </div>
             </div>
           </div>
           <div>

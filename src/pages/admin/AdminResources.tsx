@@ -8,6 +8,8 @@ import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 import Badge from '@/components/Badge';
 import { formatDate, exportToCSV } from '@/lib/utils';
+import MediaUpload from '@/components/MediaUpload';
+import { IMAGE_TYPES, RESOURCE_TYPES } from '@/lib/media';
 
 const emptyForm = {
   title: '',
@@ -267,7 +269,19 @@ export default function AdminResources() {
             </div>
           </div>
           <div>
-            <label className="label">URL *</label>
+            <div className="flex items-center justify-between gap-3">
+              <label className="label">URL *</label>
+              <MediaUpload
+                bucket="resource-media"
+                folder="resources"
+                accept="image/jpeg,image/png,image/webp,application/pdf,video/mp4,video/webm"
+                allowedTypes={RESOURCE_TYPES}
+                maxBytes={50 * 1024 * 1024}
+                label="Upload File"
+                onUploaded={(url) => setForm({ ...form, url })}
+                onError={setError}
+              />
+            </div>
             <input
               className="input"
               required
@@ -278,7 +292,19 @@ export default function AdminResources() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="label">Cover Image URL</label>
+              <div className="flex items-center justify-between gap-3">
+                <label className="label">Cover Image URL</label>
+                <MediaUpload
+                  bucket="resource-media"
+                  folder="covers"
+                  accept="image/jpeg,image/png,image/webp"
+                  allowedTypes={IMAGE_TYPES}
+                  maxBytes={5 * 1024 * 1024}
+                  label="Upload Cover"
+                  onUploaded={(cover_image_url) => setForm({ ...form, cover_image_url })}
+                  onError={setError}
+                />
+              </div>
               <input
                 className="input"
                 value={form.cover_image_url}
