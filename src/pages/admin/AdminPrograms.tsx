@@ -8,6 +8,8 @@ import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 import Badge from '@/components/Badge';
 import { slugify } from '@/lib/utils';
+import MediaUpload from '@/components/MediaUpload';
+import { IMAGE_TYPES } from '@/lib/media';
 
 const categories: ProgramCategory[] = [
   'Career Coaching', 'Career Mentorship', 'Internship Support', 'Internship Placement',
@@ -117,7 +119,13 @@ export default function AdminPrograms() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div><label className="label">Duration</label><input className="input" placeholder="e.g. 6 weeks" value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} /></div>
-            <div><label className="label">Image URL</label><input className="input" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} /></div>
+            <div>
+              <div className="flex items-center justify-between gap-3">
+                <label className="label">Image URL</label>
+                <MediaUpload bucket="resource-media" folder="programs" accept="image/jpeg,image/png,image/webp" allowedTypes={IMAGE_TYPES} maxBytes={5 * 1024 * 1024} label="Upload Image" onUploaded={(image_url) => setForm({ ...form, image_url })} onError={setError} />
+              </div>
+              <input className="input" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} />
+            </div>
           </div>
           <label className="flex items-center gap-2 text-sm font-medium text-ink-700">
             <input type="checkbox" className="h-4 w-4 rounded" checked={form.is_active} onChange={(e) => setForm({ ...form, is_active: e.target.checked })} />

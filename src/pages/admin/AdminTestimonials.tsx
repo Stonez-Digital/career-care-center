@@ -9,6 +9,8 @@ import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 import Badge from '@/components/Badge';
 import { formatDate, cn, exportToCSV } from '@/lib/utils';
+import MediaUpload from '@/components/MediaUpload';
+import { IMAGE_TYPES } from '@/lib/media';
 
 type Tab = 'all' | 'pending' | 'approved';
 
@@ -297,7 +299,10 @@ export default function AdminTestimonials() {
               </select>
             </div>
             <div>
-              <label className="label">Image URL</label>
+              <div className="flex items-center justify-between gap-3">
+                <label className="label">Image URL</label>
+                <MediaUpload bucket="resource-media" folder="testimonials" accept="image/jpeg,image/png,image/webp" allowedTypes={IMAGE_TYPES} maxBytes={5 * 1024 * 1024} label="Upload Image" onUploaded={(image_url) => setForm({ ...form, image_url })} onError={setError} />
+              </div>
               <input
                 className="input"
                 value={form.image_url}

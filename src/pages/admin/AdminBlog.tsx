@@ -8,6 +8,8 @@ import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 import Badge from '@/components/Badge';
 import { slugify, formatDate, exportToCSV } from '@/lib/utils';
+import MediaUpload from '@/components/MediaUpload';
+import { IMAGE_TYPES } from '@/lib/media';
 
 const empty = {
   title: '',
@@ -272,7 +274,10 @@ export default function AdminBlog() {
               />
             </div>
             <div>
-              <label className="label">Cover Image URL</label>
+              <div className="flex items-center justify-between gap-3">
+                <label className="label">Cover Image URL</label>
+                <MediaUpload bucket="resource-media" folder="blog" accept="image/jpeg,image/png,image/webp" allowedTypes={IMAGE_TYPES} maxBytes={5 * 1024 * 1024} label="Upload Cover" onUploaded={(cover_image_url) => setForm({ ...form, cover_image_url })} onError={setError} />
+              </div>
               <input
                 className="input"
                 value={form.cover_image_url}
