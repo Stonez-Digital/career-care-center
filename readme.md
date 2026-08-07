@@ -1,175 +1,170 @@
 # Career Care Center
 
-A comprehensive career development platform that empowers students, graduates, mentors, volunteers, and administrators through mentorship, career guidance, events, learning resources, and application management.
+Career Care Center is a career-development platform for interns, mentors,
+volunteers, administrators, and programme participants. It includes the public
+website, authentication, role-based dashboards, applications, events,
+mentorship sessions, resources, and administration tools.
 
-The platform provides a secure, modern, and responsive experience powered by React, TypeScript, Vite, Tailwind CSS, and Supabase.
+The application uses React, TypeScript, Vite, Tailwind CSS, and Supabase.
 
----
+## Run the application locally
 
-## Features
+### Requirements
 
-### Public Website
+- Git
+- Node.js 22.13 or newer, but lower than Node.js 25
+- npm (included with Node.js)
+- Access to this private GitHub repository
+- The project's public Supabase URL and anon key from an authorized maintainer
 
-- Responsive landing page
-- About CCC
-- Programs
-- Events
-- Success Stories
-- Blog
-- Volunteer Registration
-- Donations
-- Contact
-- Application Portal
-- User Authentication
+Check the installed versions:
 
-### User Dashboard
-
-Authenticated users can:
-
-- Manage their profile
-- View notifications
-- Apply for opportunities
-- Register for events
-- Track volunteer activities
-- Access mentorship resources
-- Manage availability
-- View assigned schedules
-- Access learning resources
-
-### Administration
-
-Administrators can manage platform users, programs, events, applications, volunteers, and platform content from a dedicated admin dashboard.
-
----
-
-## Technology Stack
-
-### Frontend
-
-- React
-- TypeScript
-- Vite
-- React Router
-- Tailwind CSS
-- Lucide React
-- Recharts
-
-### Backend
-
-- Supabase Authentication
-- Supabase Database
-- Supabase Storage
-- Row Level Security (RLS)
-
----
-
-## Project Structure
-
-```text
-src/
-├── components/
-├── pages/
-│   ├── admin/
-│   ├── dashboard/
-│   └── ...
-├── lib/
-├── hooks/
-├── contexts/
-├── assets/
-├── App.tsx
-└── main.tsx
+```powershell
+node --version
+npm.cmd --version
+git --version
 ```
 
----
+### 1. Download the repository
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- npm
-
-### Installation
-
-```bash
-git clone <private-repository-url>
-cd project
-npm install
+```powershell
+git clone https://github.com/Onoja217/career-care-center.git
+cd career-care-center
 ```
 
----
+If the repository is already on your computer, update it instead:
 
-## Environment Variables
+```powershell
+git switch main
+git pull origin main
+```
 
-Create a `.env` file in the project root.
+Do not run `git pull` while you have local changes that you have not committed.
+
+### 2. Install dependencies
+
+Use the lockfile for a reproducible installation:
+
+```powershell
+npm.cmd ci
+```
+
+`node_modules` is generated locally and must not be committed to GitHub.
+
+### 3. Configure the local environment
+
+Create `.env` from the safe template:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Open `.env` in VS Code and replace the placeholders:
 
 ```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-public-anon-key
+VITE_MAINTENANCE_MODE=true
 ```
 
----
+Request the correct Supabase values from the project maintainer. Never paste a
+database password, personal access token, Paystack secret key, or Supabase
+service-role key into `.env` or commit it to GitHub.
 
-## Development
+Maintenance mode defaults to enabled. With it enabled, public routes show the
+maintenance screen while the admin route remains available. Only an authorized
+maintainer should set this to `false` after the production quality gate passes:
 
-Start the development server:
-
-```bash
-npm run dev
+```env
+VITE_MAINTENANCE_MODE=false
 ```
 
-Build the application:
+### 4. Start localhost
 
-```bash
-npm run build
+```powershell
+npm.cmd run dev
 ```
 
-Preview the production build:
+Vite will print a local address, normally:
 
-```bash
-npm run preview
+```text
+http://localhost:5173
 ```
 
-Lint the project:
+Open that address in a browser. Keep the terminal running while using the app.
+Press `Ctrl+C` to stop the local server.
 
-```bash
-npm run lint
+If port 5173 is busy, Vite will display a different port; use the exact address
+shown in the terminal.
+
+## Quality checks
+
+Before committing or pushing changes, run:
+
+```powershell
+npm.cmd run check
+git diff --check
 ```
 
----
+`npm.cmd run check` performs the TypeScript check and production build. Both
+commands must finish without errors.
 
-## Security
+To preview the generated production build locally:
 
-This project uses:
+```powershell
+npm.cmd run preview
+```
 
-- Supabase Authentication
-- Row Level Security (RLS)
-- Protected Routes
-- Secure API Access
-- Environment Variables for secrets
+## Common problems
 
----
+### PowerShell blocks `npm.ps1`
 
-## Deployment
+Use `npm.cmd` as shown throughout this guide instead of `npm`.
 
-The application is production-ready and can be deployed to platforms such as:
+### Supabase connection warning
 
-- Vercel
-- Netlify
-- Cloudflare Pages
+Confirm `.env` exists at the repository root and contains valid
+`VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` values. Restart the development
+server after changing `.env`.
 
-with Supabase serving as the backend.
+### Dependencies are inconsistent
 
----
+Remove no project files manually. Run:
 
-## License
+```powershell
+npm.cmd ci
+```
 
-This repository is private and intended for internal development and deployment.
+If that fails, send the complete error to the maintainer before using
+`npm install` or changing `package-lock.json`.
 
-All rights reserved.
+### The maintenance page appears
 
----
+This is expected while `VITE_MAINTENANCE_MODE=true`. It is not a local-server
+failure.
+
+## Repository safety
+
+- Do not commit `.env`, `node_modules`, `dist`, access tokens, or passwords.
+- Create database changes as timestamped files under `supabase/migrations`.
+- Do not enable `SUPABASE_MIGRATIONS_READY` without reviewing the migration dry
+  run and receiving production approval.
+- Do not change production DNS or disable maintenance mode during routine local
+  development.
+
+## Main commands
+
+```powershell
+npm.cmd run dev       # Start localhost
+npm.cmd run typecheck # Check TypeScript
+npm.cmd run build     # Create production build
+npm.cmd run check     # Typecheck and build
+npm.cmd run preview   # Preview production build
+```
 
 ## Maintainer
 
-**Onoja Monday Ojonugba**
+Onoja Monday Ojonugba
+
+This is a private repository for Career Care Center internal development and
+deployment.
