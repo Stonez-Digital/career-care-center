@@ -16,7 +16,9 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-export type UserRole = 'admin' | 'intern' | 'mentor' | 'volunteer';
+export type UserRole = 'super_admin' | 'admin' | 'intern' | 'mentor' | 'volunteer';
+export const isAdminRole = (role: unknown): role is 'super_admin' | 'admin' =>
+  role === 'super_admin' || role === 'admin';
 
 export type ApplicationStatus = 'pending' | 'under_review' | 'approved' | 'rejected';
 
@@ -264,5 +266,6 @@ export interface MentorSession {
   topic: string;
   status: 'scheduled' | 'completed' | 'cancelled';
   notes: string | null;
+  meeting_url: string | null;
   created_at: string;
 }

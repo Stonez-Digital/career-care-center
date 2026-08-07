@@ -25,11 +25,12 @@ export default function Contact() {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
-    const { error } = await supabase.from('contact_messages').insert({
-      name: form.name, email: form.email, subject: form.subject, message: form.message,
+    const { data, error: requestError } = await supabase.functions.invoke('contact-form', {
+      body: form,
     });
     setSubmitting(false);
-    if (error) setError(error.message);
+    if (requestError) setError(requestError.message);
+    else if (data?.error) setError(data.error);
     else {
       setSuccess(true);
       setForm({ name: '', email: '', subject: '', message: '' });

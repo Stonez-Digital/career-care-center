@@ -11,11 +11,12 @@ import Alert from '@/components/Alert';
 import { formatDate, cn, exportToCSV } from '@/lib/utils';
 
 const roleVariant: Record<string, 'primary' | 'secondary' | 'accent' | 'neutral'> = {
-  admin: 'primary', intern: 'secondary', mentor: 'accent', volunteer: 'neutral',
+  super_admin: 'primary', admin: 'primary', intern: 'secondary', mentor: 'accent', volunteer: 'neutral',
 };
 
 export default function AdminUsers() {
   const { user } = useAuth();
+  const isSuperAdmin = user?.app_metadata?.role === 'super_admin';
   const [searchParams, setSearchParams] = useSearchParams();
   const initialRole = searchParams.get('role') ?? 'all';
   const [users, setUsers] = useState<Profile[]>([]);
@@ -50,8 +51,9 @@ export default function AdminUsers() {
 
   const changeRole = async (id: string, role: UserRole) => {
     setError(null);
-    const { error } = await supabase.from('profiles').update({ role }).eq('id', id);
-    if (error) setError(error.message);
+    const { data, error: requestError } = await supabase.functions.invoke('admin-update-user-role', { body: { user_id: id, role } });
+    if (requestError) setError(requestError.message);
+    else if (data?.error) setError(data.error);
     else {
       setUsers((prev) => prev.map((u) => u.id === id ? { ...u, role } : u));
       setViewing((prev) => prev?.id === id ? { ...prev, role } : prev);
@@ -108,6 +110,7 @@ export default function AdminUsers() {
           <option value="volunteer">Volunteers</option>
           <option value="mentor">Mentors</option>
           <option value="admin">Administrators</option>
+          <option value="super_admin">Super Administrators</option>
         </select>
       </div>
 
@@ -141,8 +144,8 @@ export default function AdminUsers() {
                   </td>
                   <td className="px-4 py-3">
                     <Badge variant={roleVariant[u.role]}>
-                      {u.role === 'admin' && <ShieldCheck className="mr-1 h-3 w-3" />}
-                      {u.role}
+                      {(u.role === 'admin' || u.role === 'super_admin') && <ShieldCheck className="mr-1 h-3 w-3" />}
+                      {u.role.replace('_', ' ')}
                     </Badge>
                   </td>
                   <td className="hidden px-4 py-3 text-ink-600 lg:table-cell">{u.location ?? '—'}</td>
@@ -193,20 +196,21 @@ export default function AdminUsers() {
 
             <div>
               <label className="label">Role</label>
-              <select className="input" value={viewing.role} onChange={(e) => changeRole(viewing.id, e.target.value as UserRole)} disabled={viewing.id === user?.id}>
+              <select className="input" value={viewing.role} onChange={(e) => changeRole(viewing.id, e.target.value as UserRole)} disabled={viewing.id === user?.id || (viewing.role === 'super_admin' && !isSuperAdmin)}>
                 <option value="intern">Intern</option>
                 <option value="volunteer">Volunteer</option>
                 <option value="mentor">Mentor</option>
                 <option value="admin">Administrator</option>
+                {isSuperAdmin && <option value="super_admin">Super Administrator</option>}
               </select>
               {viewing.id === user?.id && <p className="mt-1 text-xs text-ink-400">You cannot change your own role.</p>}
             </div>
 
             <div className="flex gap-2">
-              <button onClick={() => toggleSuspend(viewing)} className={cn('flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all', viewing.is_suspended ? 'bg-success-50 text-success-700 hover:bg-success-100' : 'bg-warning-50 text-warning-700 hover:bg-warning-100')}>
+              <button onClick={() => toggleSuspend(viewing)} disabled={viewing.role === 'super_admin' && !isSuperAdmin} className={cn('flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all disabled:opacity-50', viewing.is_suspended ? 'bg-success-50 text-success-700 hover:bg-success-100' : 'bg-warning-50 text-warning-700 hover:bg-warning-100')}>
                 {viewing.is_suspended ? <><CheckCircle2 className="mr-1.5 inline h-4 w-4" /> Activate</> : <><Ban className="mr-1.5 inline h-4 w-4" /> Suspend</>}
               </button>
-              <button onClick={() => { remove(viewing.id); setViewing(null); }} disabled={viewing.id === user?.id} className="flex-1 rounded-xl bg-error-50 px-4 py-2.5 text-sm font-semibold text-error-700 transition-all hover:bg-error-100 disabled:opacity-50">
+              <button onClick={() => { remove(viewing.id); setViewing(null); }} disabled={viewing.id === user?.id || (viewing.role === 'super_admin' && !isSuperAdmin)} className="flex-1 rounded-xl bg-error-50 px-4 py-2.5 text-sm font-semibold text-error-700 transition-all hover:bg-error-100 disabled:opacity-50">
                 <Trash2 className="mr-1.5 inline h-4 w-4" /> Delete
               </button>
             </div>

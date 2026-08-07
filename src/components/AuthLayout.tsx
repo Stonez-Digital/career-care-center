@@ -11,17 +11,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="absolute -left-24 bottom-20 h-72 w-72 rounded-full bg-accent-400/15 blur-3xl" />
 
         <div className="relative">
-          <Link to="/" className="flex items-center gap-2.5">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 backdrop-blur-md ring-1 ring-white/20">
-              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">
-                <path d="M8 2 L12 2 L13 6 L10.5 8 L7.5 8 L5 6 Z" fill="#CB101D" />
-                <path d="M7.5 8 L10.5 8 L13 18 L10 24 L7 18 Z" fill="#CB101D" />
-                <path d="M8 9 L10 9 L10.5 17 L9 22 L7.5 17 Z" fill="#E11B28" opacity="0.5" />
-              </svg>
-            </span>
-            <span className="font-heading text-lg font-bold text-white">
-              Career<span className="text-[#CB101D]">Care</span> Center
-            </span>
+          <Link to="/" className="inline-block" aria-label="Career Care Center home">
+            <img src="/career-care-logo.png" alt="Career Care Center — uplifting talents to make a meaningful impact" className="h-28 w-auto" />
           </Link>
         </div>
 

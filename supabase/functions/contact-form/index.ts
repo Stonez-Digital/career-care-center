@@ -58,13 +58,20 @@ Deno.serve(async (req: Request) => {
       return json({ error: "Failed to submit message. Please try again." }, 500);
     }
 
-    // Notify admin via notification table
-    await supabase.from("notifications").insert({
-      user_id: null,
-      title: "New Contact Message",
-      message: `New message from ${name.trim()} (${email.trim()}): ${subject?.trim() ?? "(no subject)"}`,
-      type: "contact",
-    }).throwOnError().catch((e: Error) => console.warn("[contact-form] notify:", e.message));
+    // Fan out an in-app notification to active administrators.
+    const { data: admins } = await supabase
+      .from("profiles")
+      .select("id")
+      .in("role", ["admin", "super_admin"])
+      .eq("is_suspended", false);
+    if (admins?.length) {
+      await supabase.from("notifications").insert(admins.map(({ id }) => ({
+        user_id: id,
+        title: "New Contact Message",
+        body: `New message from ${name.trim()} (${email.trim()}): ${subject?.trim() || "(no subject)"}`,
+        type: "contact",
+      }))).throwOnError().catch((e: Error) => console.warn("[contact-form] notify:", e.message));
+    }
 
     console.log(`[contact-form] Submitted from ${email}`);
     return json({ success: true, message: "Message sent successfully." });

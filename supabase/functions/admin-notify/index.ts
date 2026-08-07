@@ -3,7 +3,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
@@ -25,9 +25,8 @@ Deno.serve(async (req: Request) => {
     // Only allow internal calls (service role key required in Authorization)
     const authHeader = req.headers.get("Authorization") ?? "";
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
     const token = authHeader.replace("Bearer ", "");
-    if (token !== serviceKey && token !== anonKey) {
+    if (!serviceKey || token !== serviceKey) {
       return json({ error: "Unauthorized" }, 401);
     }
 
@@ -39,7 +38,10 @@ Deno.serve(async (req: Request) => {
     }
 
     const { event_type, title, details } = body as { event_type: EventType; title: string; details: string };
-    if (!event_type || !title) return json({ error: "event_type and title are required." }, 422);
+    const allowedTypes = new Set<EventType>(["application", "donation", "contact", "newsletter", "volunteer", "testimonial"]);
+    if (!allowedTypes.has(event_type) || typeof title !== "string" || !title.trim()) {
+      return json({ error: "A valid event_type and title are required." }, 422);
+    }
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -51,7 +53,7 @@ Deno.serve(async (req: Request) => {
     const { data: admins } = await supabase
       .from("profiles")
       .select("id")
-      .eq("role", "admin");
+      .in("role", ["admin", "super_admin"]);
 
     if (!admins?.length) {
       console.warn("[admin-notify] No admins found.");
@@ -60,8 +62,8 @@ Deno.serve(async (req: Request) => {
 
     const notifications = admins.map((admin: { id: string }) => ({
       user_id: admin.id,
-      title: `[Admin] ${title}`,
-      message: details ?? title,
+      title: `[Admin] ${title.trim().slice(0, 200)}`,
+      body: typeof details === "string" ? details.trim().slice(0, 2000) : title.trim().slice(0, 2000),
       type: event_type,
     }));
 

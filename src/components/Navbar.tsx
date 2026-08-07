@@ -2,7 +2,9 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown, LogOut, LayoutDashboard, Shield, Heart } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
+import { isAdminRole } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
+import InstallAppButton from './InstallAppButton';
 
 const navLinks = [
   { to: '/about', label: 'About' },
@@ -18,6 +20,7 @@ export default function Navbar() {
   const [userMenu, setUserMenu] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { user, profile, signOut } = useAuth();
+  const hasAdminAccess = isAdminRole(profile?.role);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,17 +44,12 @@ export default function Navbar() {
       )}
     >
       <nav className="container-page flex h-16 items-center justify-between gap-4 lg:h-18">
-        <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#0D2175] shadow-soft transition-transform group-hover:scale-105">
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
-              <path d="M8 2 L12 2 L13 6 L10.5 8 L7.5 8 L5 6 Z" fill="#CB101D" />
-              <path d="M7.5 8 L10.5 8 L13 18 L10 24 L7 18 Z" fill="#CB101D" />
-              <path d="M8 9 L10 9 L10.5 17 L9 22 L7.5 17 Z" fill="#E11B28" opacity="0.5" />
-            </svg>
-          </span>
-          <span className="font-heading text-lg font-bold tracking-tight text-[#0D2175]">
-            Career<span className="text-[#CB101D]">Care</span>
-          </span>
+        <Link to="/" className="shrink-0 group" aria-label="Career Care Center home">
+          <img
+            src="/career-care-logo.png"
+            alt="Career Care Center — uplifting talents to make a meaningful impact"
+            className="h-14 w-auto transition-transform group-hover:scale-[1.02] lg:h-16"
+          />
         </Link>
 
         <div className="hidden items-center gap-0.5 lg:flex">
@@ -79,6 +77,7 @@ export default function Navbar() {
         </div>
 
         <div className="hidden items-center gap-2 lg:flex">
+          <InstallAppButton />
           <Link to="/volunteer" className="btn-ghost btn-sm">
             Volunteer
           </Link>
@@ -110,12 +109,12 @@ export default function Navbar() {
                     </div>
                     <div className="p-1.5">
                       <Link
-                        to={profile?.role === 'admin' ? '/admin' : '/dashboard'}
+                        to={hasAdminAccess ? '/admin' : '/dashboard'}
                         onClick={() => setUserMenu(false)}
                         className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-ink-700 hover:bg-ink-50"
                       >
-                        {profile?.role === 'admin' ? <Shield className="h-4 w-4 text-ink-400" /> : <LayoutDashboard className="h-4 w-4 text-ink-400" />}
-                        {profile?.role === 'admin' ? 'Admin Portal' : 'Dashboard'}
+                        {hasAdminAccess ? <Shield className="h-4 w-4 text-ink-400" /> : <LayoutDashboard className="h-4 w-4 text-ink-400" />}
+                        {hasAdminAccess ? 'Admin Portal' : 'Dashboard'}
                       </Link>
                       <button
                         onClick={handleSignOut}
@@ -170,6 +169,7 @@ export default function Navbar() {
               </NavLink>
             ))}
             <div className="my-2 h-px bg-ink-100" />
+            <InstallAppButton className="w-full justify-start px-3 py-2.5" />
             <Link to="/volunteer" onClick={() => setOpen(false)} className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink-700 hover:bg-ink-50">
               Volunteer
             </Link>
@@ -179,9 +179,9 @@ export default function Navbar() {
             {user ? (
               <>
                 <div className="my-2 h-px bg-ink-100" />
-                <Link to={profile?.role === 'admin' ? '/admin' : '/dashboard'} onClick={() => setOpen(false)} className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium text-primary-700 hover:bg-primary-50">
-                  {profile?.role === 'admin' ? <Shield className="h-4 w-4" /> : <LayoutDashboard className="h-4 w-4" />}
-                  {profile?.role === 'admin' ? 'Admin Portal' : 'Dashboard'}
+                <Link to={hasAdminAccess ? '/admin' : '/dashboard'} onClick={() => setOpen(false)} className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium text-primary-700 hover:bg-primary-50">
+                  {hasAdminAccess ? <Shield className="h-4 w-4" /> : <LayoutDashboard className="h-4 w-4" />}
+                  {hasAdminAccess ? 'Admin Portal' : 'Dashboard'}
                 </Link>
                 <button onClick={handleSignOut} className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-error-600 hover:bg-error-50">
                   <LogOut className="h-4 w-4" /> Sign out

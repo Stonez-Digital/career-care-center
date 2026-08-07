@@ -1,7 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { FullPageSpinner } from './Spinner';
-import type { UserRole } from '@/lib/supabase';
+import { isAdminRole, type UserRole } from '@/lib/supabase';
 
 type Props = {
   children: React.ReactNode;
@@ -12,6 +12,7 @@ type Props = {
 export default function ProtectedRoute({ children, adminOnly = false, roles }: Props) {
   const { user, profile, loading } = useAuth();
   const location = useLocation();
+  const isAdmin = isAdminRole(user?.app_metadata?.role) && isAdminRole(profile?.role);
 
   if (loading) return <FullPageSpinner />;
 
@@ -20,12 +21,12 @@ export default function ProtectedRoute({ children, adminOnly = false, roles }: P
     return <Navigate to={redirectTo} state={{ from: location.pathname }} replace />;
   }
 
-  if (adminOnly && profile?.role !== 'admin') {
+  if (adminOnly && !isAdmin) {
     return <Navigate to="/unauthorized" replace />;
   }
 
   if (roles && roles.length > 0 && profile && !roles.includes(profile.role)) {
-    if (profile.role === 'admin') return <Navigate to="/admin" replace />;
+    if (isAdmin) return <Navigate to="/admin" replace />;
     return <Navigate to="/unauthorized" replace />;
   }
 

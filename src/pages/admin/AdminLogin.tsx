@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, ShieldCheck, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
+import { isAdminRole } from '@/lib/supabase';
 import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 
@@ -17,9 +18,11 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (!authLoading && user && profile?.role === 'admin') {
-    navigate('/admin', { replace: true });
-  }
+  useEffect(() => {
+    if (!authLoading && isAdminRole(user?.app_metadata?.role) && isAdminRole(profile?.role)) {
+      navigate('/admin', { replace: true });
+    }
+  }, [authLoading, navigate, profile?.role, user]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,17 +44,8 @@ export default function AdminLogin() {
       <div className="absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-secondary-500/10 blur-3xl" />
 
       <div className="relative w-full max-w-md">
-        <Link to="/" className="mb-8 flex items-center justify-center gap-2.5">
-          <span className="grid h-11 w-11 place-items-center rounded-xl bg-white/10 backdrop-blur-md ring-1 ring-white/20">
-            <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">
-              <path d="M8 2 L12 2 L13 6 L10.5 8 L7.5 8 L5 6 Z" fill="#CB101D" />
-              <path d="M7.5 8 L10.5 8 L13 18 L10 24 L7 18 Z" fill="#CB101D" />
-              <path d="M8 9 L10 9 L10.5 17 L9 22 L7.5 17 Z" fill="#E11B28" opacity="0.5" />
-            </svg>
-          </span>
-          <span className="font-heading text-xl font-bold text-white">
-            Career<span className="text-[#CB101D]">Care</span> Center
-          </span>
+        <Link to="/" className="mb-8 flex justify-center" aria-label="Career Care Center home">
+          <img src="/career-care-logo.png" alt="Career Care Center — uplifting talents to make a meaningful impact" className="h-28 w-auto" />
         </Link>
 
         <div className="card p-8 shadow-lift">

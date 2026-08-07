@@ -158,14 +158,8 @@ export default function AdminLayout() {
       <header className="sticky top-0 z-30 border-b border-ink-100 bg-white/90 backdrop-blur-md">
         <div className="flex h-16 items-center justify-between px-4 lg:px-6">
           <div className="flex items-center gap-3">
-            <Link to="/admin" className="flex items-center gap-2.5">
-              <div className="grid h-9 w-9 place-items-center rounded-xl bg-[#0D2175] shadow-soft">
-                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
-                  <path d="M8 2 L12 2 L13 6 L10.5 8 L7.5 8 L5 6 Z" fill="#CB101D" />
-                  <path d="M7.5 8 L10.5 8 L13 18 L10 24 L7 18 Z" fill="#CB101D" />
-                  <path d="M8 9 L10 9 L10.5 17 L9 22 L7.5 17 Z" fill="#E11B28" opacity="0.5" />
-                </svg>
-              </div>
+            <Link to="/admin" className="flex items-center gap-2.5" aria-label="Career Care Center admin dashboard">
+              <img src="/career-care-logo.png" alt="" className="h-14 w-auto" />
               <div>
                 <p className="font-heading text-sm font-bold text-ink-900">Admin Dashboard</p>
                 <p className="text-xs text-ink-400">Career Care Center</p>

@@ -89,7 +89,7 @@ export default function AdminDashboard() {
         supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'intern'),
         supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'volunteer'),
         supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'mentor'),
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'admin'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).in('role', ['admin', 'super_admin']),
       ]);
 
       const donationAmount = (donations.data ?? []).filter((d: any) => d.status === 'completed').reduce((sum: number, d: any) => sum + Number(d.amount), 0);

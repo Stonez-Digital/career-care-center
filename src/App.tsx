@@ -1,9 +1,10 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { PageLoader } from './components/Spinner';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import Maintenance from './pages/Maintenance';
 
 // ── Public Website ──
 const Home = lazy(() => import('./pages/Home'));
@@ -66,9 +67,16 @@ const AdminNewsletter = lazy(() => import('./pages/admin/AdminNewsletter'));
 const AdminAuditLogs = lazy(() => import('./pages/admin/AdminAuditLogs'));
 
 export default function App() {
+  const { pathname } = useLocation();
+  const isPortal = pathname === '/dashboard' || pathname.startsWith('/dashboard/') || pathname === '/admin' || pathname.startsWith('/admin/');
+  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE !== 'false';
+  const isAdminPath = pathname === '/admin' || pathname.startsWith('/admin/');
+
+  if (maintenanceMode && !isAdminPath) return <Maintenance />;
+
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar />
+      {!isPortal && <Navbar />}
       <main className="flex-1">
         <Suspense fallback={<PageLoader />}>
           <Routes>
@@ -158,7 +166,7 @@ export default function App() {
           </Routes>
         </Suspense>
       </main>
-      <Footer />
+      {!isPortal && <Footer />}
     </div>
   );
 }

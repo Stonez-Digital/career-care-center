@@ -34,16 +34,15 @@ export default function Apply() {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
-    const { data, error } = await supabase.from('applications').insert({
-      ...form,
-      user_id: user?.id ?? null,
-      status: 'pending',
-    }).select('id').single();
+    const { data, error: requestError } = await supabase.functions.invoke('submit-application', {
+      body: form,
+    });
     setSubmitting(false);
-    if (error) setError(error.message);
+    if (requestError) setError(requestError.message);
+    else if (data?.error) setError(data.error);
     else {
       setSuccess(true);
-      setRef(data?.id?.slice(0, 8).toUpperCase() ?? '');
+      setRef(data?.application_id?.slice(0, 8).toUpperCase() ?? '');
     }
   };
 

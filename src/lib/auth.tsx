@@ -9,7 +9,7 @@ interface AuthContextValue {
   profile: Profile | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
-  signUp: (email: string, password: string, fullName: string, role: UserRole) => Promise<{ error: string | null }>;
+  signUp: (email: string, password: string, fullName: string, role: UserRole) => Promise<{ error: string | null; requiresEmailConfirmation: boolean }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
@@ -90,12 +90,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         if (error) {
           console.error('[CCC] signUp auth error:', error);
-          return { error: extractErrorMessage(error) };
+          return { error: extractErrorMessage(error), requiresEmailConfirmation: false };
         }
 
         if (!data.user) {
           // Email confirmation may be enabled; treat as success
-          return { error: null };
+          return { error: null, requiresEmailConfirmation: true };
         }
 
         // The handle_new_user trigger already created the profile.
@@ -118,10 +118,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setProfile(profileData as Profile);
         }
 
-        return { error: null };
+        return { error: null, requiresEmailConfirmation: !data.session };
       } catch (err) {
         console.error('[CCC] signUp unexpected error:', err);
-        return { error: extractErrorMessage(err) };
+        return { error: extractErrorMessage(err), requiresEmailConfirmation: false };
       }
     },
     []

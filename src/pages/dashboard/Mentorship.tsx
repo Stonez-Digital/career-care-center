@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { HeartHandshake, Calendar, Plus, Star, Clock, CheckCircle2, XCircle } from 'lucide-react';
+import { HeartHandshake, Calendar, Plus, Clock, CheckCircle2, XCircle, Video } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth';
 import type { MentorProfile, MentorSession } from '@/lib/supabase';
@@ -97,6 +97,11 @@ export default function Mentorship() {
                       <Badge variant={s.status === 'completed' ? 'success' : s.status === 'cancelled' ? 'error' : 'primary'}>
                         {s.status}
                       </Badge>
+                      {s.meeting_url && s.status === 'scheduled' && (
+                        <a href={s.meeting_url} target="_blank" rel="noopener noreferrer" className="btn-outline text-sm">
+                          <Video className="h-4 w-4" /> Join on Teams
+                        </a>
+                      )}
                     </div>
                   </div>
                 ))
@@ -155,6 +160,11 @@ export default function Mentorship() {
                     <Badge variant={s.status === 'completed' ? 'success' : s.status === 'cancelled' ? 'error' : 'primary'}>
                       {s.status}
                     </Badge>
+                    {s.meeting_url && s.status === 'scheduled' && (
+                      <a href={s.meeting_url} target="_blank" rel="noopener noreferrer" className="btn-outline text-sm">
+                        <Video className="h-4 w-4" /> Join on Teams
+                      </a>
+                    )}
                   </div>
                 </div>
               ))}

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, Send, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, Send, CheckCircle2 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 const footerLinks = {
   Platform: [
@@ -26,13 +27,28 @@ const footerLinks = {
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
-  const subscribe = (e: React.FormEvent) => {
+  const subscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
+    if (!email || submitting) return;
+
+    setSubmitting(true);
+    setError('');
+    try {
+      const { data, error: requestError } = await supabase.functions.invoke('newsletter-subscribe', {
+        body: { email },
+      });
+      if (requestError) throw requestError;
+      if (data?.error) throw new Error(data.error);
       setSubscribed(true);
       setEmail('');
       setTimeout(() => setSubscribed(false), 4000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to subscribe right now. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -44,19 +60,15 @@ export default function Footer() {
       <div className="container-page relative py-16">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
-            <Link to="/" className="flex items-center gap-2.5">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#0D2175] shadow-soft">
-                <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">
-                  <path d="M8 2 L12 2 L13 6 L10.5 8 L7.5 8 L5 6 Z" fill="#CB101D" />
-                  <path d="M7.5 8 L10.5 8 L13 18 L10 24 L7 18 Z" fill="#CB101D" />
-                  <path d="M8 9 L10 9 L10.5 17 L9 22 L7.5 17 Z" fill="#E11B28" opacity="0.5" />
-                </svg>
-              </span>
-              <span className="font-heading text-lg font-bold text-white">
-                Career<span className="text-[#CB101D]">Care</span> Center
-              </span>
+            <Link to="/" className="inline-block" aria-label="Career Care Center home">
+              <img
+                src="/career-care-logo.png"
+                alt="Career Care Center — uplifting talents to make a meaningful impact"
+                className="h-28 w-auto"
+              />
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-ink-400">
+              Equipping young people with the skills, networks, knowledge, and opportunities they need to build meaningful careers.
             </p>
             <div className="mt-6 space-y-3 text-sm">
               <div className="flex items-center gap-3">
@@ -123,27 +135,32 @@ export default function Footer() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full rounded-xl border border-ink-700 bg-ink-800 px-4 py-2.5 text-sm text-white placeholder:text-ink-500 transition-colors focus:border-secondary-500 focus:ring-2 focus:ring-secondary-500/20"
                 />
-                <button type="submit" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-secondary-500 text-white transition-all hover:bg-secondary-600 active:scale-95" aria-label="Subscribe">
-                  <Send className="h-4 w-4" />
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-secondary-500 text-white transition-all hover:bg-secondary-600 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+                  aria-label={submitting ? 'Subscribing' : 'Subscribe'}
+                >
+                  <Send className="h-4 w-4" aria-hidden="true" />
                 </button>
               </form>
             )}
+            {error && <p className="mt-2 text-sm text-error-300" role="alert">{error}</p>}
             <div className="mt-6 flex gap-2">
-              {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => {
-                const socialLinks = [
-                  'https://www.facebook.com/careercarecenter',
-                  'https://www.instagram.com/careercarecenter',
-                  'https://www.instagram.com/careercarecenter',
-                  'https://ng.linkedin.com/company/careercarecenter-youthdevelopmentinitiative',
-                ];
+              {[
+                { Icon: Facebook, label: 'Career Care Center on Facebook', href: 'https://www.facebook.com/careercarecenter' },
+                { Icon: Twitter, label: 'Career Care Center on X', href: 'https://x.com/careercarecenter' },
+                { Icon: Instagram, label: 'Career Care Center on Instagram', href: 'https://www.instagram.com/careercarecenter' },
+                { Icon: Linkedin, label: 'Career Care Center on LinkedIn', href: 'https://ng.linkedin.com/company/careercarecenter-youthdevelopmentinitiative' },
+              ].map(({ Icon, label, href }) => {
                 return (
                   <a
-                    key={i}
-                    href={socialLinks[i]}
+                    key={label}
+                    href={href}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="grid h-9 w-9 place-items-center rounded-lg bg-ink-800 text-ink-400 transition-all hover:bg-primary-700 hover:text-white hover:-translate-y-0.5"
-                    aria-label="Social link"
+                    aria-label={label}
                   >
                     <Icon className="h-4 w-4" />
                   </a>

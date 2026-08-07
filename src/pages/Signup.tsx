@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, UserPlus, Eye, EyeOff, GraduationCap, Briefcase, Heart } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
+import { isAdminRole } from '@/lib/supabase';
 import type { UserRole } from '@/lib/supabase';
 import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
@@ -22,11 +23,14 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmationRequired, setConfirmationRequired] = useState(false);
 
-  if (user && profile) {
-    const target = profile.role === 'admin' ? '/admin' : '/dashboard';
-    navigate(target, { replace: true });
-  }
+  useEffect(() => {
+    if (user && profile) {
+      const isAdmin = isAdminRole(user.app_metadata?.role) && isAdminRole(profile.role);
+      navigate(isAdmin ? '/admin' : '/dashboard', { replace: true });
+    }
+  }, [navigate, profile, user]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,9 +40,10 @@ export default function Signup() {
     }
     setLoading(true);
     setError(null);
-    const { error } = await signUp(form.email, form.password, form.full_name, form.role);
+    const { error, requiresEmailConfirmation } = await signUp(form.email, form.password, form.full_name, form.role);
     setLoading(false);
     if (error) setError(error);
+    else if (requiresEmailConfirmation) setConfirmationRequired(true);
     else navigate('/dashboard', { replace: true });
   };
 
@@ -52,7 +57,9 @@ export default function Signup() {
           <h1 className="font-heading text-2xl font-bold text-ink-900">Create Account</h1>
           <p className="mt-2 text-sm text-ink-500">Join the CCC community and start your journey</p>
         </div>
-        <form onSubmit={submit} className="mt-8 space-y-5">
+        {confirmationRequired ? (
+          <div className="mt-8"><Alert type="success" message="Account created. Check your email to verify your address, then sign in." /><Link to="/login" className="btn-primary mt-5 w-full">Continue to Sign In</Link></div>
+        ) : <form onSubmit={submit} className="mt-8 space-y-5">
           {error && <Alert type="error" message={error} />}
           <div>
             <label className="label">Full Name</label>
@@ -99,7 +106,7 @@ export default function Signup() {
           <button type="submit" disabled={loading} className="btn-primary w-full">
             {loading ? <Spinner /> : 'Create Account'}
           </button>
-        </form>
+        </form>}
         <p className="mt-7 text-center text-sm text-ink-500">
           Already have an account?{' '}
           <Link to="/login" className="font-semibold text-primary-700 hover:underline">Sign in</Link>

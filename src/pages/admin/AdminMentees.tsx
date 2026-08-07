@@ -17,11 +17,11 @@ export default function AdminMentees() {
 
   useEffect(() => {
     (async () => {
-      // Fetch students
+      // Interns are the platform's mentees (the legacy role name was "student").
       const { data: students } = await supabase
         .from('profiles')
         .select('*')
-        .eq('role', 'student')
+        .eq('role', 'intern')
         .order('created_at', { ascending: false });
 
       if (!students) {
@@ -95,7 +95,7 @@ export default function AdminMentees() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-heading text-2xl font-bold text-ink-900">Mentees</h1>
-          <p className="text-sm text-ink-500">{mentees.length} students with applications</p>
+          <p className="text-sm text-ink-500">{mentees.length} interns with applications</p>
         </div>
         <button onClick={handleExport} className="btn-outline text-sm">
           <Download className="h-4 w-4" /> Export

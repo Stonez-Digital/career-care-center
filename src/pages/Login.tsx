@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, LogIn, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
+import { isAdminRole } from '@/lib/supabase';
 import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 import AuthLayout from '@/components/AuthLayout';
@@ -18,10 +19,12 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (user && profile) {
-    const target = from ?? (profile.role === 'admin' ? '/admin' : '/dashboard');
-    navigate(target, { replace: true });
-  }
+  useEffect(() => {
+    if (user && profile) {
+      const isAdmin = isAdminRole(user.app_metadata?.role) && isAdminRole(profile.role);
+      navigate(from ?? (isAdmin ? '/admin' : '/dashboard'), { replace: true });
+    }
+  }, [from, navigate, profile, user]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

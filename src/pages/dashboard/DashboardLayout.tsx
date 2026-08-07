@@ -45,6 +45,7 @@ const roleLinks: Record<UserRole, NavItem[]> = {
   volunteer: volunteerLinks,
   mentor: mentorLinks,
   admin: internLinks, // admins use the admin portal, not the user dashboard
+  super_admin: internLinks, // super admins use the admin portal
 };
 
 export default function DashboardLayout({ children }: { children?: React.ReactNode }) {
@@ -59,13 +60,7 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
             <div className="card overflow-hidden p-0">
               <div className="bg-[#0D2175] p-5">
                 <div className="flex items-center gap-3">
-                  <div className="grid h-12 w-12 place-items-center rounded-2xl bg-white/15 backdrop-blur-md ring-1 ring-white/20">
-                    <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none">
-                      <path d="M8 2 L12 2 L13 6 L10.5 8 L7.5 8 L5 6 Z" fill="#CB101D" />
-                      <path d="M7.5 8 L10.5 8 L13 18 L10 24 L7 18 Z" fill="#CB101D" />
-                      <path d="M8 9 L10 9 L10.5 17 L9 22 L7.5 17 Z" fill="#E11B28" opacity="0.5" />
-                    </svg>
-                  </div>
+                  <img src="/career-care-logo.png" alt="Career Care Center" className="h-16 w-auto shrink-0" />
                   <div className="min-w-0">
                     <p className="truncate font-heading font-semibold text-white">{profile?.full_name ?? 'User'}</p>
                     <p className="truncate text-sm capitalize text-primary-200">{profile?.role}</p>
