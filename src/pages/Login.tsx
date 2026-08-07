@@ -6,12 +6,13 @@ import { isAdminRole } from '@/lib/supabase';
 import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 import AuthLayout from '@/components/AuthLayout';
+import { safeInternalPath } from '@/lib/navigation';
 
 export default function Login() {
   const { signIn, user, profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as { from?: string })?.from;
+  const requestedPath = (location.state as { from?: string })?.from;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,9 +23,9 @@ export default function Login() {
   useEffect(() => {
     if (user && profile) {
       const isAdmin = isAdminRole(user.app_metadata?.role) && isAdminRole(profile.role);
-      navigate(from ?? (isAdmin ? '/admin' : '/dashboard'), { replace: true });
+      navigate(safeInternalPath(requestedPath, isAdmin ? '/admin' : '/dashboard'), { replace: true });
     }
-  }, [from, navigate, profile, user]);
+  }, [navigate, profile, requestedPath, user]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +40,7 @@ export default function Login() {
     // After successful sign-in, the auth state change will trigger the
     // profile load. We navigate to a sensible default; the redirect logic
     // above will refine it once profile is available.
-    navigate(from ?? '/dashboard', { replace: true });
+    navigate(safeInternalPath(requestedPath, '/dashboard'), { replace: true });
   };
 
   return (

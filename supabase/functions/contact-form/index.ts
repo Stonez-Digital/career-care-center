@@ -3,7 +3,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
@@ -65,15 +65,18 @@ Deno.serve(async (req: Request) => {
       .in("role", ["admin", "super_admin"])
       .eq("is_suspended", false);
     if (admins?.length) {
-      await supabase.from("notifications").insert(admins.map(({ id }) => ({
+      const { error: notificationError } = await supabase.from("notifications").insert(admins.map(({ id }) => ({
         user_id: id,
         title: "New Contact Message",
         body: `New message from ${name.trim()} (${email.trim()}): ${subject?.trim() || "(no subject)"}`,
         type: "contact",
-      }))).throwOnError().catch((e: Error) => console.warn("[contact-form] notify:", e.message));
+      })));
+      if (notificationError) {
+        console.warn("[contact-form] Admin notification failed:", notificationError.message);
+      }
     }
 
-    console.log(`[contact-form] Submitted from ${email}`);
+    console.log("[contact-form] Message submitted successfully");
     return json({ success: true, message: "Message sent successfully." });
   } catch (err) {
     console.error("[contact-form] Unexpected error:", err);
