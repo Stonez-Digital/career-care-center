@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, MessageCircle, Send, CheckCircle2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-import { WHATSAPP_NUMBER, WHATSAPP_URL } from '@/lib/contact';
+import { WHATSAPP_URL } from '@/lib/contact';
 
 const footerLinks = {
   Platform: [
@@ -97,7 +97,7 @@ export default function Footer() {
                   <MessageCircle className="h-4 w-4" />
                 </div>
                 <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="text-ink-400 transition-colors hover:text-white">
-                  WhatsApp: {WHATSAPP_NUMBER}
+                  Join our WhatsApp Jobs Group
                 </a>
               </div>
             </div>
@@ -161,7 +161,7 @@ export default function Footer() {
                 { Icon: Twitter, label: 'Career Care Center on X', href: 'https://x.com/careercarecenter' },
                 { Icon: Instagram, label: 'Career Care Center on Instagram', href: 'https://www.instagram.com/careercarecenter' },
                 { Icon: Linkedin, label: 'Career Care Center on LinkedIn', href: 'https://ng.linkedin.com/company/careercarecenter-youthdevelopmentinitiative' },
-                { Icon: MessageCircle, label: 'Chat with Career Care Center on WhatsApp', href: WHATSAPP_URL },
+                { Icon: MessageCircle, label: 'Join the Career Care Center Jobs WhatsApp group', href: WHATSAPP_URL },
               ].map(({ Icon, label, href }) => {
                 return (
                   <a

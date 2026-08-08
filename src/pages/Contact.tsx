@@ -5,7 +5,7 @@ import PageHero from '@/components/PageHero';
 import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 import { cn } from '@/lib/utils';
-import { WHATSAPP_NUMBER, WHATSAPP_URL } from '@/lib/contact';
+import { WHATSAPP_URL } from '@/lib/contact';
 
 const faqs = [
   { q: 'How do I apply for a CCC program?', a: 'Visit our Apply page, fill out the application form, and select your program of interest. You will receive a confirmation email and can track your application status in your dashboard.' },
@@ -108,7 +108,7 @@ export default function Contact() {
                   <h3 className="font-semibold text-ink-900">Phone</h3>
                   <p className="mt-1 text-sm text-ink-600">+234 815 124 6752</p>
                   <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-success-600 hover:underline">
-                    <MessageCircle className="h-4 w-4" /> WhatsApp {WHATSAPP_NUMBER}
+                    <MessageCircle className="h-4 w-4" /> Join our WhatsApp Jobs Group
                   </a>
                 </div>
               </div>
@@ -131,7 +131,7 @@ export default function Contact() {
                 <a href="https://ng.linkedin.com/company/careercarecenter-youthdevelopmentinitiative" target="_blank" rel="noopener noreferrer" className="grid h-10 w-10 place-items-center rounded-xl bg-ink-100 text-ink-600 transition-all hover:bg-primary-700 hover:text-white hover:-translate-y-0.5" aria-label="LinkedIn">
                   <Linkedin className="h-5 w-5" />
                 </a>
-                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="grid h-10 w-10 place-items-center rounded-xl bg-ink-100 text-ink-600 transition-all hover:bg-success-600 hover:text-white hover:-translate-y-0.5" aria-label="WhatsApp">
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="grid h-10 w-10 place-items-center rounded-xl bg-ink-100 text-ink-600 transition-all hover:bg-success-600 hover:text-white hover:-translate-y-0.5" aria-label="Join the Career Care Center Jobs WhatsApp group">
                   <MessageCircle className="h-5 w-5" />
                 </a>
               </div>
