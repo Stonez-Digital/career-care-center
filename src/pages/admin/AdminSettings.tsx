@@ -19,7 +19,7 @@ const tabs: { key: Tab; label: string; icon: React.ComponentType<{ className?: s
 
 const settingKeys = [
   'org_name', 'org_tagline', 'org_email', 'org_phone', 'org_address', 'org_website',
-  'social_facebook', 'social_instagram', 'social_linkedin',
+  'social_facebook', 'social_instagram', 'social_linkedin', 'social_whatsapp',
   'hero_title', 'hero_subtitle', 'hero_description',
   'footer_text',
   'seo_meta_title', 'seo_meta_description',
@@ -40,6 +40,7 @@ const tabFields: Record<Tab, { key: string; label: string; type?: 'text' | 'text
     { key: 'social_facebook', label: 'Facebook URL' },
     { key: 'social_instagram', label: 'Instagram URL' },
     { key: 'social_linkedin', label: 'LinkedIn URL' },
+    { key: 'social_whatsapp', label: 'WhatsApp URL' },
   ],
   seo: [
     { key: 'seo_meta_title', label: 'Meta Title' },
