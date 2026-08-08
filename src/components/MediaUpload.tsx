@@ -10,6 +10,7 @@ interface MediaUploadProps {
   allowedTypes: string[];
   maxBytes: number;
   label: string;
+  disabled?: boolean;
   onUploaded: (url: string) => void;
   onError: (message: string) => void;
 }
@@ -32,14 +33,14 @@ export default function MediaUpload(props: MediaUploadProps) {
   };
 
   return (
-    <label className="btn-outline cursor-pointer text-sm">
+    <label className={`btn-outline text-sm ${props.disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}>
       {uploading ? <Spinner /> : <Upload className="h-4 w-4" />}
       {uploading ? 'Uploading…' : props.label}
       <input
         type="file"
         className="sr-only"
         accept={props.accept}
-        disabled={uploading}
+        disabled={uploading || props.disabled}
         onChange={(event) => {
           void upload(event.target.files?.[0]);
           event.target.value = '';

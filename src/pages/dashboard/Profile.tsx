@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 import MediaUpload from '@/components/MediaUpload';
-import { IMAGE_TYPES } from '@/lib/media';
+import { IMAGE_TYPES, storagePathFromPublicUrl } from '@/lib/media';
 
 export default function Profile() {
   const { profile, user, refreshProfile } = useAuth();
@@ -20,6 +20,7 @@ export default function Profile() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [avatarError, setAvatarError] = useState(false);
+  const [savingAvatar, setSavingAvatar] = useState(false);
 
   useEffect(() => {
     setForm({
@@ -34,9 +35,18 @@ export default function Profile() {
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
+    if (!form.full_name.trim()) {
+      setError('Full name is required.');
+      return;
+    }
     setSaving(true);
     setError(null);
-    const { error } = await supabase.from('profiles').update(form).eq('id', user!.id);
+    setSuccess(false);
+    const { error } = await supabase
+      .from('profiles')
+      .update({ ...form, full_name: form.full_name.trim() })
+      .eq('id', user.id);
     setSaving(false);
     if (error) setError(error.message);
     else {
@@ -44,6 +54,41 @@ export default function Profile() {
       await refreshProfile();
       setTimeout(() => setSuccess(false), 3000);
     }
+  };
+
+  const updateAvatar = async (avatarUrl: string) => {
+    if (!user) return;
+    const previousUrl = form.avatar_url;
+    setSavingAvatar(true);
+    setError(null);
+    setSuccess(false);
+
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ avatar_url: avatarUrl || null })
+      .eq('id', user.id);
+
+    if (updateError) {
+      const uploadedPath = avatarUrl ? storagePathFromPublicUrl(avatarUrl, 'profile-images') : null;
+      if (uploadedPath) await supabase.storage.from('profile-images').remove([uploadedPath]);
+      setError(updateError.message);
+      setSavingAvatar(false);
+      return;
+    }
+
+    setForm((current) => ({ ...current, avatar_url: avatarUrl }));
+    setAvatarError(false);
+    await refreshProfile();
+
+    const previousPath = previousUrl ? storagePathFromPublicUrl(previousUrl, 'profile-images') : null;
+    if (previousPath && previousUrl !== avatarUrl) {
+      const { error: removeError } = await supabase.storage.from('profile-images').remove([previousPath]);
+      if (removeError) console.warn('[CCC] Previous profile image cleanup failed:', removeError.message);
+    }
+
+    setSavingAvatar(false);
+    setSuccess(true);
+    setTimeout(() => setSuccess(false), 3000);
   };
 
   return (
@@ -90,15 +135,21 @@ export default function Profile() {
               <div className="flex flex-wrap items-center gap-2">
                 <MediaUpload
                   bucket="profile-images"
-                  folder={user!.id}
+                  folder={user?.id ?? ''}
                   accept="image/jpeg,image/png,image/webp"
                   allowedTypes={IMAGE_TYPES}
                   maxBytes={5 * 1024 * 1024}
-                  label="Upload Image"
-                  onUploaded={(avatar_url) => { setForm({ ...form, avatar_url }); setAvatarError(false); }}
+                  label={savingAvatar ? 'Saving Image' : 'Upload Image'}
+                  disabled={savingAvatar || !user}
+                  onUploaded={(avatarUrl) => { void updateAvatar(avatarUrl); }}
                   onError={setError}
                 />
-                {form.avatar_url && <button type="button" className="btn-ghost btn-sm" onClick={() => setForm({ ...form, avatar_url: '' })}>Remove</button>}
+                {form.avatar_url && (
+                  <button type="button" disabled={savingAvatar} className="btn-ghost btn-sm" onClick={() => { void updateAvatar(''); }}>
+                    {savingAvatar ? 'Saving...' : 'Remove'}
+                  </button>
+                )}
+                <span className="text-xs text-ink-500">JPG, PNG or WebP. Maximum 5 MB.</span>
               </div>
             </div>
           </div>
