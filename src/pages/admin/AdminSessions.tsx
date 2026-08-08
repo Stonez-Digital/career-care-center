@@ -14,6 +14,11 @@ interface SessionRow extends MentorSession {
   mentee?: { full_name: string | null } | null;
 }
 
+interface MentorOption extends Profile {
+  availability?: string | null;
+  is_available?: boolean;
+}
+
 const statusVariant: Record<MentorSession['status'], 'primary' | 'success' | 'error'> = {
   scheduled: 'primary',
   completed: 'success',
@@ -46,7 +51,7 @@ function isTeamsUrl(value: string) {
 export default function AdminSessions() {
   const [loading, setLoading] = useState(true);
   const [sessions, setSessions] = useState<SessionRow[]>([]);
-  const [mentors, setMentors] = useState<Profile[]>([]);
+  const [mentors, setMentors] = useState<MentorOption[]>([]);
   const [mentees, setMentees] = useState<Profile[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -56,19 +61,21 @@ export default function AdminSessions() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const [sessionResult, mentorResult, menteeResult] = await Promise.all([
+    const [sessionResult, mentorResult, menteeResult, mentorProfileResult] = await Promise.all([
       supabase
         .from('mentor_sessions')
         .select('*, mentor:profiles!mentor_sessions_mentor_id_fkey(full_name), mentee:profiles!mentor_sessions_mentee_id_fkey(full_name)')
         .order('scheduled_at', { ascending: false }),
       supabase.from('profiles').select('*').eq('role', 'mentor').eq('is_suspended', false).order('full_name'),
       supabase.from('profiles').select('*').eq('role', 'intern').eq('is_suspended', false).order('full_name'),
+      supabase.from('mentor_profiles').select('user_id, availability, is_available'),
     ]);
 
     setSessions((sessionResult.data as SessionRow[]) ?? []);
-    setMentors((mentorResult.data as Profile[]) ?? []);
+    const availabilityByMentor = new Map((mentorProfileResult.data ?? []).map((item) => [item.user_id, item]));
+    setMentors(((mentorResult.data as Profile[]) ?? []).map((mentor) => ({ ...mentor, ...availabilityByMentor.get(mentor.id) })));
     setMentees((menteeResult.data as Profile[]) ?? []);
-    setError(sessionResult.error?.message ?? mentorResult.error?.message ?? menteeResult.error?.message ?? null);
+    setError(sessionResult.error?.message ?? mentorResult.error?.message ?? menteeResult.error?.message ?? mentorProfileResult.error?.message ?? null);
     setLoading(false);
   }, []);
 
@@ -135,6 +142,8 @@ export default function AdminSessions() {
     })));
   };
 
+  const selectedMentor = mentors.find((mentor) => mentor.id === form.mentor_id);
+
   if (loading) return <PageLoader />;
 
   return (
@@ -196,9 +205,16 @@ export default function AdminSessions() {
         <form onSubmit={assignSession} className="space-y-4">
           {error && <Alert type="error" message={error} />}
           <div className="grid gap-4 sm:grid-cols-2">
-            <div><label className="label">Mentor *</label><select className="input" required value={form.mentor_id} onChange={(e) => setForm({ ...form, mentor_id: e.target.value })}><option value="">Select mentor...</option>{mentors.map((mentor) => <option key={mentor.id} value={mentor.id}>{mentor.full_name ?? mentor.email}</option>)}</select></div>
+            <div><label className="label">Mentor *</label><select className="input" required value={form.mentor_id} onChange={(e) => setForm({ ...form, mentor_id: e.target.value })}><option value="">Select mentor...</option>{mentors.map((mentor) => <option key={mentor.id} value={mentor.id}>{mentor.full_name ?? mentor.email}{mentor.is_available === false ? ' (unavailable)' : ''}</option>)}</select></div>
             <div><label className="label">Mentee *</label><select className="input" required value={form.mentee_id} onChange={(e) => setForm({ ...form, mentee_id: e.target.value })}><option value="">Select mentee...</option>{mentees.map((mentee) => <option key={mentee.id} value={mentee.id}>{mentee.full_name ?? mentee.email}</option>)}</select></div>
           </div>
+          {selectedMentor && (
+            <div className="rounded-lg border border-ink-200 bg-ink-50 p-3 text-sm">
+              <p className="font-medium text-ink-900">Mentor availability</p>
+              <p className="mt-1 whitespace-pre-wrap text-ink-600">{selectedMentor.availability || 'No availability details provided.'}</p>
+              {selectedMentor.is_available === false && <p className="mt-2 font-medium text-error-600">This mentor is not currently accepting sessions.</p>}
+            </div>
+          )}
           <div><label className="label">Topic *</label><input className="input" required maxLength={500} value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })} /></div>
           <div><label className="label">Date & Time *</label><input type="datetime-local" className="input" required value={form.scheduled_at} onChange={(e) => setForm({ ...form, scheduled_at: e.target.value })} /></div>
           <div><label className="label">Microsoft Teams Meeting URL *</label><input type="url" className="input" required placeholder="https://teams.microsoft.com/l/meetup-join/..." value={form.meeting_url} onChange={(e) => setForm({ ...form, meeting_url: e.target.value })} /></div>
