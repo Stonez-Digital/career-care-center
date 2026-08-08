@@ -1,4 +1,4 @@
-const productionSiteUrl = 'https://careercarecenter.com.ng';
+const productionSiteUrl = 'https://app.careercarecenter.com.ng';
 
 export function getSiteUrl() {
   if (import.meta.env.DEV) return window.location.origin;
