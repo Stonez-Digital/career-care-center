@@ -21,3 +21,6 @@ coverage/
 # Supabase local state
 supabase/.branches/
 supabase/.temp/
+
+.vercel
+.env.local

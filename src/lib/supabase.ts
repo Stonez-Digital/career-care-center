@@ -1,11 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Public browser configuration. Environment values override these production
-// defaults, while the defaults prevent a blank app if a host misses its envs.
-const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL as string | undefined)
-  || 'https://jiffbcqpfdmczgqfprhy.supabase.co';
-const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined)
-  || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppZmZiY3FwZmRtY3pncWZwcmh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0Mzk4MjMsImV4cCI6MjA5ODAxNTgyM30.sZAsWq3V7zWRL6SQ5vEZ2DlpKsIdgDwGsL1tPhV7CNU';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Supabase configuration is missing. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
