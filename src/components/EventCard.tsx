@@ -5,7 +5,7 @@ import { formatDate } from '@/lib/utils';
 import Badge from './Badge';
 import SafeImage from './SafeImage';
 
-const eventFallback = 'https://images.pexels.com/photos/2774556/pexels-photo-2774556.jpeg';
+const eventFallback = '/media/events/workshop-2-reminder.jpg';
 
 export default function EventCard({ event }: { event: CCCEvent }) {
   const eventDate = new Date(event.event_date);

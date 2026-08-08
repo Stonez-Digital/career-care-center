@@ -13,7 +13,7 @@ import MediaUpload from '@/components/MediaUpload';
 import { IMAGE_TYPES } from '@/lib/media';
 import SafeImage from '@/components/SafeImage';
 
-const eventFallback = 'https://images.pexels.com/photos/2774556/pexels-photo-2774556.jpeg';
+const eventFallback = '/media/events/workshop-2-reminder.jpg';
 
 const empty = {
   title: '',

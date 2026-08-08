@@ -11,7 +11,7 @@ import Alert from '@/components/Alert';
 import { formatDate, cn } from '@/lib/utils';
 import SafeImage from '@/components/SafeImage';
 
-const eventFallback = 'https://images.pexels.com/photos/2774556/pexels-photo-2774556.jpeg';
+const eventFallback = '/media/events/workshop-2-reminder.jpg';
 
 export default function Events() {
   const [events, setEvents] = useState<CCCEvent[]>([]);

@@ -50,7 +50,7 @@ export default function About() {
           </div>
           <div className="relative">
             <img
-              src="https://careercarecenter.com.ng/wp-content/uploads/2025/07/Smarter-Skills-For-A-Smarter-Future-Workshop-Career-Care-808x1024.jpg"
+              src="/media/events/workshop-2-reminder.jpg"
               alt="CCC Smarter Skills for a Smarter Future Workshop"
               loading="lazy"
               className="rounded-2xl shadow-lift"
