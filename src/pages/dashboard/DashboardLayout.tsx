@@ -60,7 +60,7 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
             <div className="card overflow-hidden p-0">
               <div className="bg-[#0D2175] p-5">
                 <div className="flex items-center gap-3">
-                  <img src="/career-care-logo-v3.png" alt="Career Care Center" className="h-16 w-auto shrink-0" />
+                  <img src="/career-care-logo.png?v=5" alt="Career Care Center" className="h-16 w-auto shrink-0" />
                   <div className="min-w-0">
                     <p className="truncate font-heading font-semibold text-white">{profile?.full_name ?? 'User'}</p>
                     <p className="truncate text-sm capitalize text-primary-200">{profile?.role}</p>

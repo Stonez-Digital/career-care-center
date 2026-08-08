@@ -12,7 +12,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
         <div className="relative">
           <Link to="/" className="inline-block" aria-label="Career Care Center home">
-            <img src="/career-care-logo-v3.png" alt="Career Care Center — uplifting talents to make a meaningful impact" className="h-28 w-auto" />
+            <img src="/career-care-logo.png?v=5" alt="Career Care Center — uplifting talents to make a meaningful impact" className="h-28 w-auto" />
           </Link>
         </div>
 

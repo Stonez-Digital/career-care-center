@@ -159,7 +159,7 @@ export default function AdminLayout() {
         <div className="flex h-16 items-center justify-between px-4 lg:px-6">
           <div className="flex items-center gap-3">
             <Link to="/admin" className="flex items-center gap-2.5" aria-label="Career Care Center admin dashboard">
-              <img src="/career-care-logo-v3.png" alt="" className="h-14 w-auto" />
+              <img src="/career-care-logo.png?v=5" alt="Career Care Center" className="h-14 w-auto" />
               <div>
                 <p className="font-heading text-sm font-bold text-ink-900">Admin Dashboard</p>
                 <p className="text-xs text-ink-400">Career Care Center</p>
