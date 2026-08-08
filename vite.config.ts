@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['robots.txt', 'career-care-logo-v3.png'],
+      includeAssets: ['robots.txt', 'career-care-logo.png', 'pwa-192.png', 'pwa-512.png'],
       manifest: {
         name: 'Career Care Center',
         short_name: 'CCC',
@@ -20,9 +20,9 @@ export default defineConfig({
         scope: '/',
         start_url: '/',
         icons: [
-          { src: 'pwa-192.svg', sizes: '192x192', type: 'image/svg+xml', purpose: 'any' },
-          { src: 'pwa-512.svg', sizes: '512x512', type: 'image/svg+xml', purpose: 'any' },
-          { src: 'pwa-512.svg', sizes: '512x512', type: 'image/svg+xml', purpose: 'maskable' },
+          { src: 'pwa-192.png?v=4', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'pwa-512.png?v=4', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'pwa-512.png?v=4', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
       workbox: {
