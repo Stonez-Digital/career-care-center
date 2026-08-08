@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 import AuthLayout from '@/components/AuthLayout';
+import { getSiteUrl } from '@/lib/siteUrl';
 
 export default function ResetPassword() {
   const [email, setEmail] = useState('');
@@ -30,7 +31,7 @@ export default function ResetPassword() {
     setLoading(true);
     setError(null);
     const { error: requestError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: `${getSiteUrl()}/reset-password`,
     });
     setLoading(false);
     if (requestError) setError(requestError.message);
