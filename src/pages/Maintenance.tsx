@@ -8,7 +8,7 @@ export default function Maintenance() {
       <div className="absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-accent-400/15 blur-3xl" />
       <section className="relative w-full max-w-xl text-center">
         <img
-          src="/career-care-logo-v2.png"
+          src="/career-care-logo-v3.png"
           alt="Career Care Center — uplifting talents to make a meaningful impact"
           className="mx-auto h-32 w-auto"
         />
