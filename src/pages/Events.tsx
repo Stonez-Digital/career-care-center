@@ -10,8 +10,7 @@ import Badge from '@/components/Badge';
 import Alert from '@/components/Alert';
 import { formatDate, cn } from '@/lib/utils';
 import SafeImage from '@/components/SafeImage';
-
-const eventFallback = '/media/events/workshop-2-reminder.jpg';
+import { getEventFallback } from '@/lib/eventImages';
 
 export default function Events() {
   const [events, setEvents] = useState<CCCEvent[]>([]);
@@ -49,8 +48,8 @@ export default function Events() {
     <article key={e.id} className={cn('card group overflow-hidden transition-all hover:shadow-lift', isPast && 'opacity-90')}>
       <div className="relative h-48 overflow-hidden">
         <SafeImage
-          src={e.image_url ?? eventFallback}
-          fallbackSrc={eventFallback}
+          src={e.image_url ?? getEventFallback(e.title)}
+          fallbackSrc={getEventFallback(e.title)}
           alt={e.title}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"

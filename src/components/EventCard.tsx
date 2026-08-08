@@ -4,8 +4,7 @@ import type { CCCEvent } from '@/lib/supabase';
 import { formatDate } from '@/lib/utils';
 import Badge from './Badge';
 import SafeImage from './SafeImage';
-
-const eventFallback = '/media/events/workshop-2-reminder.jpg';
+import { getEventFallback } from '@/lib/eventImages';
 
 export default function EventCard({ event }: { event: CCCEvent }) {
   const eventDate = new Date(event.event_date);
@@ -16,8 +15,8 @@ export default function EventCard({ event }: { event: CCCEvent }) {
     <article className="card-hover group overflow-hidden">
       <div className="relative h-44 overflow-hidden">
         <SafeImage
-          src={event.image_url ?? eventFallback}
-          fallbackSrc={eventFallback}
+          src={event.image_url ?? getEventFallback(event.title)}
+          fallbackSrc={getEventFallback(event.title)}
           alt={event.title}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
