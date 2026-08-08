@@ -69,7 +69,7 @@ const AdminAuditLogs = lazy(() => import('./pages/admin/AdminAuditLogs'));
 export default function App() {
   const { pathname } = useLocation();
   const isPortal = pathname === '/dashboard' || pathname.startsWith('/dashboard/') || pathname === '/admin' || pathname.startsWith('/admin/');
-  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE !== 'false';
+  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === 'true';
   const isAdminPath = pathname === '/admin' || pathname.startsWith('/admin/');
 
   if (maintenanceMode && !isAdminPath) return <Maintenance />;
