@@ -82,8 +82,8 @@ export default function Footer() {
                 <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-ink-800 text-secondary-400">
                   <Mail className="h-4 w-4" />
                 </div>
-                <a href="mailto:info@careercarecenter.com" className="text-ink-400 transition-colors hover:text-white">
-                  info@careercarecenter.com
+                <a href="mailto:info@careercarecenter.com.ng" className="text-ink-400 transition-colors hover:text-white">
+                  info@careercarecenter.com.ng
                 </a>
               </div>
               <div className="flex items-center gap-3">

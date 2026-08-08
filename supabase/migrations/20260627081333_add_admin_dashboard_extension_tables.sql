@@ -187,7 +187,7 @@ CREATE INDEX IF NOT EXISTS idx_newsletter_email ON newsletter_subscribers(email)
 INSERT INTO site_settings (key, value) VALUES
   ('org_name', 'Career Care Center For Youth Development Initiative'),
   ('org_tagline', 'We Care For Your Career'),
-  ('org_email', 'info@careercarecenter.com'),
+  ('org_email', 'info@careercarecenter.com.ng'),
   ('org_phone', '+234 815 124 6752'),
   ('org_address', 'Maryland, Lagos, Nigeria'),
   ('org_website', 'https://careercarecenter.com.ng'),

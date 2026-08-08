@@ -20,7 +20,7 @@ export default function Maintenance() {
         <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-primary-100 sm:text-lg">
           Career Care Center is undergoing scheduled stabilization and quality checks. Our team is working carefully to restore full access.
         </p>
-        <a href="mailto:info@careercarecenter.com" className="btn-white btn-lg mt-8 inline-flex">
+        <a href="mailto:info@careercarecenter.com.ng" className="btn-white btn-lg mt-8 inline-flex">
           <Mail className="h-4 w-4" aria-hidden="true" /> Contact Support
         </a>
       </section>

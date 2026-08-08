@@ -96,7 +96,7 @@ export default function Contact() {
                 <div className="grid h-11 w-11 place-items-center rounded-xl bg-secondary-50 text-secondary-600"><Mail className="h-5 w-5" /></div>
                 <div>
                   <h3 className="font-semibold text-ink-900">Email</h3>
-                  <a href="mailto:info@careercarecenter.com" className="mt-1 block text-sm text-primary-700 hover:underline">info@careercarecenter.com</a>
+                  <a href="mailto:info@careercarecenter.com.ng" className="mt-1 block text-sm text-primary-700 hover:underline">info@careercarecenter.com.ng</a>
                   <a href="mailto:partnership@careercarecenter.com.ng" className="mt-1 block text-sm text-primary-700 hover:underline">partnership@careercarecenter.com.ng</a>
                 </div>
               </div>

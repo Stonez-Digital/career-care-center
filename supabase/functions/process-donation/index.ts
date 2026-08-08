@@ -16,6 +16,19 @@ function json(data: unknown, status = 200) {
 
 const VALID_CURRENCIES = ["NGN", "USD", "GBP", "EUR"];
 const VALID_FREQUENCIES = ["one_time", "monthly", "yearly"];
+const DEFAULT_SITE_URL = "https://app.careercarecenter.com.ng";
+
+function getSiteUrl() {
+  const configuredUrl = Deno.env.get("SITE_URL")?.trim() || DEFAULT_SITE_URL;
+  try {
+    const url = new URL(configuredUrl);
+    if (url.protocol !== "https:") throw new Error("SITE_URL must use HTTPS");
+    return url.origin;
+  } catch {
+    console.error("[process-donation] SITE_URL is invalid; using the production fallback");
+    return DEFAULT_SITE_URL;
+  }
+}
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 200, headers: corsHeaders });
@@ -106,7 +119,7 @@ Deno.serve(async (req: Request) => {
       amount: Math.round(numAmount * 100), // Paystack expects amount in kobo
       currency: String(currency),
       reference: `CCC-${donation.id}`,
-      callback_url: `${new URL(req.url).origin}/donate?status=success&ref=CCC-${donation.id}`,
+      callback_url: `${getSiteUrl()}/donate?status=success&ref=CCC-${donation.id}`,
       metadata: {
         donation_id: donation.id,
         donor_name: is_anonymous ? "Anonymous" : String(donor_name).trim(),
