@@ -3,6 +3,9 @@ import { Calendar, MapPin, Video, Users, ArrowRight } from 'lucide-react';
 import type { CCCEvent } from '@/lib/supabase';
 import { formatDate } from '@/lib/utils';
 import Badge from './Badge';
+import SafeImage from './SafeImage';
+
+const eventFallback = 'https://images.pexels.com/photos/2774556/pexels-photo-2774556.jpeg';
 
 export default function EventCard({ event }: { event: CCCEvent }) {
   const eventDate = new Date(event.event_date);
@@ -12,8 +15,9 @@ export default function EventCard({ event }: { event: CCCEvent }) {
   return (
     <article className="card-hover group overflow-hidden">
       <div className="relative h-44 overflow-hidden">
-        <img
-          src={event.image_url ?? 'https://images.pexels.com/photos/2774556/pexels-photo-2774556.jpeg'}
+        <SafeImage
+          src={event.image_url ?? eventFallback}
+          fallbackSrc={eventFallback}
           alt={event.title}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"

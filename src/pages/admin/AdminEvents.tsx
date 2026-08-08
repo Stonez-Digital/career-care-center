@@ -11,6 +11,9 @@ import Badge from '@/components/Badge';
 import { formatDate, cn, exportToCSV } from '@/lib/utils';
 import MediaUpload from '@/components/MediaUpload';
 import { IMAGE_TYPES } from '@/lib/media';
+import SafeImage from '@/components/SafeImage';
+
+const eventFallback = 'https://images.pexels.com/photos/2774556/pexels-photo-2774556.jpeg';
 
 const empty = {
   title: '',
@@ -186,7 +189,7 @@ export default function AdminEvents() {
           {filtered.map((e) => (
             <div key={e.id} className="card overflow-hidden">
               {e.image_url && (
-                <img src={e.image_url} alt={e.title} loading="lazy" className="h-32 w-full object-cover" />
+                <SafeImage src={e.image_url} fallbackSrc={eventFallback} alt={e.title} loading="lazy" className="h-32 w-full object-cover" />
               )}
               <div className="p-4">
                 <div className="flex items-center justify-between">

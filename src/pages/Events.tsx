@@ -9,6 +9,9 @@ import { PageLoader } from '@/components/Spinner';
 import Badge from '@/components/Badge';
 import Alert from '@/components/Alert';
 import { formatDate, cn } from '@/lib/utils';
+import SafeImage from '@/components/SafeImage';
+
+const eventFallback = 'https://images.pexels.com/photos/2774556/pexels-photo-2774556.jpeg';
 
 export default function Events() {
   const [events, setEvents] = useState<CCCEvent[]>([]);
@@ -45,8 +48,9 @@ export default function Events() {
   const renderEventCard = (e: CCCEvent, isPast: boolean) => (
     <article key={e.id} className={cn('card group overflow-hidden transition-all hover:shadow-lift', isPast && 'opacity-90')}>
       <div className="relative h-48 overflow-hidden">
-        <img
-          src={e.image_url ?? 'https://images.pexels.com/photos/2774556/pexels-photo-2774556.jpeg'}
+        <SafeImage
+          src={e.image_url ?? eventFallback}
+          fallbackSrc={eventFallback}
           alt={e.title}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"

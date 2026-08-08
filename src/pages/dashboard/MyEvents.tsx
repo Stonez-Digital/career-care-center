@@ -7,6 +7,9 @@ import type { EventRegistration } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
 import Badge from '@/components/Badge';
 import { formatDate } from '@/lib/utils';
+import SafeImage from '@/components/SafeImage';
+
+const eventFallback = 'https://images.pexels.com/photos/2774556/pexels-photo-2774556.jpeg';
 
 export default function MyEvents() {
   const { user } = useAuth();
@@ -59,7 +62,7 @@ export default function MyEvents() {
                 {upcoming.map((r) => (
                   <div key={r.id} className="card overflow-hidden">
                     {r.event?.image_url && (
-                      <img src={r.event.image_url} alt={r.event.title} loading="lazy" className="h-32 w-full object-cover" />
+                      <SafeImage src={r.event.image_url} fallbackSrc={eventFallback} alt={r.event.title} loading="lazy" className="h-32 w-full object-cover" />
                     )}
                     <div className="p-4">
                       <div className="flex items-center gap-2">
