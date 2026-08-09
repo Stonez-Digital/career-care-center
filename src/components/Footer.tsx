@@ -180,10 +180,24 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-ink-800 pt-8 sm:flex-row">
+        <div className="mt-14 flex flex-col items-center justify-between gap-5 border-t border-ink-800 pt-8 lg:flex-row">
           <p className="text-sm text-ink-500">
             © {new Date().getFullYear()} Career Care Center. All rights reserved.
           </p>
+          <div className="flex items-center gap-2.5" aria-label="Developed by Stonez Digital">
+            <img
+              src="/stonez-digital-signature.png"
+              alt="Stonez Digital"
+              width="192"
+              height="192"
+              loading="lazy"
+              className="h-12 w-12 rounded-full bg-white object-contain"
+            />
+            <p className="text-xs leading-tight text-ink-500">
+              Developed by
+              <span className="block font-semibold tracking-wide text-ink-300">Stonez Digital</span>
+            </p>
+          </div>
           <div className="flex items-center gap-6 text-sm text-ink-500">
             <Link to="/privacy" className="transition-colors hover:text-ink-300">Privacy</Link>
             <Link to="/terms" className="transition-colors hover:text-ink-300">Terms</Link>
