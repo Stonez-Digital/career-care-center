@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "supabase/migrations/**"
+      - "supabase/functions/**"
       - "supabase/templates/**"
       - "supabase/config.toml"
       - ".github/workflows/supabase-migrations.yml"
@@ -75,6 +76,13 @@ jobs:
       - name: Apply migrations after reconciliation
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && env.MIGRATIONS_READY == 'true'
         run: supabase db push
+
+      - name: Deploy contact reply email functions
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && env.MIGRATIONS_READY == 'true'
+        shell: bash
+        run: |
+          supabase functions deploy send-contact-reply
+          supabase functions deploy resend-webhook --no-verify-jwt
 
       - name: Explain production interlock
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && env.MIGRATIONS_READY != 'true'

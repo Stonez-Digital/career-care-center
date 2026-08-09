@@ -212,6 +212,11 @@ export interface ContactMessage {
   message: string;
   status: 'unread' | 'read' | 'archived' | 'replied';
   admin_reply: string | null;
+  reply_message_id: string | null;
+  reply_delivery_status: 'sent' | 'delivered' | 'bounced' | 'complained' | 'failed' | null;
+  reply_sent_at: string | null;
+  reply_delivered_at: string | null;
+  replied_by: string | null;
   created_at: string;
 }
 

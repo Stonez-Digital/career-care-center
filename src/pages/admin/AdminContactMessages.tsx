@@ -37,6 +37,7 @@ export default function AdminContactMessages() {
   const [saving, setSaving] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const load = async () => {
     const { data } = await supabase
@@ -69,6 +70,7 @@ export default function AdminContactMessages() {
     setViewing(m);
     setReply(m.admin_reply ?? '');
     setError(null);
+    setNotice(null);
     if (m.status === 'unread') {
       markAsRead(m.id);
     }
@@ -102,18 +104,34 @@ export default function AdminContactMessages() {
     if (!viewing || !reply.trim()) return;
     setSaving(true);
     setError(null);
-    const { error: updateError } = await supabase
-      .from('contact_messages')
-      .update({ admin_reply: reply.trim(), status: 'replied' })
-      .eq('id', viewing.id);
+    setNotice(null);
+    const { data, error: sendError } = await supabase.functions.invoke('send-contact-reply', {
+      body: { message_id: viewing.id, reply: reply.trim() },
+    });
     setSaving(false);
-    if (updateError) {
-      setError(updateError.message);
+    const result = data as { success?: boolean; error?: string; message_id?: string; sent_at?: string } | null;
+    if (sendError || !result?.success || !result.message_id || !result.sent_at) {
+      setError(result?.error ?? sendError?.message ?? 'The email provider did not accept the reply.');
     } else {
       setMessages((prev) =>
-        prev.map((m) => (m.id === viewing.id ? { ...m, admin_reply: reply.trim(), status: 'replied' } : m))
+        prev.map((m) => (m.id === viewing.id ? {
+          ...m,
+          admin_reply: reply.trim(),
+          status: 'read',
+          reply_message_id: result.message_id!,
+          reply_delivery_status: 'sent',
+          reply_sent_at: result.sent_at!,
+        } : m))
       );
-      setViewing((prev) => (prev?.id === viewing.id ? { ...prev, admin_reply: reply.trim(), status: 'replied' } : prev));
+      setViewing((prev) => (prev?.id === viewing.id ? {
+        ...prev,
+        admin_reply: reply.trim(),
+        status: 'read',
+        reply_message_id: result.message_id!,
+        reply_delivery_status: 'sent',
+        reply_sent_at: result.sent_at!,
+      } : prev));
+      setNotice('Resend accepted the email. It will be marked replied after delivery is confirmed.');
     }
   };
 
@@ -149,6 +167,7 @@ export default function AdminContactMessages() {
   return (
     <div className="space-y-4">
       {error && <Alert type="error" message={error} />}
+      {notice && <Alert type="success" message={notice} />}
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -291,8 +310,14 @@ export default function AdminContactMessages() {
                 onChange={(e) => setReply(e.target.value)}
               />
               <p className="mt-1 text-xs text-ink-400">
-                Saving the reply will mark this message as "replied".
+                The message is marked "replied" only after Resend confirms delivery.
               </p>
+              {viewing.reply_delivery_status && (
+                <p className="mt-2 text-xs font-medium text-ink-600">
+                  Email delivery: <span className="capitalize">{viewing.reply_delivery_status}</span>
+                  {viewing.reply_message_id ? ` · Provider ID: ${viewing.reply_message_id}` : ''}
+                </p>
+              )}
             </div>
 
             {/* Actions */}
@@ -322,10 +347,11 @@ export default function AdminContactMessages() {
                 )}
                 <button
                   onClick={sendReply}
-                  disabled={saving || !reply.trim()}
+                  disabled={saving || !reply.trim() || !!viewing.reply_message_id}
                   className="btn-primary text-sm disabled:opacity-50"
                 >
-                  {saving ? <Spinner className="h-4 w-4" /> : <Send className="h-4 w-4" />} Reply
+                  {saving ? <Spinner className="h-4 w-4" /> : <Send className="h-4 w-4" />}
+                  {viewing.reply_message_id ? 'Email Submitted' : 'Send Reply Email'}
                 </button>
                 <button
                   onClick={() => remove(viewing.id)}
