@@ -5,7 +5,7 @@ import {
   PenSquare, Star, HeartHandshake, HandCoins,
   Mail, Bell, BarChart3, Settings, LogOut, Home, ChevronDown,
   Plus, Archive, CalendarCheck, UserCheck, Activity,
-  Sparkles, MailOpen,
+  Sparkles, MailOpen, UserRound,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
@@ -116,6 +116,7 @@ const navGroups: NavGroup[] = [
   {
     label: 'System',
     items: [
+      { to: '/admin/profile', label: 'My Profile', icon: UserRound },
       { to: '/admin/audit-logs', label: 'Audit Logs', icon: Activity },
       { to: '/admin/settings', label: 'Site & SEO Settings', icon: Settings },
     ],
@@ -169,15 +170,19 @@ export default function AdminLayout() {
             <Link to="/" className="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink-600 transition-colors hover:bg-ink-100 sm:flex">
               <Home className="h-4 w-4" /> Back to Site
             </Link>
-            <div className="flex items-center gap-2.5 rounded-xl bg-ink-50 px-3 py-1.5">
-              <div className="grid h-8 w-8 place-items-center rounded-lg bg-primary-700 text-sm font-bold text-white">
-                {profile?.full_name?.[0]?.toUpperCase() ?? 'A'}
-              </div>
+            <Link to="/admin/profile" className="flex items-center gap-2.5 rounded-xl bg-ink-50 px-3 py-1.5 transition-colors hover:bg-ink-100" aria-label="Open administrator profile">
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt="" className="h-8 w-8 rounded-lg object-cover" />
+              ) : (
+                <div className="grid h-8 w-8 place-items-center rounded-lg bg-primary-700 text-sm font-bold text-white">
+                  {profile?.full_name?.[0]?.toUpperCase() ?? 'A'}
+                </div>
+              )}
               <div className="hidden sm:block">
                 <p className="text-sm font-semibold text-ink-900">{profile?.full_name ?? 'Admin'}</p>
-                <p className="text-xs text-ink-400">Administrator</p>
+                <p className="text-xs text-ink-400">{profile?.role === 'super_admin' ? 'Super Administrator' : 'Administrator'}</p>
               </div>
-            </div>
+            </Link>
             <button onClick={handleSignOut} className="grid h-9 w-9 place-items-center rounded-lg text-ink-500 transition-colors hover:bg-error-50 hover:text-error-600" aria-label="Sign out">
               <LogOut className="h-4 w-4" />
             </button>

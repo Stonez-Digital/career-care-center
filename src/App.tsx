@@ -68,6 +68,7 @@ const AdminMentees = lazy(() => import('./pages/admin/AdminMentees'));
 const AdminSessions = lazy(() => import('./pages/admin/AdminSessions'));
 const AdminNewsletter = lazy(() => import('./pages/admin/AdminNewsletter'));
 const AdminAuditLogs = lazy(() => import('./pages/admin/AdminAuditLogs'));
+const AdminProfile = lazy(() => import('./pages/admin/AdminProfile'));
 
 export default function App() {
   const { pathname } = useLocation();
@@ -166,6 +167,7 @@ export default function App() {
               <Route path="sessions" element={<AdminSessions />} />
               <Route path="newsletter" element={<AdminNewsletter />} />
               <Route path="audit-logs" element={<AdminAuditLogs />} />
+              <Route path="profile" element={<AdminProfile />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
