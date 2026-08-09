@@ -58,7 +58,7 @@ const navGroups: NavGroup[] = [
     items: [
       { to: '/admin/mentors', label: 'Mentors', icon: Briefcase },
       { to: '/admin/mentees', label: 'Mentees', icon: GraduationCap },
-      { to: '/admin/sessions', label: 'Sessions', icon: Video },
+      { to: '/admin/sessions', label: 'Microsoft Teams Meetings', icon: Video },
     ],
   },
   {

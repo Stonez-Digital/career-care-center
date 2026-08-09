@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   Users, GraduationCap, Heart, Briefcase, ShieldCheck, ClipboardList,
   UserCheck, Clock, Calendar, FileText, Star, HandCoins,
-  HeartHandshake, MessageSquare,
+  HeartHandshake, MessageSquare, Video, ArrowRight,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
@@ -30,6 +30,8 @@ interface Stats {
   donations: number;
   partners: number;
   contactMessages: number;
+  meetings: number;
+  upcomingMeetings: number;
 }
 
 const programColors = ['#0F4C81', '#1E88E5', '#43A047', '#FB8C00', '#E53935', '#8E24AA', '#00ACC1', '#7CB342'];
@@ -40,7 +42,7 @@ export default function AdminDashboard() {
     totalUsers: 0, interns: 0, volunteers: 0, mentors: 0, admins: 0,
     applications: 0, approvedApps: 0, pendingApps: 0, upcomingEvents: 0,
     registrations: 0, blogPosts: 0, testimonials: 0, donations: 0,
-    partners: 0, contactMessages: 0,
+    partners: 0, contactMessages: 0, meetings: 0, upcomingMeetings: 0,
   });
   const [recentApps, setRecentApps] = useState<any[]>([]);
   const [recentUsers, setRecentUsers] = useState<any[]>([]);
@@ -57,6 +59,7 @@ export default function AdminDashboard() {
       const [
         profiles, apps, approved, pending, events, regs, blog, testimonials,
         donations, partners, messages, programs, recentA, recentU, upcomingE, recentM,
+        meetings, upcomingMeetings,
       ] = await Promise.all([
         supabase.from('profiles').select('*', { count: 'exact', head: true }),
         supabase.from('applications').select('*', { count: 'exact', head: true }),
@@ -74,6 +77,8 @@ export default function AdminDashboard() {
         supabase.from('profiles').select('full_name, email, role, created_at').order('created_at', { ascending: false }).limit(5),
         supabase.from('events').select('title, event_date, location, is_virtual').gte('event_date', new Date().toISOString()).order('event_date', { ascending: true }).limit(5),
         supabase.from('contact_messages').select('name, email, subject, message, status, created_at').order('created_at', { ascending: false }).limit(5),
+        supabase.from('mentor_sessions').select('*', { count: 'exact', head: true }),
+        supabase.from('mentor_sessions').select('*', { count: 'exact', head: true }).eq('status', 'scheduled').gte('scheduled_at', new Date().toISOString()),
       ]);
 
       // Role counts
@@ -102,6 +107,8 @@ export default function AdminDashboard() {
         donations: donationAmount,
         partners: partners.count ?? 0,
         contactMessages: messages.count ?? 0,
+        meetings: meetings.count ?? 0,
+        upcomingMeetings: upcomingMeetings.count ?? 0,
       });
 
       setRecentApps(recentA.data ?? []);
@@ -188,6 +195,26 @@ export default function AdminDashboard() {
         <h1 className="font-heading text-2xl font-bold text-ink-900">Dashboard Overview</h1>
         <p className="mt-1 text-sm text-ink-500">Real-time platform statistics and activity</p>
       </div>
+
+      <section className="overflow-hidden rounded-2xl bg-gradient-to-r from-[#0D2175] to-[#173CA3] p-5 text-white shadow-card sm:p-6">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-4">
+            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-white/10">
+              <Video className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary-200">Meeting console</p>
+              <h2 className="mt-1 font-heading text-xl font-bold">Microsoft Teams Meetings</h2>
+              <p className="mt-1 text-sm text-primary-100">
+                {stats.upcomingMeetings} upcoming · {stats.meetings} total meetings
+              </p>
+            </div>
+          </div>
+          <Link to="/admin/sessions" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-primary-800 transition-colors hover:bg-primary-50">
+            Manage all meetings <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
