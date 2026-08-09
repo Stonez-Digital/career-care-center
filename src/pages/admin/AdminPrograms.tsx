@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus, Edit, Trash2, Save, X } from 'lucide-react';
+import { Plus, Edit, Trash2, Save } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Program, ProgramCategory } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
@@ -7,7 +7,6 @@ import Modal from '@/components/Modal';
 import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 import Badge from '@/components/Badge';
-import { slugify } from '@/lib/utils';
 import MediaUpload from '@/components/MediaUpload';
 import { IMAGE_TYPES } from '@/lib/media';
 

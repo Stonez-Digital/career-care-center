@@ -57,6 +57,7 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={submit} className="mt-6 space-y-4">
+                {error && <Alert type="error" message={error} />}
                 <div>
                   <label className="label">Full Name *</label>
                   <input className="input" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />

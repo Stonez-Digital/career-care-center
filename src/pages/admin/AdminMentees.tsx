@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Download, GraduationCap, Mail } from 'lucide-react';
+import { Download, Mail } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Profile, Program } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';

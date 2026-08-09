@@ -10,4 +10,6 @@
   <url><loc>https://careercarecenter.com.ng/contact</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://careercarecenter.com.ng/donate</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://careercarecenter.com.ng/apply</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://careercarecenter.com.ng/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://careercarecenter.com.ng/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>

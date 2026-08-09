@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Mail, MailOpen, Archive, Send, Trash2, Download, Search, Clock, CheckCircle2 } from 'lucide-react';
+import { Mail, MailOpen, Archive, Send, Trash2, Download, Search } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { ContactMessage } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, ShieldCheck, Ban, CheckCircle2, Trash2, ChevronDown, Download } from 'lucide-react';
+import { Search, ShieldCheck, Ban, CheckCircle2, Trash2, Download } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Profile, UserRole } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth';

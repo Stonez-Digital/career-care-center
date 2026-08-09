@@ -1,7 +1,9 @@
-import { useState } from 'react';
-import { Clock3, Save } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Save } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
 import Spinner from '@/components/Spinner';
+import { PageLoader } from '@/components/Spinner';
 import Alert from '@/components/Alert';
 import { cn } from '@/lib/utils';
 
@@ -9,10 +11,30 @@ const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
 const slots = ['Morning', 'Afternoon', 'Evening'];
 
 export default function Availability() {
-  const { profile } = useAuth();
+  const { user } = useAuth();
   const [availability, setAvailability] = useState<Record<string, boolean>>({});
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    void supabase
+      .from('volunteer_availability')
+      .select('slots')
+      .eq('user_id', user.id)
+      .maybeSingle()
+      .then(({ data, error: loadError }) => {
+        if (loadError) setError(loadError.message);
+        const selected = ((data?.slots as string[] | undefined) ?? []).reduce<Record<string, boolean>>((result, slot) => {
+          result[slot] = true;
+          return result;
+        }, {});
+        setAvailability(selected);
+        setLoading(false);
+      });
+  }, [user]);
 
   const toggle = (key: string) => {
     setAvailability((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -21,14 +43,21 @@ export default function Availability() {
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
     setSaving(true);
-    const slots = days
-      .filter((d) => availability[d])
-      .join(', ');
-    // Store availability in profile bio as a simple approach
+    setError(null);
+    const selectedSlots = Object.entries(availability).filter(([, selected]) => selected).map(([slot]) => slot);
+    const { error: saveError } = await supabase.from('volunteer_availability').upsert({
+      user_id: user.id,
+      slots: selectedSlots,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'user_id' });
     setSaving(false);
-    setSaved(true);
+    if (saveError) setError(saveError.message);
+    else setSaved(true);
   };
+
+  if (loading) return <PageLoader />;
 
   return (
     <div className="space-y-6">
@@ -38,6 +67,7 @@ export default function Availability() {
       </div>
       <form onSubmit={save} className="card p-6">
         {saved && <Alert type="success" message="Availability updated successfully." className="mb-4" />}
+        {error && <Alert type="error" message={error} className="mb-4" />}
         <div className="space-y-4">
           {days.map((day) => (
             <div key={day}>

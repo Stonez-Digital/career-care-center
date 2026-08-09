@@ -6,7 +6,7 @@ import { PageLoader } from '@/components/Spinner';
 import Badge from '@/components/Badge';
 import Alert from '@/components/Alert';
 import Modal from '@/components/Modal';
-import { formatDate, exportToCSV, cn } from '@/lib/utils';
+import { formatDate, exportToCSV } from '@/lib/utils';
 
 export default function AdminNewsletter() {
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);

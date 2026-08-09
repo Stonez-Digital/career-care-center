@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Sparkles, Quote, Heart, Users, TrendingUp } from 'lucide-react';
+import { Quote, Heart, Users, TrendingUp } from 'lucide-react';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (

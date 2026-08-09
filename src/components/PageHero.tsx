@@ -1,5 +1,3 @@
-import { cn } from '@/lib/utils';
-
 interface PageHeroProps {
   eyebrow: string;
   title: string;

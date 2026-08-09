@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Save, User } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import Alert from '@/components/Alert';

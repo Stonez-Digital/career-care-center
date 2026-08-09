@@ -21,6 +21,8 @@ const Apply = lazy(() => import('./pages/Apply'));
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const Terms = lazy(() => import('./pages/Terms'));
 const Unauthorized = lazy(() => import('./pages/Unauthorized'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -98,6 +100,8 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
 
             {/* ════════════════════════════════════════════

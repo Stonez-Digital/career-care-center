@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Users, GraduationCap, Briefcase, HeartHandshake, Calendar, Sparkles, Quote, Star, Play, TrendingUp } from 'lucide-react';
+import { ArrowRight, Users, GraduationCap, Briefcase, HeartHandshake, Calendar, Sparkles, Star, Play, TrendingUp } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Program, CCCEvent, Testimonial } from '@/lib/supabase';
 import Counter from '@/components/Counter';

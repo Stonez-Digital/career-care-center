@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Eye, Check, X, Clock, Loader, Mail, Phone, Download, Search, MessageSquare, Send } from 'lucide-react';
+import { Check, X, Clock, Loader, Mail, Phone, Download, Search, MessageSquare, Send } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Application, ApplicationStatus, AdminNote } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth';

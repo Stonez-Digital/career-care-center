@@ -2,14 +2,13 @@ import { NavLink, Outlet, Link, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, GraduationCap, Heart, Briefcase, ShieldCheck,
   BookOpen, ClipboardList, FileText, Calendar, Video, Library,
-  PenSquare, MessageSquare, Star, HeartHandshake, HandCoins, Megaphone,
+  PenSquare, Star, HeartHandshake, HandCoins,
   Mail, Bell, BarChart3, Settings, LogOut, Home, ChevronDown,
-  Plus, FolderTree, UserCog, Archive, CalendarCheck, UserCheck, Activity,
-  Sparkles, Download, MailOpen, Send,
+  Plus, Archive, CalendarCheck, UserCheck, Activity,
+  Sparkles, MailOpen,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
-import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 
 type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; end?: boolean };

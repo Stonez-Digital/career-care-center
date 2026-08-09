@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Users, GraduationCap, Heart, Briefcase, ShieldCheck, ClipboardList,
-  UserCheck, Clock, Calendar, Mail, FileText, Star, HandCoins,
-  HeartHandshake, MessageSquare, TrendingUp, Activity, ArrowRight,
+  UserCheck, Clock, Calendar, FileText, Star, HandCoins,
+  HeartHandshake, MessageSquare,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
@@ -11,7 +11,7 @@ import Badge from '@/components/Badge';
 import { formatDate, timeAgo, formatCurrency, cn } from '@/lib/utils';
 import {
   BarChart, Bar, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
 
 interface Stats {
@@ -30,14 +30,6 @@ interface Stats {
   donations: number;
   partners: number;
   contactMessages: number;
-}
-
-interface ActivityItem {
-  id: string;
-  type: 'application' | 'registration' | 'contact' | 'donation' | 'volunteer';
-  title: string;
-  subtitle: string;
-  created_at: string;
 }
 
 const programColors = ['#0F4C81', '#1E88E5', '#43A047', '#FB8C00', '#E53935', '#8E24AA', '#00ACC1', '#7CB342'];

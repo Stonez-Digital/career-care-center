@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
-import { formatCurrency, exportToCSV, formatDate, cn } from '@/lib/utils';
+import { formatCurrency, exportToCSV, cn } from '@/lib/utils';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';

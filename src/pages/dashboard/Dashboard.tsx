@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Calendar, BookOpen, Bell, ArrowRight, TrendingUp, Clock, CheckCircle2, Star } from 'lucide-react';
+import { FileText, Calendar, BookOpen, Bell, ArrowRight, TrendingUp, Clock, Star } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth';
 import type { Application, EventRegistration, Notification, Resource } from '@/lib/supabase';

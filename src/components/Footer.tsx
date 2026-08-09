@@ -185,8 +185,8 @@ export default function Footer() {
             © {new Date().getFullYear()} Career Care Center. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-sm text-ink-500">
-            <Link to="/about" className="transition-colors hover:text-ink-300">Privacy</Link>
-            <Link to="/about" className="transition-colors hover:text-ink-300">Terms</Link>
+            <Link to="/privacy" className="transition-colors hover:text-ink-300">Privacy</Link>
+            <Link to="/terms" className="transition-colors hover:text-ink-300">Terms</Link>
             <Link to="/contact" className="transition-colors hover:text-ink-300">Support</Link>
           </div>
         </div>

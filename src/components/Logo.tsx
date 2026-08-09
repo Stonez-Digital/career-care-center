@@ -5,10 +5,9 @@ type LogoProps = {
   className?: string;
   textClassName?: string;
   to?: string;
-  dark?: boolean;
 };
 
-export default function Logo({ variant = 'full', className = '', textClassName = '', to = '/', dark = false }: LogoProps) {
+export default function Logo({ variant = 'full', className = '', textClassName = '', to = '/' }: LogoProps) {
   return (
     <Link to={to} className={`inline-block ${className}`} aria-label="Career Care Center home">
       <img
