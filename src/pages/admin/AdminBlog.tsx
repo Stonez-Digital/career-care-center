@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2, Save, Eye, EyeOff, Download } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { reportMutationError } from '@/lib/mutations';
 import type { BlogPost } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
 import Modal from '@/components/Modal';
@@ -112,7 +113,8 @@ export default function AdminBlog() {
 
   const remove = async (id: string) => {
     if (!confirm('Delete this post? This cannot be undone.')) return;
-    await supabase.from('blog_posts').delete().eq('id', id);
+    const { error } = await supabase.from('blog_posts').delete().eq('id', id);
+    if (reportMutationError('delete this post', error)) return;
     load();
   };
 

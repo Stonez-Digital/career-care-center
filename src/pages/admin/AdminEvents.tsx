@@ -12,6 +12,7 @@ import { formatDate, cn, exportToCSV } from '@/lib/utils';
 import MediaUpload from '@/components/MediaUpload';
 import { IMAGE_TYPES } from '@/lib/media';
 import SafeImage from '@/components/SafeImage';
+import { reportMutationError } from '@/lib/mutations';
 
 const eventFallback = '/media/events/workshop-2-reminder.jpg';
 
@@ -103,7 +104,8 @@ export default function AdminEvents() {
 
   const remove = async (id: string) => {
     if (!confirm('Delete this event? This cannot be undone.')) return;
-    await supabase.from('events').delete().eq('id', id);
+    const { error } = await supabase.from('events').delete().eq('id', id);
+    if (reportMutationError('delete this event', error)) return;
     load();
   };
 

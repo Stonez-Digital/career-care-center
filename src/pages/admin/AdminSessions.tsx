@@ -8,6 +8,7 @@ import Badge from '@/components/Badge';
 import Modal from '@/components/Modal';
 import Alert from '@/components/Alert';
 import { exportToCSV, formatDateTime } from '@/lib/utils';
+import { isTeamsUrl } from '@/lib/teams';
 
 interface SessionRow extends MentorSession {
   mentor?: { full_name: string | null } | null;
@@ -33,20 +34,6 @@ const emptyForm = {
   meeting_url: '',
   notes: '',
 };
-
-function isTeamsUrl(value: string) {
-  try {
-    const { protocol, hostname } = new URL(value);
-    return protocol === 'https:' && (
-      hostname === 'teams.microsoft.com' ||
-      hostname.endsWith('.teams.microsoft.com') ||
-      hostname === 'teams.live.com' ||
-      hostname.endsWith('.teams.live.com')
-    );
-  } catch {
-    return false;
-  }
-}
 
 export default function AdminSessions() {
   const [loading, setLoading] = useState(true);

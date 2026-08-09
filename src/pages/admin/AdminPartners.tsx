@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2, Save, Download, ExternalLink, Star } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { reportMutationError } from '@/lib/mutations';
 import type { Partner } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
 import Modal from '@/components/Modal';
@@ -92,7 +93,8 @@ export default function AdminPartners() {
 
   const remove = async (id: string) => {
     if (!confirm('Delete this partner? This cannot be undone.')) return;
-    await supabase.from('partners').delete().eq('id', id);
+    const { error } = await supabase.from('partners').delete().eq('id', id);
+    if (reportMutationError('delete this partner', error)) return;
     load();
   };
 

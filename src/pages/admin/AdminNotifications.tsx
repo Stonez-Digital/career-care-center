@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
 import Badge from '@/components/Badge';
 import { cn, timeAgo } from '@/lib/utils';
+import { reportMutationError } from '@/lib/mutations';
 
 type NotificationType = 'application' | 'volunteer' | 'contact' | 'event';
 
@@ -137,14 +138,18 @@ export default function AdminNotifications() {
   }, []);
 
   const markAsRead = async (item: NotificationItem) => {
+    let mutationError: { message?: string } | null = null;
     // Update the source table status to mark as "read"
     if (item.type === 'application') {
-      await supabase.from('applications').update({ status: 'under_review' }).eq('id', item.sourceId);
+      const { error } = await supabase.from('applications').update({ status: 'under_review' }).eq('id', item.sourceId);
+      mutationError = error;
     } else if (item.type === 'volunteer') {
       // No "read" status for volunteers; we leave as-is but mark locally
     } else if (item.type === 'contact') {
-      await supabase.from('contact_messages').update({ status: 'read' }).eq('id', item.sourceId);
+      const { error } = await supabase.from('contact_messages').update({ status: 'read' }).eq('id', item.sourceId);
+      mutationError = error;
     }
+    if (reportMutationError('mark this notification as read', mutationError)) return;
     // Events have no status to update
     setItems((prev) => prev.map((n) => (n.id === item.id ? { ...n, read: true } : n)));
   };

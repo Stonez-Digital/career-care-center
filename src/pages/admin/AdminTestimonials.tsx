@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Check, X, Star, Trash2, Edit, Save, StarOff, Download } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { reportMutationError } from '@/lib/mutations';
 import type { Testimonial } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
 import Modal from '@/components/Modal';
@@ -49,18 +50,21 @@ export default function AdminTestimonials() {
   }, [searchParams]);
 
   const toggleApprove = async (t: Testimonial) => {
-    await supabase.from('testimonials').update({ approved: !t.approved }).eq('id', t.id);
+    const { error } = await supabase.from('testimonials').update({ approved: !t.approved }).eq('id', t.id);
+    if (reportMutationError('update testimonial approval', error)) return;
     load();
   };
 
   const toggleFeature = async (t: Testimonial) => {
-    await supabase.from('testimonials').update({ is_featured: !t.is_featured }).eq('id', t.id);
+    const { error } = await supabase.from('testimonials').update({ is_featured: !t.is_featured }).eq('id', t.id);
+    if (reportMutationError('update featured status', error)) return;
     load();
   };
 
   const remove = async (id: string) => {
     if (!confirm('Delete this testimonial? This cannot be undone.')) return;
-    await supabase.from('testimonials').delete().eq('id', id);
+    const { error } = await supabase.from('testimonials').delete().eq('id', id);
+    if (reportMutationError('delete this testimonial', error)) return;
     load();
   };
 

@@ -93,11 +93,12 @@ export default function AdminApplications() {
       setUpdating(false);
       return;
     }
-    await supabase.from('application_status_logs').insert({
+    const { error: logError } = await supabase.from('application_status_logs').insert({
       application_id: id,
       status,
       changed_by: user?.id ?? null,
     });
+    if (logError) setError(`Status updated, but the audit entry failed: ${logError.message}`);
     setApps((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
     setViewing((prev) => (prev?.id === id ? { ...prev, status } : prev));
     setUpdating(false);

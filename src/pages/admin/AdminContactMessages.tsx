@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Mail, MailOpen, Archive, Send, Trash2, Download, Search } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { reportMutationError } from '@/lib/mutations';
 import type { ContactMessage } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
 import Spinner from '@/components/Spinner';
@@ -75,7 +76,11 @@ export default function AdminContactMessages() {
 
   const markAsRead = async (id: string) => {
     setUpdating(true);
-    await supabase.from('contact_messages').update({ status: 'read' }).eq('id', id);
+    const { error } = await supabase.from('contact_messages').update({ status: 'read' }).eq('id', id);
+    if (reportMutationError('mark this message as read', error)) {
+      setUpdating(false);
+      return;
+    }
     setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, status: 'read' } : m)));
     setViewing((prev) => (prev?.id === id ? { ...prev, status: 'read' } : prev));
     setUpdating(false);
@@ -83,7 +88,11 @@ export default function AdminContactMessages() {
 
   const archive = async (id: string) => {
     setUpdating(true);
-    await supabase.from('contact_messages').update({ status: 'archived' }).eq('id', id);
+    const { error } = await supabase.from('contact_messages').update({ status: 'archived' }).eq('id', id);
+    if (reportMutationError('archive this message', error)) {
+      setUpdating(false);
+      return;
+    }
     setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, status: 'archived' } : m)));
     setViewing(null);
     setUpdating(false);

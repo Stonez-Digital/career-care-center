@@ -6,6 +6,7 @@ import type { Resource, ResourceCategory, ResourceType } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
 import Badge from '@/components/Badge';
 import { cn } from '@/lib/utils';
+import { reportMutationError } from '@/lib/mutations';
 
 const categories: (ResourceCategory | 'All')[] = ['All', 'Career Development', 'Entrepreneurship', 'Leadership', 'Employability', 'CV Writing', 'Interview Preparation'];
 
@@ -35,16 +36,19 @@ export default function Resources() {
   const toggleBookmark = async (resourceId: string) => {
     if (!user) return;
     if (bookmarks.has(resourceId)) {
-      await supabase.from('resource_bookmarks').delete().eq('resource_id', resourceId).eq('user_id', user.id);
+      const { error } = await supabase.from('resource_bookmarks').delete().eq('resource_id', resourceId).eq('user_id', user.id);
+      if (reportMutationError('remove this bookmark', error)) return;
       setBookmarks((b) => { const n = new Set(b); n.delete(resourceId); return n; });
     } else {
-      await supabase.from('resource_bookmarks').insert({ resource_id: resourceId, user_id: user.id });
+      const { error } = await supabase.from('resource_bookmarks').insert({ resource_id: resourceId, user_id: user.id });
+      if (reportMutationError('save this bookmark', error)) return;
       setBookmarks((b) => new Set(b).add(resourceId));
     }
   };
 
   const trackDownload = async (r: Resource) => {
-    await supabase.from('resources').update({ downloads: r.downloads + 1 }).eq('id', r.id);
+    const { error } = await supabase.from('resources').update({ downloads: r.downloads + 1 }).eq('id', r.id);
+    reportMutationError('record this download', error);
   };
 
   if (loading) return <PageLoader />;

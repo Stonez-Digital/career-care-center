@@ -9,6 +9,7 @@ import Spinner from '@/components/Spinner';
 import Badge from '@/components/Badge';
 import MediaUpload from '@/components/MediaUpload';
 import { IMAGE_TYPES } from '@/lib/media';
+import { reportMutationError } from '@/lib/mutations';
 
 const categories: ProgramCategory[] = [
   'Career Coaching', 'Career Mentorship', 'Internship Support', 'Internship Placement',
@@ -63,7 +64,8 @@ export default function AdminPrograms() {
 
   const remove = async (id: string) => {
     if (!confirm('Delete this program?')) return;
-    await supabase.from('programs').delete().eq('id', id);
+    const { error } = await supabase.from('programs').delete().eq('id', id);
+    if (reportMutationError('delete this program', error)) return;
     load();
   };
 

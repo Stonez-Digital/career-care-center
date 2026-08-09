@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc -b --noEmit",
-    "check": "npm run lint && npm run typecheck && npm run build"
+    "test": "vitest run",
+    "check": "npm run lint && npm run typecheck && npm test && npm run build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",

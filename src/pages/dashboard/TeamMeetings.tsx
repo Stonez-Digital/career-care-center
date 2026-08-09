@@ -6,23 +6,11 @@ import { PageLoader } from '@/components/Spinner';
 import { useAuth } from '@/lib/auth';
 import { supabase, type MentorSession } from '@/lib/supabase';
 import { formatDateTime } from '@/lib/utils';
+import { isTeamsUrl } from '@/lib/teams';
 
 interface SessionRow extends MentorSession {
   mentor?: { full_name: string | null; email: string } | null;
   mentee?: { full_name: string | null; email: string } | null;
-}
-
-function isTeamsUrl(value: string | null): value is string {
-  if (!value) return false;
-  try {
-    const { protocol, hostname } = new URL(value);
-    return protocol === 'https:' && (
-      hostname === 'teams.microsoft.com' || hostname.endsWith('.teams.microsoft.com') ||
-      hostname === 'teams.live.com' || hostname.endsWith('.teams.live.com')
-    );
-  } catch {
-    return false;
-  }
 }
 
 export default function TeamMeetings() {

@@ -6,6 +6,7 @@ import type { Volunteer, VolunteerStatus } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
 import Badge from '@/components/Badge';
 import { formatDate, cn, exportToCSV } from '@/lib/utils';
+import { reportMutationError } from '@/lib/mutations';
 
 const statusVariant: Record<VolunteerStatus, 'warning' | 'success' | 'error'> = {
   pending: 'warning',
@@ -37,7 +38,8 @@ export default function AdminVolunteers() {
   }, [searchParams]);
 
   const updateStatus = async (id: string, status: VolunteerStatus) => {
-    await supabase.from('volunteers').update({ status }).eq('id', id);
+    const { error } = await supabase.from('volunteers').update({ status }).eq('id', id);
+    if (reportMutationError(`mark this volunteer as ${status}`, error)) return;
     load();
   };
 

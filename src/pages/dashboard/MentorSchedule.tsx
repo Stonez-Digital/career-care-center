@@ -34,6 +34,11 @@ export default function MentorSchedule() {
     setSaved(false);
 
     const existing = await supabase.from('mentor_profiles').select('id').eq('user_id', user.id).maybeSingle();
+    if (existing.error) {
+      setSaving(false);
+      setError(existing.error.message);
+      return;
+    }
     const result = existing.data
       ? await supabase.from('mentor_profiles').update({ availability: availability.trim(), is_available: isAvailable }).eq('id', existing.data.id)
       : await supabase.from('mentor_profiles').insert({ user_id: user.id, availability: availability.trim(), is_available: isAvailable });

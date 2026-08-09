@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/auth';
 import type { Notification } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
 import { timeAgo, cn } from '@/lib/utils';
+import { reportMutationError } from '@/lib/mutations';
 
 export default function Notifications() {
   const { user } = useAuth();
@@ -21,18 +22,21 @@ export default function Notifications() {
   }, [user]);
 
   const markRead = async (id: string) => {
-    await supabase.from('notifications').update({ read: true }).eq('id', id);
+    const { error } = await supabase.from('notifications').update({ read: true }).eq('id', id);
+    if (reportMutationError('mark this notification as read', error)) return;
     setNotifications((n) => n.map((x) => (x.id === id ? { ...x, read: true } : x)));
   };
 
   const markAllRead = async () => {
     if (!user) return;
-    await supabase.from('notifications').update({ read: true }).eq('user_id', user.id).eq('read', false);
+    const { error } = await supabase.from('notifications').update({ read: true }).eq('user_id', user.id).eq('read', false);
+    if (reportMutationError('mark all notifications as read', error)) return;
     setNotifications((n) => n.map((x) => ({ ...x, read: true })));
   };
 
   const remove = async (id: string) => {
-    await supabase.from('notifications').delete().eq('id', id);
+    const { error } = await supabase.from('notifications').delete().eq('id', id);
+    if (reportMutationError('delete this notification', error)) return;
     setNotifications((n) => n.filter((x) => x.id !== id));
   };
 
