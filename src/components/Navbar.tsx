@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import InstallAppButton from './InstallAppButton';
 
 const navLinks = [
+  { to: '/', label: 'Home', end: true },
   { to: '/about', label: 'About' },
   { to: '/programs', label: 'Programs' },
   { to: '/events', label: 'Events' },
@@ -57,6 +58,7 @@ export default function Navbar() {
             <NavLink
               key={l.to}
               to={l.to}
+              end={l.end}
               className={({ isActive }) =>
                 cn(
                   'relative rounded-lg px-3.5 py-2 text-sm font-medium transition-colors',
@@ -157,6 +159,7 @@ export default function Navbar() {
               <NavLink
                 key={l.to}
                 to={l.to}
+                end={l.end}
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
                   cn(
