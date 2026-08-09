@@ -50,17 +50,14 @@ jobs:
       - name: Link database
         run: supabase link --project-ref "$SUPABASE_PROJECT_ID"
 
-      - name: Sync production auth branding and redirects
+      - name: Sync production auth redirects
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         shell: bash
         run: |
           payload="$(jq -n \
-            --rawfile recovery_template supabase/templates/recovery.html \
             '{
               site_url: "https://app.careercarecenter.com.ng",
-              uri_allow_list: "http://localhost:5173/**,https://app.careercarecenter.com.ng/**,https://careercarecenter.com.ng/**,https://www.careercarecenter.com.ng/**,https://career-care-center.vercel.app/**",
-              mailer_subjects_recovery: "Reset your Career Care Center password",
-              mailer_templates_recovery_content: $recovery_template
+              uri_allow_list: "http://localhost:5173/**,https://app.careercarecenter.com.ng/**,https://careercarecenter.com.ng/**,https://www.careercarecenter.com.ng/**,https://career-care-center.vercel.app/**"
             }')"
           curl --fail-with-body --silent --show-error \
             --request PATCH \
