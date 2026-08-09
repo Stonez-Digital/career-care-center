@@ -11,6 +11,7 @@ type NavItem = { to: string; label: string; icon: React.ComponentType<{ classNam
 
 const internLinks: NavItem[] = [
   { to: '/dashboard', label: 'Dashboard Overview', icon: LayoutDashboard, end: true },
+  { to: '/dashboard/meetings', label: 'Teams Meetings', icon: Video },
   { to: '/dashboard/applications', label: 'My Applications', icon: FileText },
   { to: '/dashboard/events', label: 'My Events', icon: Calendar },
   { to: '/dashboard/resources', label: 'Career Resources', icon: BookOpen },
@@ -21,6 +22,7 @@ const internLinks: NavItem[] = [
 
 const volunteerLinks: NavItem[] = [
   { to: '/dashboard', label: 'Dashboard Overview', icon: LayoutDashboard, end: true },
+  { to: '/dashboard/meetings', label: 'Teams Meetings', icon: Video },
   { to: '/dashboard/volunteer-opportunities', label: 'Volunteer Opportunities', icon: ClipboardList },
   { to: '/dashboard/assigned-activities', label: 'Assigned Activities', icon: Activity },
   { to: '/dashboard/volunteer-schedule', label: 'Volunteer Schedule', icon: CalendarCheck },
@@ -32,6 +34,7 @@ const volunteerLinks: NavItem[] = [
 
 const mentorLinks: NavItem[] = [
   { to: '/dashboard', label: 'Dashboard Overview', icon: LayoutDashboard, end: true },
+  { to: '/dashboard/meetings', label: 'Teams Meetings', icon: Video },
   { to: '/dashboard/mentees', label: 'Assigned Mentees', icon: Users },
   { to: '/dashboard/mentor-sessions', label: 'Mentor Sessions', icon: Video },
   { to: '/dashboard/resources', label: 'Resources', icon: BookOpen },

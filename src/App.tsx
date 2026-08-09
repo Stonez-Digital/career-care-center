@@ -41,6 +41,7 @@ const VolunteerHistory = lazy(() => import('./pages/dashboard/VolunteerHistory')
 const Mentees = lazy(() => import('./pages/dashboard/Mentees'));
 const MentorSessions = lazy(() => import('./pages/dashboard/MentorSessions'));
 const MentorSchedule = lazy(() => import('./pages/dashboard/MentorSchedule'));
+const TeamMeetings = lazy(() => import('./pages/dashboard/TeamMeetings'));
 
 // ── Admin Portal ──
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
@@ -126,6 +127,7 @@ export default function App() {
               <Route path="mentees" element={<Mentees />} />
               <Route path="mentor-sessions" element={<MentorSessions />} />
               <Route path="schedule" element={<MentorSchedule />} />
+              <Route path="meetings" element={<TeamMeetings />} />
             </Route>
 
             {/* ════════════════════════════════════════════
