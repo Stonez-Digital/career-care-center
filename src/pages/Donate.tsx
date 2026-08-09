@@ -16,7 +16,7 @@ export default function Donate() {
   });
   const [customAmount, setCustomAmount] = useState('');
   const [anonymous, setAnonymous] = useState(false);
-  const [donating, setDonating] = useState(false);
+  const donating = false;
   const [donationSuccess, setDonationSuccess] = useState(false);
   const [donationError, setDonationError] = useState<string | null>(null);
 
@@ -25,55 +25,15 @@ export default function Donate() {
   const [partnerSuccess, setPartnerSuccess] = useState(false);
   const [partnerError, setPartnerError] = useState<string | null>(null);
 
-  const submitDonation = async (e: React.FormEvent) => {
+  const submitDonation = (e: React.FormEvent) => {
     e.preventDefault();
-    setDonating(true);
     setDonationError(null);
     const amount = customAmount ? Number(customAmount) : donation.amount;
-
-    const payload: Record<string, unknown> = {
-      amount,
-      currency: 'NGN',
-      frequency: donation.frequency,
-      message: donation.message,
-      status: 'pending',
-      is_anonymous: anonymous,
-    };
-
-    if (anonymous) {
-      payload.donor_name = 'Anonymous';
-      payload.donor_email = null;
-    } else {
-      payload.donor_name = donation.donor_name;
-      payload.donor_email = donation.donor_email;
-    }
-
-    const { data: funcData, error: funcError } = await supabase.functions.invoke('process-donation', {
-      body: payload,
-    });
-
-    setDonating(false);
-
-    if (funcError) {
-      setDonationError(funcError.message);
-      return;
-    }
-
-    const result = funcData as { authorization_url?: string; error?: string };
-    if (result.error) {
-      setDonationError(result.error);
-      return;
-    }
-
-    if (result.authorization_url) {
-      window.location.href = result.authorization_url;
-      return;
-    }
-
-    setDonationSuccess(true);
-    setDonation({ donor_name: '', donor_email: '', amount: 10000, frequency: 'one_time', message: '' });
-    setCustomAmount('');
-    setAnonymous(false);
+    const subject = encodeURIComponent('Donation transfer notification');
+    const body = encodeURIComponent(
+      `Hello Career Care Center,\n\nI have made a bank transfer donation.\n\nName: ${anonymous ? 'Anonymous donor' : donation.donor_name}\nEmail: ${anonymous ? 'Not provided' : donation.donor_email}\nAmount: NGN ${amount.toLocaleString()}\nFrequency: ${donation.frequency.replace('_', ' ')}\nMessage: ${donation.message || 'None'}\n\nPlease confirm receipt.`,
+    );
+    window.location.href = `mailto:info@careercarecenter.com.ng?subject=${subject}&body=${body}`;
   };
 
   const submitPartner = async (e: React.FormEvent) => {
@@ -131,6 +91,24 @@ export default function Donate() {
                 <>
                   <h2 className="heading-3">Make a Donation</h2>
                   <p className="mt-2 text-sm text-ink-600">Every contribution counts. For just ₦15,000, you can sponsor one youth's registration, materials, and access to mentorship at our workshops.</p>
+                  <div className="mt-6 rounded-2xl border border-primary-200 bg-primary-50 p-5">
+                    <p className="text-xs font-bold uppercase tracking-wider text-primary-700">Official donation account</p>
+                    <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
+                      <div>
+                        <dt className="text-ink-500">Account name</dt>
+                        <dd className="mt-1 font-semibold text-ink-900">Career Care Centre for Youth Development Initiative</dd>
+                      </div>
+                      <div>
+                        <dt className="text-ink-500">Bank</dt>
+                        <dd className="mt-1 font-semibold text-ink-900">Premium Trust Bank</dd>
+                      </div>
+                      <div>
+                        <dt className="text-ink-500">Account number</dt>
+                        <dd className="mt-1 font-heading text-xl font-bold tracking-wider text-primary-700">0040261768</dd>
+                      </div>
+                    </dl>
+                    <p className="mt-4 text-xs leading-5 text-ink-600">Make your transfer through your banking app, then complete the form below and notify us so the organization can confirm receipt.</p>
+                  </div>
                   <form onSubmit={submitDonation} className="mt-6 space-y-5">
                     {donationError && <Alert type="error" message={donationError} />}
 
@@ -219,9 +197,9 @@ export default function Donate() {
                       {anonymous && <p className="mt-1 text-xs font-medium text-secondary-600">Anonymous donation</p>}
                     </div>
                     <button type="submit" disabled={donating} className="btn-secondary w-full">
-                      {donating ? <Spinner /> : <><Heart className="h-4 w-4" /> Donate Now</>}
+                      {donating ? <Spinner /> : <><Heart className="h-4 w-4" /> Notify Us After Transfer</>}
                     </button>
-                    <p className="text-center text-xs text-ink-400">Secure payment powered by Paystack. You will be redirected to complete your donation.</p>
+                    <p className="text-center text-xs text-ink-400">Bank transfers are confirmed manually by the Career Care Center team.</p>
                   </form>
                 </>
               )}
