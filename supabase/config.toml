@@ -20,10 +20,20 @@ port = 54323
 
 [auth]
 enabled = true
-site_url = "http://localhost:5173"
-additional_redirect_urls = ["https://www.careercarecenter.com.ng"]
+site_url = "https://app.careercarecenter.com.ng"
+additional_redirect_urls = [
+  "http://localhost:5173/**",
+  "https://app.careercarecenter.com.ng/**",
+  "https://careercarecenter.com.ng/**",
+  "https://www.careercarecenter.com.ng/**",
+  "https://career-care-center.vercel.app/**",
+]
 jwt_expiry = 3600
 enable_signup = true
+
+[auth.email.template.recovery]
+subject = "Reset your Career Care Center password"
+content_path = "./supabase/templates/recovery.html"
 
 [storage]
 enabled = true

@@ -12,7 +12,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
         <div className="relative">
           <Link to="/" className="inline-block" aria-label="Career Care Center home">
-            <img src="/career-care-logo.png?v=5" alt="Career Care Center — uplifting talents to make a meaningful impact" className="h-28 w-auto" />
+            <img src="/career-care-logo.png?v=6" alt="Career Care Center — uplifting talents to make a meaningful impact" className="h-28 w-auto" />
           </Link>
         </div>
 
@@ -51,13 +51,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div className="flex items-center justify-center bg-ink-50 px-4 py-12 sm:px-8">
         <div className="w-full max-w-md">
           <div className="mb-8 lg:hidden">
-            <Link to="/" className="flex items-center gap-2.5">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-primary-700 to-primary-800 text-white font-heading font-bold shadow-soft">
-                C
-              </span>
-              <span className="font-heading text-lg font-bold text-ink-900">
-                Career<span className="text-secondary-600">Care</span>
-              </span>
+            <Link to="/" className="flex justify-center" aria-label="Career Care Center home">
+              <img src="/career-care-logo.png?v=6" alt="Career Care Center — uplifting talents to make a meaningful impact" className="h-24 w-auto" />
             </Link>
           </div>
           {children}

@@ -46,7 +46,7 @@ export default function Navbar() {
       <nav className="container-page flex h-16 items-center justify-between gap-4 lg:h-18">
         <Link to="/" className="shrink-0 group" aria-label="Career Care Center home">
           <img
-            src="/career-care-logo.png?v=5"
+            src="/career-care-logo.png?v=6"
             alt="Career Care Center — uplifting talents to make a meaningful impact"
             className="h-14 w-auto transition-transform group-hover:scale-[1.02] lg:h-16"
           />

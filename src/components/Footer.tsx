@@ -63,7 +63,7 @@ export default function Footer() {
           <div className="lg:col-span-4">
             <Link to="/" className="inline-block" aria-label="Career Care Center home">
               <img
-                src="/career-care-logo.png?v=5"
+                src="/career-care-logo.png?v=6"
                 alt="Career Care Center — uplifting talents to make a meaningful impact"
                 className="h-28 w-auto"
               />
