@@ -33,7 +33,7 @@ Deno.serve(async (req: Request) => {
   const resendApiKey = Deno.env.get("RESEND_API_KEY");
   const fromAddress = Deno.env.get("CONTACT_REPLY_FROM") ??
     "Career Care Center <info@careercarecenter.com.ng>";
-  const replyTo = Deno.env.get("CONTACT_REPLY_TO") ?? "info@careercarecenter.com.ng";
+  const receivingDomain = Deno.env.get("CONTACT_REPLY_RECEIVING_DOMAIN")?.trim().toLowerCase();
 
   if (!supabaseUrl || !anonKey || !serviceRoleKey) {
     return json({ error: "Server authentication is unavailable." }, 503);
@@ -70,6 +70,9 @@ Deno.serve(async (req: Request) => {
   const reply = String(body.reply ?? "").trim();
   if (!/^[0-9a-f-]{36}$/i.test(messageId)) return json({ error: "Invalid message ID." }, 422);
   if (!reply || reply.length > 5000) return json({ error: "Reply must contain 1 to 5000 characters." }, 422);
+  const replyTo = receivingDomain
+    ? `contact-${messageId}@${receivingDomain}`
+    : (Deno.env.get("CONTACT_REPLY_TO") ?? "info@careercarecenter.com.ng");
 
   const { data: message, error: messageError } = await adminClient
     .from("contact_messages")
@@ -127,5 +130,24 @@ Deno.serve(async (req: Request) => {
     return json({ error: "Email was accepted, but its audit record could not be saved. Contact support." }, 500);
   }
 
-  return json({ success: true, message_id: resendResult.id, sent_at: sentAt });
+  const { error: auditError } = await adminClient.from("contact_message_replies").insert({
+    contact_message_id: message.id,
+    direction: "outbound",
+    provider_message_id: resendResult.id,
+    sender_email: fromAddress,
+    recipient_email: message.email,
+    subject,
+    body_text: reply,
+    created_at: sentAt,
+  });
+  if (auditError) {
+    console.error("[send-contact-reply] Conversation audit insert failed:", auditError.message);
+  }
+
+  return json({
+    success: true,
+    message_id: resendResult.id,
+    sent_at: sentAt,
+    inbound_replies_enabled: Boolean(receivingDomain),
+  });
 });

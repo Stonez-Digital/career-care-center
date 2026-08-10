@@ -32,6 +32,28 @@ Function. A message is marked `replied` only after a signed
 5. Confirm the admin record moves from `sent` to `delivered` and its status
    changes to `replied`.
 
+## Receiving customer replies in the admin portal
+
+Normal replies sent to `info@careercarecenter.com.ng` remain in the existing
+cPanel mailbox. To also show future replies in the admin portal, use a dedicated
+receiving subdomain so the organization's main mailbox is not rerouted:
+
+1. Add `replies.careercarecenter.com.ng` as a receiving domain in Resend.
+2. Add the inbound MX record supplied by Resend to cPanel Zone Editor. Do not
+   replace the root `careercarecenter.com.ng` MX record.
+3. Wait for Resend to confirm that receiving is enabled for the subdomain.
+4. Add `email.received` to the existing Resend webhook's subscribed events.
+5. In Supabase Edge Function secrets, add:
+   `CONTACT_REPLY_RECEIVING_DOMAIN=replies.careercarecenter.com.ng`
+6. Send a fresh admin reply. Its Reply-To address will contain the contact
+   message ID, allowing the signed webhook to attach the customer's response
+   to the correct conversation.
+7. Reply from the recipient mailbox and confirm the contact record becomes
+   unread and the response appears under **Email Conversation**.
+
+Messages sent before this setup cannot be imported automatically from the
+cPanel mailbox; they remain available in that mailbox.
+
 ## Troubleshooting
 
 - `Email delivery is not configured`: `RESEND_API_KEY` is missing.
@@ -41,3 +63,6 @@ Function. A message is marked `replied` only after a signed
   configured correctly.
 - `bounced` or `complained`: do not retry until the recipient address and
   consent are reviewed.
+- Customer reply appears only in webmail: inbound receiving is not configured,
+  `email.received` is not subscribed, or `CONTACT_REPLY_RECEIVING_DOMAIN` is
+  missing.

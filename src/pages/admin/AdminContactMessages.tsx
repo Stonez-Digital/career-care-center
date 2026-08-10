@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Mail, MailOpen, Archive, Send, Trash2, Download, Search } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { reportMutationError } from '@/lib/mutations';
-import type { ContactMessage } from '@/lib/supabase';
+import type { ContactMessage, ContactMessageReply } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
 import Spinner from '@/components/Spinner';
 import Modal from '@/components/Modal';
@@ -38,6 +38,8 @@ export default function AdminContactMessages() {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [thread, setThread] = useState<ContactMessageReply[]>([]);
+  const [threadLoading, setThreadLoading] = useState(false);
 
   const load = async () => {
     const { data } = await supabase
@@ -66,9 +68,26 @@ export default function AdminContactMessages() {
     return matchFilter && matchSearch;
   });
 
+  const loadThread = async (messageId: string) => {
+    setThreadLoading(true);
+    const { data, error: threadError } = await supabase
+      .from('contact_message_replies')
+      .select('*')
+      .eq('contact_message_id', messageId)
+      .order('created_at', { ascending: true });
+    setThreadLoading(false);
+    if (threadError) {
+      setError('Could not load the email conversation.');
+      return;
+    }
+    setThread((data as ContactMessageReply[]) ?? []);
+  };
+
   const openMessage = (m: ContactMessage) => {
     setViewing(m);
     setReply(m.admin_reply ?? '');
+    setThread([]);
+    void loadThread(m.id);
     setError(null);
     setNotice(null);
     if (m.status === 'unread') {
@@ -132,6 +151,7 @@ export default function AdminContactMessages() {
         reply_sent_at: result.sent_at!,
       } : prev));
       setNotice('Resend accepted the email. It will be marked replied after delivery is confirmed.');
+      void loadThread(viewing.id);
     }
   };
 
@@ -299,6 +319,39 @@ export default function AdminContactMessages() {
               <p className="mt-1 rounded-xl bg-ink-50 p-3 text-sm text-ink-700">{viewing.message}</p>
               <p className="mt-1.5 text-xs text-ink-400">Received {timeAgo(viewing.created_at)}</p>
             </div>
+
+            {(threadLoading || thread.length > 0) && (
+              <div className="border-t border-ink-100 pt-4">
+                <p className="label">Email Conversation</p>
+                {threadLoading ? (
+                  <div className="flex items-center gap-2 text-sm text-ink-500">
+                    <Spinner className="h-4 w-4" /> Loading conversation...
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {thread.map((item) => (
+                      <div
+                        key={item.id}
+                        className={cn(
+                          'rounded-xl border p-3 text-sm',
+                          item.direction === 'inbound'
+                            ? 'border-primary-200 bg-primary-50'
+                            : 'border-ink-100 bg-ink-50'
+                        )}
+                      >
+                        <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-ink-500">
+                          <span className="font-semibold text-ink-700">
+                            {item.direction === 'inbound' ? `Reply from ${item.sender_email}` : 'Reply sent by admin'}
+                          </span>
+                          <span>{formatDate(item.received_at ?? item.created_at)}</span>
+                        </div>
+                        <p className="whitespace-pre-wrap text-ink-700">{item.body_text}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Admin reply */}
             <div className="border-t border-ink-100 pt-4">

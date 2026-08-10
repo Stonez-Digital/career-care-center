@@ -220,6 +220,19 @@ export interface ContactMessage {
   created_at: string;
 }
 
+export interface ContactMessageReply {
+  id: string;
+  contact_message_id: string;
+  direction: 'outbound' | 'inbound';
+  provider_message_id: string;
+  sender_email: string;
+  recipient_email: string;
+  subject: string | null;
+  body_text: string;
+  received_at: string | null;
+  created_at: string;
+}
+
 export interface SiteSetting {
   key: string;
   value: string | null;
