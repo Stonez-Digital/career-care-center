@@ -9,6 +9,7 @@ const footerLinks = {
     { to: '/about', label: 'About Us' },
     { to: '/programs', label: 'Programs' },
     { to: '/events', label: 'Events' },
+    { to: '/gallery', label: 'Media Gallery' },
     { to: '/success-stories', label: 'Success Stories' },
   ],
   'Get Involved': [
