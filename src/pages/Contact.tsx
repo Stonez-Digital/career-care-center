@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Send, ChevronDown, Facebook, Instagram, Linkedin, MessageCircle } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, ChevronDown, Facebook, Instagram, Linkedin, MessageCircle, ExternalLink } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import PageHero from '@/components/PageHero';
 import Alert from '@/components/Alert';
@@ -14,6 +14,10 @@ const faqs = [
   { q: 'How can I become a volunteer?', a: 'Visit our Volunteer page and submit the volunteer application form. Our team will review your application and reach out with opportunities that match your skills.' },
   { q: 'How can my organization partner with CCC?', a: 'We welcome partnerships with organizations committed to youth development. Visit our Donate page and fill out the partnership form, or email us directly.' },
 ];
+
+const locationQuery = 'Maryland, Lagos, Nigeria';
+const mapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(locationQuery)}&output=embed`;
+const mapDirectionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationQuery)}`;
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
@@ -115,8 +119,27 @@ export default function Contact() {
               </div>
             </div>
             <div className="card overflow-hidden">
-              <div className="grid h-48 place-items-center bg-ink-100 text-ink-400">
-                <MapPin className="h-10 w-10" />
+              <iframe
+                title="Map showing Career Care Center's location in Maryland, Lagos"
+                src={mapEmbedUrl}
+                className="h-64 w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+              <div className="flex flex-col gap-3 border-t border-ink-100 p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-semibold text-ink-900">Maryland, Lagos</p>
+                  <p className="text-sm text-ink-500">Nigeria</p>
+                </div>
+                <a
+                  href={mapDirectionsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-outline text-sm"
+                >
+                  <ExternalLink className="h-4 w-4" /> Open in Google Maps
+                </a>
               </div>
             </div>
             <div className="card p-6">
