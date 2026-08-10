@@ -189,6 +189,24 @@ export interface Donation {
   created_at: string;
 }
 
+export type GalleryMediaType = 'image' | 'video';
+
+export interface GalleryMedia {
+  id: string;
+  title: string;
+  description: string | null;
+  media_url: string;
+  media_type: GalleryMediaType;
+  thumbnail_url: string | null;
+  alt_text: string | null;
+  source_url: string | null;
+  is_published: boolean;
+  display_order: number;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Partner {
   id: string;
   name: string;

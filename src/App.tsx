@@ -60,6 +60,7 @@ const AdminTestimonials = lazy(() => import('./pages/admin/AdminTestimonials'));
 const AdminDonations = lazy(() => import('./pages/admin/AdminDonations'));
 const AdminPartners = lazy(() => import('./pages/admin/AdminPartners'));
 const AdminResources = lazy(() => import('./pages/admin/AdminResources'));
+const AdminGallery = lazy(() => import('./pages/admin/AdminGallery'));
 const AdminContactMessages = lazy(() => import('./pages/admin/AdminContactMessages'));
 const AdminNotifications = lazy(() => import('./pages/admin/AdminNotifications'));
 const AdminReports = lazy(() => import('./pages/admin/AdminReports'));
@@ -160,6 +161,7 @@ export default function App() {
               <Route path="donations" element={<AdminDonations />} />
               <Route path="partners" element={<AdminPartners />} />
               <Route path="resources" element={<AdminResources />} />
+              <Route path="gallery" element={<AdminGallery />} />
               <Route path="messages" element={<AdminContactMessages />} />
               <Route path="notifications" element={<AdminNotifications />} />
               <Route path="reports" element={<AdminReports />} />

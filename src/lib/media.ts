@@ -2,6 +2,8 @@ import { supabase } from '@/lib/supabase';
 
 export const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 export const RESOURCE_TYPES = [...IMAGE_TYPES, 'application/pdf', 'video/mp4', 'video/webm'];
+export const GALLERY_VIDEO_TYPES = ['video/mp4', 'video/webm'];
+export const GALLERY_MEDIA_TYPES = [...IMAGE_TYPES, ...GALLERY_VIDEO_TYPES];
 
 const safeName = (name: string) => {
   const extension = name.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';

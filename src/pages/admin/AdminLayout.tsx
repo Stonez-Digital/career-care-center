@@ -1,7 +1,7 @@
 import { NavLink, Outlet, Link, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, GraduationCap, Heart, Briefcase, ShieldCheck,
-  BookOpen, ClipboardList, FileText, Calendar, Video, Library,
+  BookOpen, ClipboardList, FileText, Calendar, Video, Library, Images,
   PenSquare, Star, HeartHandshake, HandCoins,
   Mail, Bell, BarChart3, Settings, LogOut, Home, ChevronDown,
   Plus, Archive, CalendarCheck, UserCheck, Activity,
@@ -72,6 +72,7 @@ const navGroups: NavGroup[] = [
     label: 'Resources',
     items: [
       { to: '/admin/resources', label: 'All Resources', icon: Library },
+      { to: '/admin/gallery', label: 'Media Gallery', icon: Images },
     ],
   },
   {
