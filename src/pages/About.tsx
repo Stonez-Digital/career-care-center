@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Target, Eye, Heart, Shield, Users, TrendingUp, ArrowRight, HandHeart, Sparkles, Linkedin } from 'lucide-react';
+import { Target, Eye, Heart, Shield, Users, TrendingUp, ArrowRight, HandHeart, Sparkles } from 'lucide-react';
 import Counter from '@/components/Counter';
 import PageHero from '@/components/PageHero';
 
@@ -10,35 +10,6 @@ const values = [
   { icon: Users, title: 'Respect', desc: 'We actively listen and seek to understand the feelings and perspectives of the youth we serve.' },
   { icon: HandHeart, title: 'Empathy', desc: 'We meet young people where they are, with understanding and without judgment, creating a safe space for growth.' },
   { icon: TrendingUp, title: 'Impact', desc: 'We measure success by lives transformed, careers launched, and businesses built—not just by numbers.' },
-];
-
-const linkedInTeam = [
-  {
-    name: 'Iniobong Umanah',
-    role: 'IT Support & Communications Executive',
-    image: '/media/team/iniobong-umanah.jpg',
-    linkedIn: 'https://www.linkedin.com/in/iniobongumanahtechie',
-  },
-  {
-    name: 'Jessica Esenwa',
-    role: 'Team Member',
-    linkedIn: 'https://ng.linkedin.com/company/careercarecenter-youthdevelopmentinitiative',
-  },
-  {
-    name: 'Jennifer Esenwa',
-    role: 'Team Member',
-    linkedIn: 'https://ng.linkedin.com/company/careercarecenter-youthdevelopmentinitiative',
-  },
-  {
-    name: 'Zainab Akinsanya',
-    role: 'Team Member',
-    linkedIn: 'https://ng.linkedin.com/in/zainab-akinsanya-4873193a6',
-  },
-  {
-    name: 'Heritage Obideyi',
-    role: 'Team Member',
-    linkedIn: 'https://ng.linkedin.com/in/obideyi-heritage',
-  },
 ];
 
 export default function About() {
@@ -141,55 +112,6 @@ export default function About() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="section bg-ink-100/50">
-        <div className="container-page">
-          <div className="mx-auto max-w-2xl text-center">
-            <span className="eyebrow">Our Leadership</span>
-            <h2 className="mt-3 heading-2">Meet the Team Behind CCC</h2>
-            <p className="mt-4 text-lg text-ink-600 text-pretty">
-              Our founding team is comprised of fresh University graduates and mid-level professionals
-              passionate about youth development.
-            </p>
-          </div>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {linkedInTeam.map((member) => (
-              <article key={member.name} className="card-hover overflow-hidden">
-                {member.image ? (
-                  <img
-                    src={member.image}
-                    alt={`${member.name}, ${member.role} at Career Care Center`}
-                    loading="lazy"
-                    className="aspect-[4/3] w-full object-cover object-top"
-                  />
-                ) : (
-                  <div className="grid aspect-[4/3] place-items-center bg-gradient-to-br from-primary-700 to-primary-900">
-                    <span className="font-heading text-5xl font-bold text-white">
-                      {member.name.split(' ').map((part) => part[0]).join('')}
-                    </span>
-                  </div>
-                )}
-                <div className="p-6">
-                  <h3 className="font-heading text-xl font-semibold text-ink-900">{member.name}</h3>
-                  <p className="mt-1 text-sm font-medium text-secondary-600">{member.role}</p>
-                  <a
-                    href={member.linkedIn}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary-700 transition-colors hover:text-primary-900"
-                    aria-label={`View ${member.name} on LinkedIn`}
-                  >
-                    <Linkedin className="h-4 w-4" /> View LinkedIn
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
-          <p className="mt-6 text-center text-xs text-ink-500">
-            Team affiliations are sourced from Career Care Center's official LinkedIn company page.
-          </p>
         </div>
       </section>
 
