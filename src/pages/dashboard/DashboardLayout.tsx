@@ -94,7 +94,7 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
               <div className="space-y-0.5 border-t border-ink-100 p-3">
                 <Link to="/" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-ink-600 transition-colors hover:bg-ink-50">
                   <Home className="h-4 w-4 text-ink-400" />
-                  Back to Website
+                  Back to Home
                 </Link>
                 <button onClick={async () => { await signOut(); window.location.href = '/'; }} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-error-600 transition-colors hover:bg-error-50">
                   <LogOut className="h-4 w-4" />

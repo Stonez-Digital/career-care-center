@@ -168,7 +168,7 @@ export default function AdminLayout() {
           </div>
           <div className="flex items-center gap-3">
             <Link to="/" className="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink-600 transition-colors hover:bg-ink-100 sm:flex">
-              <Home className="h-4 w-4" /> Back to Site
+              <Home className="h-4 w-4" /> Back to Home
             </Link>
             <Link to="/admin/profile" className="flex items-center gap-2.5 rounded-xl bg-ink-50 px-3 py-1.5 transition-colors hover:bg-ink-100" aria-label="Open administrator profile">
               {profile?.avatar_url ? (
