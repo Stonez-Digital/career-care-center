@@ -76,7 +76,7 @@ export default function Footer() {
                 <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-ink-800 text-secondary-400">
                   <MapPin className="h-4 w-4" />
                 </div>
-                <span className="text-ink-400">Maryland, Lagos, Nigeria</span>
+                <span className="text-ink-400">301 Ikorodu Road, opposite Maryland Mall, Maryland, Ikeja 100211, Lagos</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-ink-800 text-secondary-400">

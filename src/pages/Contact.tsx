@@ -15,7 +15,8 @@ const faqs = [
   { q: 'How can my organization partner with CCC?', a: 'We welcome partnerships with organizations committed to youth development. Visit our Donate page and fill out the partnership form, or email us directly.' },
 ];
 
-const locationQuery = 'Maryland, Lagos, Nigeria';
+const locationAddress = '301 Ikorodu Road, opposite Maryland Mall, Maryland, Ikeja 100211, Lagos';
+const locationQuery = locationAddress;
 const mapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(locationQuery)}&output=embed`;
 const mapDirectionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationQuery)}`;
 
@@ -92,7 +93,7 @@ export default function Contact() {
                 <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary-50 text-primary-700"><MapPin className="h-5 w-5" /></div>
                 <div>
                   <h3 className="font-semibold text-ink-900">Address</h3>
-                  <p className="mt-1 text-sm text-ink-600">Maryland, Lagos, Nigeria</p>
+                  <p className="mt-1 text-sm text-ink-600">{locationAddress}</p>
                 </div>
               </div>
             </div>
@@ -120,7 +121,7 @@ export default function Contact() {
             </div>
             <div className="card overflow-hidden">
               <iframe
-                title="Map showing Career Care Center's location in Maryland, Lagos"
+                title="Map showing Career Care Center at 301 Ikorodu Road, Maryland, Lagos"
                 src={mapEmbedUrl}
                 className="h-64 w-full border-0"
                 loading="lazy"
@@ -129,8 +130,8 @@ export default function Contact() {
               />
               <div className="flex flex-col gap-3 border-t border-ink-100 p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="font-semibold text-ink-900">Maryland, Lagos</p>
-                  <p className="text-sm text-ink-500">Nigeria</p>
+                  <p className="font-semibold text-ink-900">301 Ikorodu Road</p>
+                  <p className="text-sm text-ink-500">Opposite Maryland Mall, Maryland, Ikeja 100211, Lagos</p>
                 </div>
                 <a
                   href={mapDirectionsUrl}
