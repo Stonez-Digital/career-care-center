@@ -55,10 +55,10 @@ export default function Dashboard() {
   if (loading) return <PageLoader />;
 
   const stats = [
-    { label: 'Applications', value: applications.length, icon: FileText, color: 'primary', bg: 'from-primary-500 to-primary-700' },
-    { label: 'Event Registrations', value: registrations.length, icon: Calendar, color: 'secondary', bg: 'from-secondary-400 to-secondary-600' },
-    { label: 'Unread Notifications', value: notifications.filter((n) => !n.read).length, icon: Bell, color: 'accent', bg: 'from-accent-400 to-accent-500' },
-    { label: 'Available Resources', value: resources.length, icon: BookOpen, color: 'success', bg: 'from-success-500 to-success-600' },
+    { label: 'Applications', value: applications.length, icon: FileText, bg: 'from-primary-500 to-primary-700', surface: 'border-primary-100 bg-gradient-to-br from-white to-primary-50' },
+    { label: 'Event Registrations', value: registrations.length, icon: Calendar, bg: 'from-secondary-400 to-secondary-600', surface: 'border-secondary-100 bg-gradient-to-br from-white to-secondary-50' },
+    { label: 'Unread Notifications', value: notifications.filter((n) => !n.read).length, icon: Bell, bg: 'from-accent-400 to-accent-500', surface: 'border-accent-100 bg-gradient-to-br from-white to-accent-50' },
+    { label: 'Available Resources', value: resources.length, icon: BookOpen, bg: 'from-success-500 to-success-600', surface: 'border-success-100 bg-gradient-to-br from-white to-success-50' },
   ];
 
   const statusVariant: Record<string, 'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'error' | 'neutral'> = {
@@ -89,7 +89,7 @@ export default function Dashboard() {
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className="stat-card group">
+          <div key={s.label} className={cn('stat-card group border transition-transform duration-200 hover:-translate-y-0.5', s.surface)}>
             <div className="flex items-center justify-between">
               <div className={cn('grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br text-white shadow-soft transition-transform group-hover:scale-110', s.bg)}>
                 <s.icon className="h-5 w-5" />
@@ -103,7 +103,7 @@ export default function Dashboard() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Recent Applications */}
-        <div className="card p-6">
+        <div className="card border border-primary-100 bg-gradient-to-br from-white to-primary-50/60 p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <FileText className="h-5 w-5 text-primary-600" />
@@ -112,8 +112,8 @@ export default function Dashboard() {
             <Link to="/dashboard/applications" className="text-sm font-semibold text-primary-700 hover:underline">View all</Link>
           </div>
           {applications.length === 0 ? (
-            <div className="py-10 text-center">
-              <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-ink-100 text-ink-400">
+            <div className="mt-5 rounded-2xl border border-primary-100 bg-primary-50/70 py-10 text-center">
+              <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-primary-100 text-primary-600">
                 <FileText className="h-6 w-6" />
               </div>
               <p className="text-sm text-ink-500">No applications yet.</p>
@@ -137,7 +137,7 @@ export default function Dashboard() {
         </div>
 
         {/* Upcoming Events */}
-        <div className="card p-6">
+        <div className="card border border-secondary-100 bg-gradient-to-br from-white to-secondary-50/60 p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Calendar className="h-5 w-5 text-secondary-600" />
@@ -146,8 +146,8 @@ export default function Dashboard() {
             <Link to="/dashboard/events" className="text-sm font-semibold text-primary-700 hover:underline">View all</Link>
           </div>
           {registrations.length === 0 ? (
-            <div className="py-10 text-center">
-              <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-ink-100 text-ink-400">
+            <div className="mt-5 rounded-2xl border border-secondary-100 bg-secondary-50/70 py-10 text-center">
+              <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-secondary-100 text-secondary-600">
                 <Calendar className="h-6 w-6" />
               </div>
               <p className="text-sm text-ink-500">No event registrations.</p>
@@ -172,7 +172,7 @@ export default function Dashboard() {
       </div>
 
       {/* Notifications */}
-      <div className="card p-6">
+      <div className="card border border-accent-100 bg-gradient-to-br from-white to-accent-50/55 p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Bell className="h-5 w-5 text-accent-500" />
@@ -181,7 +181,7 @@ export default function Dashboard() {
           <Link to="/dashboard/notifications" className="text-sm font-semibold text-primary-700 hover:underline">View all</Link>
         </div>
         {notifications.length === 0 ? (
-          <p className="py-10 text-center text-sm text-ink-500">No notifications yet.</p>
+          <p className="mt-5 rounded-2xl border border-accent-100 bg-accent-50/70 py-10 text-center text-sm font-medium text-accent-700">No notifications yet.</p>
         ) : (
           <div className="mt-5 space-y-2">
             {notifications.map((n) => (
@@ -201,7 +201,7 @@ export default function Dashboard() {
       </div>
 
       {/* Resources CTA */}
-      <div className="card overflow-hidden">
+      <div className="card overflow-hidden border border-primary-100 bg-gradient-to-br from-white via-primary-50/30 to-success-50/50">
         <div className="relative flex items-center justify-between bg-gradient-to-br from-primary-700 to-primary-800 p-6 text-white">
           <div className="absolute inset-0 grid-pattern opacity-20" />
           <div className="relative">
@@ -217,7 +217,7 @@ export default function Dashboard() {
         </div>
         <div className="grid gap-4 p-6 sm:grid-cols-2 lg:grid-cols-4">
           {resources.map((r) => (
-            <div key={r.id} className="rounded-xl border border-ink-100 p-4 transition-all hover:border-primary-200 hover:shadow-soft">
+            <div key={r.id} className="rounded-xl border border-primary-100 bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-soft">
               <div className="mb-2 flex items-center gap-2">
                 <Star className="h-4 w-4 text-secondary-500" />
                 <Badge variant="neutral">{r.type}</Badge>
