@@ -45,6 +45,7 @@ export interface Profile {
   location: string | null;
   bio: string | null;
   is_suspended: boolean;
+  has_seen_dashboard_welcome: boolean;
   created_at: string;
 }
 

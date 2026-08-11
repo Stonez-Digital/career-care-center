@@ -9,7 +9,8 @@ import Badge from '@/components/Badge';
 import { formatDate, timeAgo, cn } from '@/lib/utils';
 
 export default function Dashboard() {
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
+  const [isFirstVisit] = useState(() => profile?.has_seen_dashboard_welcome === false);
   const [loading, setLoading] = useState(true);
   const [applications, setApplications] = useState<Application[]>([]);
   const [registrations, setRegistrations] = useState<EventRegistration[]>([]);
@@ -33,6 +34,24 @@ export default function Dashboard() {
     })();
   }, [user]);
 
+  useEffect(() => {
+    if (!user || !isFirstVisit) return;
+
+    void (async () => {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ has_seen_dashboard_welcome: true })
+        .eq('id', user.id)
+        .eq('has_seen_dashboard_welcome', false);
+
+      if (error) {
+        console.error('[CCC] Could not record first dashboard welcome:', error.message);
+        return;
+      }
+      await refreshProfile();
+    })();
+  }, [isFirstVisit, refreshProfile, user]);
+
   if (loading) return <PageLoader />;
 
   const stats = [
@@ -53,12 +72,16 @@ export default function Dashboard() {
         <div className="absolute inset-0 grid-pattern opacity-20" />
         <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-secondary-500/15 blur-3xl" />
         <div className="relative">
-          <p className="text-sm font-medium text-primary-200">Welcome back</p>
+          <p className="text-sm font-medium text-primary-200">
+            {isFirstVisit ? 'Welcome' : 'Welcome back'}
+          </p>
           <h1 className="mt-1 font-heading text-2xl font-bold text-white sm:text-3xl">
             {profile?.full_name?.split(' ')[0] ?? 'there'}!
           </h1>
           <p className="mt-2 max-w-md text-sm text-primary-100">
-            Here's an overview of your CCC journey. Keep growing and building your future.
+            {isFirstVisit
+              ? "We're glad you're here. Explore your dashboard and begin your CCC journey."
+              : "Here's an overview of your CCC journey. Keep growing and building your future."}
           </p>
         </div>
       </div>
