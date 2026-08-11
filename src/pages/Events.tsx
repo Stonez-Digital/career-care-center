@@ -73,7 +73,10 @@ export default function Events() {
         <h3 className="font-heading text-lg font-semibold text-ink-900">{e.title}</h3>
         <p className="mt-2 text-sm text-ink-600 line-clamp-3">{e.description}</p>
         <div className="mt-3 flex items-center gap-3 text-sm text-ink-500">
-          <span className="flex items-center gap-1"><MapPin className="h-4 w-4" /> {e.location}</span>
+          <span className="flex items-center gap-1">
+            {e.is_virtual ? <Video className="h-4 w-4" /> : <MapPin className="h-4 w-4" />}
+            {e.location}
+          </span>
           {e.capacity && <span className="flex items-center gap-1"><Users className="h-4 w-4" /> {e.capacity}</span>}
         </div>
         <div className="mt-4 border-t border-ink-100 pt-4">

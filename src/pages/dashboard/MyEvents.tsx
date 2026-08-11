@@ -74,7 +74,10 @@ export default function MyEvents() {
                       </div>
                       <h3 className="mt-2 font-heading font-semibold text-ink-900">{r.event?.title}</h3>
                       <p className="mt-1 text-sm text-ink-500">{r.event && formatDate(r.event.event_date)}</p>
-                      <p className="text-sm text-ink-500">{r.event?.location}</p>
+                      <p className="flex items-center gap-1.5 text-sm text-ink-500">
+                        {r.event?.is_virtual ? <Video className="h-3.5 w-3.5" /> : <MapPin className="h-3.5 w-3.5" />}
+                        {r.event?.location}
+                      </p>
                     </div>
                   </div>
                 ))}

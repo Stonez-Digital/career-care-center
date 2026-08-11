@@ -233,7 +233,8 @@ export default function AdminEvents() {
                     <Calendar className="h-3.5 w-3.5" /> {formatDate(e.event_date)}
                   </p>
                   <p className="flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5" /> {e.location}
+                    {e.is_virtual ? <Video className="h-3.5 w-3.5" /> : <MapPin className="h-3.5 w-3.5" />}
+                    {e.location}
                   </p>
                   {e.capacity && (
                     <p className="flex items-center gap-1.5">
@@ -271,8 +272,22 @@ export default function AdminEvents() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="label">Date &amp; Time *</label>
+              <label className="label" htmlFor="event-mode">Event Mode *</label>
+              <select
+                id="event-mode"
+                className="input"
+                required
+                value={form.is_virtual ? 'virtual' : 'physical'}
+                onChange={(e) => setForm({ ...form, is_virtual: e.target.value === 'virtual' })}
+              >
+                <option value="physical">Physical (in-person)</option>
+                <option value="virtual">Virtual (online)</option>
+              </select>
+            </div>
+            <div>
+              <label className="label" htmlFor="event-date">Date &amp; Time *</label>
               <input
+                id="event-date"
                 type="datetime-local"
                 className="input"
                 required
@@ -281,13 +296,20 @@ export default function AdminEvents() {
               />
             </div>
             <div>
-              <label className="label">Location *</label>
+              <label className="label" htmlFor="event-location">
+                {form.is_virtual ? 'Meeting Link or Platform *' : 'Physical Venue or Address *'}
+              </label>
               <input
+                id="event-location"
                 className="input"
                 required
+                placeholder={form.is_virtual ? 'e.g. Microsoft Teams meeting link' : 'e.g. 301 Ikorodu Road, Maryland, Lagos'}
                 value={form.location}
                 onChange={(e) => setForm({ ...form, location: e.target.value })}
               />
+              <p className="mt-1.5 text-xs text-ink-400">
+                {form.is_virtual ? 'Enter the online meeting URL or platform access details.' : 'Enter the venue name and complete physical address.'}
+              </p>
             </div>
             <div>
               <label className="label">Capacity</label>
@@ -310,15 +332,6 @@ export default function AdminEvents() {
               />
             </div>
           </div>
-          <label className="flex items-center gap-2 text-sm font-medium text-ink-700">
-            <input
-              type="checkbox"
-              className="h-4 w-4 rounded"
-              checked={form.is_virtual}
-              onChange={(e) => setForm({ ...form, is_virtual: e.target.checked })}
-            />
-            Virtual event
-          </label>
           <button type="submit" disabled={saving} className="btn-primary w-full">
             {saving ? <Spinner /> : <><Save className="h-4 w-4" /> Save</>}
           </button>
