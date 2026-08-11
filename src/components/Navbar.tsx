@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/auth';
 import { isAdminRole } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import InstallAppButton from './InstallAppButton';
+import ThemeToggle from './ThemeToggle';
 
 const navLinks = [
   { to: '/', label: 'Home', end: true },
@@ -86,6 +87,7 @@ export default function Navbar() {
         </div>
 
         <div className="hidden items-center gap-2 lg:col-start-2 lg:row-start-1 lg:flex">
+          <ThemeToggle />
           <InstallAppButton />
           <Link to="/volunteer" className="btn-ghost btn-sm">
             Volunteer
@@ -179,6 +181,7 @@ export default function Navbar() {
               </NavLink>
             ))}
             <div className="my-2 h-px bg-ink-100" />
+            <ThemeToggle showLabel className="w-full justify-start px-3 py-2.5" />
             <InstallAppButton className="w-full justify-start px-3 py-2.5" />
             <Link to="/volunteer" onClick={() => setOpen(false)} className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink-700 hover:bg-ink-50">
               Volunteer

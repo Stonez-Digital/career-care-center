@@ -6,6 +6,7 @@ import {
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import type { UserRole } from '@/lib/supabase';
+import ThemeToggle from '@/components/ThemeToggle';
 
 type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; end?: boolean };
 
@@ -92,6 +93,7 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
                 ))}
               </nav>
               <div className="space-y-0.5 border-t border-ink-100 p-3">
+                <ThemeToggle showLabel className="mb-1 w-full justify-start border-0 px-3 shadow-none" />
                 <Link to="/" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-ink-600 transition-colors hover:bg-ink-50">
                   <Home className="h-4 w-4 text-ink-400" />
                   Back to Home

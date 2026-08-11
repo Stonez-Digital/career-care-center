@@ -10,6 +10,7 @@ import {
 import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
+import ThemeToggle from '@/components/ThemeToggle';
 
 type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; end?: boolean };
 type NavGroup = { label: string; items: NavItem[] };
@@ -168,6 +169,7 @@ export default function AdminLayout() {
             </Link>
           </div>
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <Link to="/" className="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink-600 transition-colors hover:bg-ink-100 sm:flex">
               <Home className="h-4 w-4" /> Back to Home
             </Link>
