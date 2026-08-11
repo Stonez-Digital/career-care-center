@@ -1,6 +1,6 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Menu, X, ChevronDown, LogOut, LayoutDashboard, Shield, Heart } from 'lucide-react';
+import { Menu, X, ChevronDown, LogOut, LayoutDashboard, Shield, Heart, Sparkles } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { isAdminRole } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
@@ -45,7 +45,8 @@ export default function Navbar() {
         scrolled ? 'glass shadow-soft' : 'bg-transparent'
       )}
     >
-      <nav className="container-page flex h-16 items-center justify-between gap-4 lg:h-18">
+      <nav className="container-page flex h-16 items-center justify-between gap-2 lg:h-18">
+        <div className="flex min-w-0 items-center gap-2.5">
         <Link to="/" className="shrink-0 group" aria-label="Career Care Center home">
           <img
             src="/career-care-logo.png?v=6"
@@ -53,6 +54,11 @@ export default function Navbar() {
             className="h-14 w-auto transition-transform group-hover:scale-[1.02] lg:h-16"
           />
         </Link>
+          <div className="hidden items-center gap-1.5 whitespace-nowrap rounded-full border border-primary-200 bg-primary-50 px-3 py-2 text-[10px] font-semibold text-primary-800 shadow-soft md:inline-flex xl:text-xs" aria-label="Career Care Center For Youth Development Initiative">
+            <Sparkles className="h-3.5 w-3.5 shrink-0 text-secondary-500" />
+            <span>Career Care Center For Youth Development Initiative</span>
+          </div>
+        </div>
 
         <div className="hidden items-center gap-0.5 lg:flex">
           {navLinks.map((l) => (
@@ -62,7 +68,7 @@ export default function Navbar() {
               end={l.end}
               className={({ isActive }) =>
                 cn(
-                  'relative rounded-lg px-3.5 py-2 text-sm font-medium transition-colors',
+                  'relative rounded-lg px-2.5 py-2 text-sm font-medium transition-colors xl:px-3.5',
                   isActive ? 'text-primary-700' : 'text-ink-600 hover:text-primary-700'
                 )
               }

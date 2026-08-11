@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Users, GraduationCap, Briefcase, HeartHandshake, Calendar, Sparkles, Star, Play, TrendingUp } from 'lucide-react';
+import { ArrowRight, Users, GraduationCap, Briefcase, HeartHandshake, Calendar, Star, Play, TrendingUp } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Program, CCCEvent, Testimonial } from '@/lib/supabase';
 import Counter from '@/components/Counter';
@@ -41,11 +41,7 @@ export default function Home() {
         <div className="container-page relative py-16 sm:py-24 lg:py-28">
           <div className="grid items-center gap-14 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16">
             <div className="text-center lg:text-left">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-primary-50 backdrop-blur-md ring-1 ring-white/20 animate-fade-in animate-fill-back">
-              <Sparkles className="h-4 w-4 text-accent-400" />
-              Career Care Center For Youth Development Initiative
-            </span>
-            <h1 className="mt-8 font-heading text-4xl font-bold leading-[1.08] tracking-tight text-white text-balance sm:text-5xl xl:text-6xl animate-fade-in-up animate-fill-back">
+            <h1 className="font-heading text-4xl font-bold leading-[1.08] tracking-tight text-white text-balance sm:text-5xl xl:text-6xl animate-fade-in-up animate-fill-back">
               We Care For Your Career.
               <br /> We{' '}
               <span className="relative inline-block">
