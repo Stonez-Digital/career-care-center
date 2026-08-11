@@ -45,7 +45,7 @@ export default function Navbar() {
         scrolled ? 'glass shadow-soft' : 'bg-transparent'
       )}
     >
-      <nav className="container-page flex h-16 items-center justify-between gap-2 lg:h-18">
+      <nav className="container-page flex h-16 items-center justify-between gap-2 lg:grid lg:h-auto lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-x-5 lg:gap-y-1 lg:py-2">
         <div className="flex min-w-0 items-center gap-2.5">
         <Link to="/" className="shrink-0 group" aria-label="Career Care Center home">
           <img
@@ -60,7 +60,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="hidden items-center gap-0.5 lg:flex">
+        <div className="hidden items-center justify-center gap-0.5 lg:col-span-2 lg:row-start-2 lg:flex">
           {navLinks.map((l) => (
             <NavLink
               key={l.to}
@@ -85,7 +85,7 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden items-center gap-2 lg:flex">
+        <div className="hidden items-center gap-2 lg:col-start-2 lg:row-start-1 lg:flex">
           <InstallAppButton />
           <Link to="/volunteer" className="btn-ghost btn-sm">
             Volunteer
