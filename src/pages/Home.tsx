@@ -38,15 +38,16 @@ export default function Home() {
         <div className="absolute -right-32 -top-32 h-[500px] w-[500px] rounded-full bg-secondary-500/15 blur-3xl animate-pulse-soft" />
         <div className="absolute -bottom-40 -left-32 h-[500px] w-[500px] rounded-full bg-accent-400/15 blur-3xl animate-pulse-soft" />
 
-        <div className="container-page relative py-20 sm:py-28 lg:py-36">
-          <div className="mx-auto max-w-4xl text-center">
+        <div className="container-page relative py-16 sm:py-24 lg:py-28">
+          <div className="grid items-center gap-14 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16">
+            <div className="text-center lg:text-left">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-primary-50 backdrop-blur-md ring-1 ring-white/20 animate-fade-in animate-fill-back">
               <Sparkles className="h-4 w-4 text-accent-400" />
               Career Care Center For Youth Development Initiative
             </span>
-            <h1 className="mt-8 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-white text-balance sm:text-5xl lg:text-6xl animate-fade-in-up animate-fill-back">
+            <h1 className="mt-8 font-heading text-4xl font-bold leading-[1.08] tracking-tight text-white text-balance sm:text-5xl xl:text-6xl animate-fade-in-up animate-fill-back">
               We Care For Your Career.
-              <br className="hidden sm:block" /> We{' '}
+              <br /> We{' '}
               <span className="relative inline-block">
                 <span className="relative z-10 bg-gradient-to-r from-accent-300 to-accent-400 bg-clip-text text-transparent">
                   Nurture Talents
@@ -54,11 +55,11 @@ export default function Home() {
               </span>
               {' '}For Greater Purposes.
             </h1>
-            <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-primary-100 text-pretty sm:text-xl animate-fade-in-up animate-fill-back animate-delay-100">
+            <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-primary-100 text-pretty sm:text-xl lg:mx-0 animate-fade-in-up animate-fill-back animate-delay-100">
               We equip talents with the skills, networks, knowledge, opportunities and tools
               needed to navigate the professional world and excel in their chosen career.
             </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row animate-fade-in-up animate-fill-back animate-delay-200">
+            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start animate-fade-in-up animate-fill-back animate-delay-200">
               <Link to="/signup" className="btn-accent btn-lg w-full sm:w-auto">
                 Get Started <ArrowRight className="h-4 w-4" />
               </Link>
@@ -68,6 +69,29 @@ export default function Home() {
               <Link to="/programs" className="btn btn-lg w-full border border-white/20 bg-white/5 text-white backdrop-blur-md transition-all hover:bg-white/10 hover:border-white/30 sm:w-auto">
                 <Play className="h-4 w-4" /> Explore Programs
               </Link>
+            </div>
+            </div>
+
+            <div className="relative mx-auto w-full max-w-md animate-fade-in-up animate-fill-back animate-delay-200 lg:max-w-none">
+              <div className="absolute -inset-5 rounded-[2.25rem] bg-gradient-to-br from-accent-400/30 via-white/10 to-secondary-500/25 blur-2xl" />
+              <div className="relative overflow-hidden rounded-[2rem] border border-white/20 bg-white/10 p-2 shadow-2xl backdrop-blur-sm">
+                <img
+                  src="/career-hero-portrait.png"
+                  alt="A young professional preparing to build her career"
+                  width={1114}
+                  height={1404}
+                  fetchPriority="high"
+                  className="aspect-[4/5] w-full rounded-[1.6rem] object-cover object-center"
+                />
+                <div className="absolute inset-x-5 bottom-5 rounded-2xl border border-white/30 bg-primary-950/80 p-4 text-left shadow-lift backdrop-blur-md sm:inset-x-7 sm:bottom-7">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-300">Your future starts here</p>
+                  <p className="mt-1 font-heading text-lg font-semibold text-white">Skills. Confidence. Opportunity.</p>
+                </div>
+              </div>
+              <div className="absolute -right-3 top-8 hidden rounded-2xl border border-white/30 bg-white/95 px-4 py-3 text-left shadow-lift sm:block">
+                <p className="font-heading text-xl font-bold text-primary-800">500+</p>
+                <p className="text-xs font-medium text-ink-500">Youth reached</p>
+              </div>
             </div>
           </div>
         </div>
