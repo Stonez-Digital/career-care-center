@@ -8,6 +8,7 @@ import Modal from '@/components/Modal';
 import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 import Badge from '@/components/Badge';
+import SafeImage from '@/components/SafeImage';
 import { formatDate, exportToCSV } from '@/lib/utils';
 import MediaUpload from '@/components/MediaUpload';
 import { IMAGE_TYPES, RESOURCE_TYPES } from '@/lib/media';
@@ -36,6 +37,8 @@ const typeIcon: Record<ResourceType, typeof FileText> = {
   video: Video,
   article: BookOpen,
 };
+
+const resourceCoverFallback = '/resource-cover.svg';
 
 const typeVariant: Record<ResourceType, 'primary' | 'secondary' | 'accent'> = {
   pdf: 'primary',
@@ -162,18 +165,13 @@ export default function AdminResources() {
             const Icon = typeIcon[r.type];
             return (
               <div key={r.id} className="card overflow-hidden">
-                {r.cover_image_url ? (
-                  <img
-                    src={r.cover_image_url}
-                    alt={r.title}
-                    loading="lazy"
-                    className="h-32 w-full object-cover"
-                  />
-                ) : (
-                  <div className="grid h-32 w-full place-items-center bg-ink-50 text-ink-300">
-                    <Icon className="h-10 w-10" />
-                  </div>
-                )}
+                <SafeImage
+                  src={r.cover_image_url ?? resourceCoverFallback}
+                  fallbackSrc={resourceCoverFallback}
+                  alt=""
+                  loading="lazy"
+                  className="h-32 w-full object-cover"
+                />
                 <div className="p-4">
                   <div className="flex items-center justify-between">
                     <Badge variant={typeVariant[r.type]}>

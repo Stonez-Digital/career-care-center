@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/auth';
 import type { Resource, ResourceCategory, ResourceType } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
 import Badge from '@/components/Badge';
+import SafeImage from '@/components/SafeImage';
 import { cn } from '@/lib/utils';
 import { reportMutationError } from '@/lib/mutations';
 
@@ -13,6 +14,8 @@ const categories: (ResourceCategory | 'All')[] = ['All', 'Career Development', '
 const typeIcon: Record<ResourceType, React.ComponentType<{ className?: string }>> = {
   pdf: FileText, video: Video, article: BookOpen,
 };
+
+const resourceCoverFallback = '/resource-cover.svg';
 
 export default function Resources() {
   const { user } = useAuth();
@@ -81,18 +84,22 @@ export default function Resources() {
           const isBookmarked = bookmarks.has(r.id);
           return (
             <div key={r.id} className="card group overflow-hidden transition-all hover:shadow-lift">
-              {r.cover_image_url && (
-                <div className="relative h-36 overflow-hidden">
-                  <img src={r.cover_image_url} alt={r.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                  <button
-                    onClick={() => toggleBookmark(r.id)}
-                    className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-ink-600 backdrop-blur transition-colors hover:text-primary-700"
-                    aria-label="Bookmark"
-                  >
-                    {isBookmarked ? <BookmarkCheck className="h-5 w-5 text-primary-700" /> : <Bookmark className="h-5 w-5" />}
-                  </button>
-                </div>
-              )}
+              <div className="relative h-36 overflow-hidden bg-primary-900">
+                <SafeImage
+                  src={r.cover_image_url ?? resourceCoverFallback}
+                  fallbackSrc={resourceCoverFallback}
+                  alt=""
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <button
+                  onClick={() => toggleBookmark(r.id)}
+                  className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-ink-600 backdrop-blur transition-colors hover:text-primary-700"
+                  aria-label="Bookmark"
+                >
+                  {isBookmarked ? <BookmarkCheck className="h-5 w-5 text-primary-700" /> : <Bookmark className="h-5 w-5" />}
+                </button>
+              </div>
               {r.type === 'video' && (
                 <video
                   src={r.url}
