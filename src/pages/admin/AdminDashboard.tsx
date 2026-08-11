@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
 import Badge from '@/components/Badge';
 import { formatDate, timeAgo, formatCurrency, cn } from '@/lib/utils';
+import { useTheme } from '@/lib/theme';
 import {
   BarChart, Bar, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -37,6 +38,17 @@ interface Stats {
 const programColors = ['#0F4C81', '#1E88E5', '#43A047', '#FB8C00', '#E53935', '#8E24AA', '#00ACC1', '#7CB342'];
 
 export default function AdminDashboard() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  const chartGrid = isDark ? '#3B4B67' : '#E5E7EB';
+  const chartText = isDark ? '#D5DEEA' : '#6B7280';
+  const tooltipStyle = {
+    borderRadius: 12,
+    border: `1px solid ${isDark ? '#475569' : '#E5E7EB'}`,
+    backgroundColor: isDark ? '#111C33' : '#FFFFFF',
+    color: isDark ? '#F8FAFC' : '#0F172A',
+    fontSize: 13,
+  };
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<Stats>({
     totalUsers: 0, interns: 0, volunteers: 0, mentors: 0, admins: 0,
@@ -242,10 +254,10 @@ export default function AdminDashboard() {
                   <stop offset="95%" stopColor="#0F4C81" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-              <XAxis dataKey="month" tick={{ fontSize: 12, fill: '#6B7280' }} />
-              <YAxis tick={{ fontSize: 12, fill: '#6B7280' }} allowDecimals={false} />
-              <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #E5E7EB', fontSize: 13 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
+              <XAxis dataKey="month" tick={{ fontSize: 12, fill: chartText }} />
+              <YAxis tick={{ fontSize: 12, fill: chartText }} allowDecimals={false} />
+              <Tooltip contentStyle={tooltipStyle} />
               <Area type="monotone" dataKey="applications" stroke="#0F4C81" strokeWidth={2} fill="url(#appGrad)" />
             </AreaChart>
           </ResponsiveContainer>
@@ -256,10 +268,10 @@ export default function AdminDashboard() {
           <p className="text-sm text-ink-500">New user registrations over time</p>
           <ResponsiveContainer width="100%" height={260} className="mt-4">
             <LineChart data={userGrowth}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-              <XAxis dataKey="month" tick={{ fontSize: 12, fill: '#6B7280' }} />
-              <YAxis tick={{ fontSize: 12, fill: '#6B7280' }} allowDecimals={false} />
-              <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #E5E7EB', fontSize: 13 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
+              <XAxis dataKey="month" tick={{ fontSize: 12, fill: chartText }} />
+              <YAxis tick={{ fontSize: 12, fill: chartText }} allowDecimals={false} />
+              <Tooltip contentStyle={tooltipStyle} />
               <Line type="monotone" dataKey="users" stroke="#1E88E5" strokeWidth={2} dot={{ r: 4 }} />
             </LineChart>
           </ResponsiveContainer>
@@ -275,7 +287,7 @@ export default function AdminDashboard() {
               <Pie data={appByStatus} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, value }) => `${name}: ${value}`}>
                 {appByStatus.map((_, i) => <Cell key={i} fill={programColors[i % programColors.length]} />)}
               </Pie>
-              <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #E5E7EB', fontSize: 13 }} />
+              <Tooltip contentStyle={tooltipStyle} />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -284,10 +296,10 @@ export default function AdminDashboard() {
           <h2 className="font-heading text-lg font-semibold text-ink-900">Programme Popularity</h2>
           <ResponsiveContainer width="100%" height={240} className="mt-4">
             <BarChart data={programDist} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-              <XAxis type="number" tick={{ fontSize: 11, fill: '#6B7280' }} allowDecimals={false} />
-              <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: '#6B7280' }} width={100} />
-              <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #E5E7EB', fontSize: 13 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
+              <XAxis type="number" tick={{ fontSize: 11, fill: chartText }} allowDecimals={false} />
+              <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: chartText }} width={100} />
+              <Tooltip contentStyle={tooltipStyle} />
               <Bar dataKey="value" fill="#0F4C81" radius={[0, 6, 6, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -297,10 +309,10 @@ export default function AdminDashboard() {
           <h2 className="font-heading text-lg font-semibold text-ink-900">Donations Overview</h2>
           <ResponsiveContainer width="100%" height={240} className="mt-4">
             <BarChart data={donationData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-              <XAxis dataKey="month" tick={{ fontSize: 12, fill: '#6B7280' }} />
-              <YAxis tick={{ fontSize: 12, fill: '#6B7280' }} />
-              <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #E5E7EB', fontSize: 13 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
+              <XAxis dataKey="month" tick={{ fontSize: 12, fill: chartText }} />
+              <YAxis tick={{ fontSize: 12, fill: chartText }} />
+              <Tooltip contentStyle={tooltipStyle} />
               <Bar dataKey="donations" fill="#43A047" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
