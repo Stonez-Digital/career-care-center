@@ -172,21 +172,21 @@ export default function AdminDashboard() {
   if (loading) return <PageLoader />;
 
   const statCards = [
-    { label: 'Total Users', value: stats.totalUsers, icon: Users, bg: 'from-primary-500 to-primary-700' },
-    { label: 'Interns', value: stats.interns, icon: GraduationCap, bg: 'from-secondary-400 to-secondary-600' },
-    { label: 'Volunteers', value: stats.volunteers, icon: Heart, bg: 'from-accent-400 to-accent-500' },
-    { label: 'Mentors', value: stats.mentors, icon: Briefcase, bg: 'from-success-500 to-success-600' },
-    { label: 'Administrators', value: stats.admins, icon: ShieldCheck, bg: 'from-ink-600 to-ink-800' },
-    { label: 'Applications', value: stats.applications, icon: ClipboardList, bg: 'from-primary-600 to-primary-800' },
-    { label: 'Approved', value: stats.approvedApps, icon: UserCheck, bg: 'from-success-500 to-success-700' },
-    { label: 'Pending', value: stats.pendingApps, icon: Clock, bg: 'from-warning-400 to-warning-600' },
-    { label: 'Upcoming Events', value: stats.upcomingEvents, icon: Calendar, bg: 'from-secondary-500 to-secondary-700' },
-    { label: 'Registrations', value: stats.registrations, icon: Calendar, bg: 'from-accent-500 to-accent-600' },
-    { label: 'Blog Posts', value: stats.blogPosts, icon: FileText, bg: 'from-primary-500 to-secondary-500' },
-    { label: 'Testimonials', value: stats.testimonials, icon: Star, bg: 'from-secondary-400 to-accent-400' },
-    { label: 'Donations', value: formatCurrency(stats.donations), icon: HandCoins, bg: 'from-success-500 to-accent-500' },
-    { label: 'Partners', value: stats.partners, icon: HeartHandshake, bg: 'from-primary-600 to-accent-500' },
-    { label: 'Messages', value: stats.contactMessages, icon: MessageSquare, bg: 'from-accent-400 to-primary-600' },
+    { label: 'Total Users', value: stats.totalUsers, icon: Users, bg: 'from-primary-500 to-primary-700', surface: 'border-primary-100 bg-gradient-to-br from-white to-primary-50' },
+    { label: 'Interns', value: stats.interns, icon: GraduationCap, bg: 'from-secondary-400 to-secondary-600', surface: 'border-secondary-100 bg-gradient-to-br from-white to-secondary-50' },
+    { label: 'Volunteers', value: stats.volunteers, icon: Heart, bg: 'from-accent-400 to-accent-500', surface: 'border-accent-100 bg-gradient-to-br from-white to-accent-50' },
+    { label: 'Mentors', value: stats.mentors, icon: Briefcase, bg: 'from-success-500 to-success-600', surface: 'border-success-100 bg-gradient-to-br from-white to-success-50' },
+    { label: 'Administrators', value: stats.admins, icon: ShieldCheck, bg: 'from-ink-600 to-ink-800', surface: 'border-ink-200 bg-gradient-to-br from-white to-ink-100' },
+    { label: 'Applications', value: stats.applications, icon: ClipboardList, bg: 'from-primary-600 to-primary-800', surface: 'border-primary-100 bg-gradient-to-br from-white to-primary-50' },
+    { label: 'Approved', value: stats.approvedApps, icon: UserCheck, bg: 'from-success-500 to-success-700', surface: 'border-success-100 bg-gradient-to-br from-white to-success-50' },
+    { label: 'Pending', value: stats.pendingApps, icon: Clock, bg: 'from-warning-400 to-warning-600', surface: 'border-warning-100 bg-gradient-to-br from-white to-warning-50' },
+    { label: 'Upcoming Events', value: stats.upcomingEvents, icon: Calendar, bg: 'from-secondary-500 to-secondary-700', surface: 'border-secondary-100 bg-gradient-to-br from-white to-secondary-50' },
+    { label: 'Registrations', value: stats.registrations, icon: Calendar, bg: 'from-accent-500 to-accent-600', surface: 'border-accent-100 bg-gradient-to-br from-white to-accent-50' },
+    { label: 'Blog Posts', value: stats.blogPosts, icon: FileText, bg: 'from-primary-500 to-secondary-500', surface: 'border-primary-100 bg-gradient-to-br from-white via-primary-50 to-secondary-50' },
+    { label: 'Testimonials', value: stats.testimonials, icon: Star, bg: 'from-secondary-400 to-accent-400', surface: 'border-secondary-100 bg-gradient-to-br from-white via-secondary-50 to-accent-50' },
+    { label: 'Donations', value: formatCurrency(stats.donations), icon: HandCoins, bg: 'from-success-500 to-accent-500', surface: 'border-success-100 bg-gradient-to-br from-white via-success-50 to-accent-50' },
+    { label: 'Partners', value: stats.partners, icon: HeartHandshake, bg: 'from-primary-600 to-accent-500', surface: 'border-primary-100 bg-gradient-to-br from-white via-primary-50 to-accent-50' },
+    { label: 'Messages', value: stats.contactMessages, icon: MessageSquare, bg: 'from-accent-400 to-primary-600', surface: 'border-accent-100 bg-gradient-to-br from-white via-accent-50 to-primary-50' },
   ];
 
   return (
@@ -219,7 +219,7 @@ export default function AdminDashboard() {
       {/* Stat Cards */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {statCards.map((s) => (
-          <div key={s.label} className="card p-4">
+          <div key={s.label} className={cn('card border p-4 transition-transform duration-200 hover:-translate-y-0.5', s.surface)}>
             <div className={cn('mb-3 grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br text-white shadow-soft', s.bg)}>
               <s.icon className="h-5 w-5" />
             </div>
@@ -231,7 +231,7 @@ export default function AdminDashboard() {
 
       {/* Charts Row 1 */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="card p-6">
+        <div className="card border border-primary-100 bg-gradient-to-br from-white via-primary-50/40 to-primary-100/50 p-6">
           <h2 className="font-heading text-lg font-semibold text-ink-900">Monthly Applications</h2>
           <p className="text-sm text-ink-500">Application volume over the last 6 months</p>
           <ResponsiveContainer width="100%" height={260} className="mt-4">
@@ -251,7 +251,7 @@ export default function AdminDashboard() {
           </ResponsiveContainer>
         </div>
 
-        <div className="card p-6">
+        <div className="card border border-secondary-100 bg-gradient-to-br from-white via-secondary-50/40 to-secondary-100/50 p-6">
           <h2 className="font-heading text-lg font-semibold text-ink-900">User Growth</h2>
           <p className="text-sm text-ink-500">New user registrations over time</p>
           <ResponsiveContainer width="100%" height={260} className="mt-4">
@@ -268,7 +268,7 @@ export default function AdminDashboard() {
 
       {/* Charts Row 2 */}
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="card p-6">
+        <div className="card border border-primary-100 bg-gradient-to-br from-white to-primary-50/70 p-6">
           <h2 className="font-heading text-lg font-semibold text-ink-900">Applications by Status</h2>
           <ResponsiveContainer width="100%" height={240} className="mt-4">
             <PieChart>
@@ -280,7 +280,7 @@ export default function AdminDashboard() {
           </ResponsiveContainer>
         </div>
 
-        <div className="card p-6">
+        <div className="card border border-secondary-100 bg-gradient-to-br from-white to-secondary-50/70 p-6">
           <h2 className="font-heading text-lg font-semibold text-ink-900">Programme Popularity</h2>
           <ResponsiveContainer width="100%" height={240} className="mt-4">
             <BarChart data={programDist} layout="vertical">
@@ -293,7 +293,7 @@ export default function AdminDashboard() {
           </ResponsiveContainer>
         </div>
 
-        <div className="card p-6">
+        <div className="card border border-success-100 bg-gradient-to-br from-white to-success-50/70 p-6">
           <h2 className="font-heading text-lg font-semibold text-ink-900">Donations Overview</h2>
           <ResponsiveContainer width="100%" height={240} className="mt-4">
             <BarChart data={donationData}>
@@ -310,14 +310,14 @@ export default function AdminDashboard() {
       {/* Activity Row */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Recent Applications */}
-        <div className="card p-6">
+        <div className="card border border-primary-100 bg-gradient-to-br from-white to-primary-50/45 p-6">
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-lg font-semibold text-ink-900">Recent Applications</h2>
             <Link to="/admin/applications" className="text-sm font-semibold text-primary-700 hover:underline">View all</Link>
           </div>
           <div className="mt-4 space-y-2.5">
             {recentApps.length === 0 ? (
-              <p className="py-8 text-center text-sm text-ink-500">No applications yet.</p>
+              <p className="rounded-xl border border-primary-100 bg-primary-50/70 py-8 text-center text-sm font-medium text-primary-700">No applications yet.</p>
             ) : (
               recentApps.map((a: any) => (
                 <div key={a.id} className="flex items-center justify-between rounded-xl border border-ink-100 p-3 transition-colors hover:border-primary-200">
@@ -335,14 +335,14 @@ export default function AdminDashboard() {
         </div>
 
         {/* Recent Registrations */}
-        <div className="card p-6">
+        <div className="card border border-secondary-100 bg-gradient-to-br from-white to-secondary-50/45 p-6">
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-lg font-semibold text-ink-900">Recent Registrations</h2>
             <Link to="/admin/users" className="text-sm font-semibold text-primary-700 hover:underline">View all</Link>
           </div>
           <div className="mt-4 space-y-2.5">
             {recentUsers.length === 0 ? (
-              <p className="py-8 text-center text-sm text-ink-500">No registrations yet.</p>
+              <p className="rounded-xl border border-secondary-100 bg-secondary-50/70 py-8 text-center text-sm font-medium text-secondary-700">No registrations yet.</p>
             ) : (
               recentUsers.map((u: any) => (
                 <div key={u.id} className="flex items-center justify-between rounded-xl border border-ink-100 p-3 transition-colors hover:border-primary-200">
@@ -368,14 +368,14 @@ export default function AdminDashboard() {
 
       {/* Upcoming Events & Contact Messages */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="card p-6">
+        <div className="card border border-accent-100 bg-gradient-to-br from-white to-accent-50/45 p-6">
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-lg font-semibold text-ink-900">Upcoming Events</h2>
             <Link to="/admin/events" className="text-sm font-semibold text-primary-700 hover:underline">View all</Link>
           </div>
           <div className="mt-4 space-y-2.5">
             {upcomingEvents.length === 0 ? (
-              <p className="py-8 text-center text-sm text-ink-500">No upcoming events.</p>
+              <p className="rounded-xl border border-accent-100 bg-accent-50/70 py-8 text-center text-sm font-medium text-accent-700">No upcoming events.</p>
             ) : (
               upcomingEvents.map((e: any) => (
                 <div key={e.id} className="flex items-center justify-between rounded-xl border border-ink-100 p-3 transition-colors hover:border-primary-200">
@@ -390,14 +390,14 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="card p-6">
+        <div className="card border border-success-100 bg-gradient-to-br from-white to-success-50/45 p-6">
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-lg font-semibold text-ink-900">Latest Contact Messages</h2>
             <Link to="/admin/messages" className="text-sm font-semibold text-primary-700 hover:underline">View all</Link>
           </div>
           <div className="mt-4 space-y-2.5">
             {recentMessages.length === 0 ? (
-              <p className="py-8 text-center text-sm text-ink-500">No messages yet.</p>
+              <p className="rounded-xl border border-success-100 bg-success-50/70 py-8 text-center text-sm font-medium text-success-700">No messages yet.</p>
             ) : (
               recentMessages.map((m: any) => (
                 <div key={m.id} className="flex items-center justify-between rounded-xl border border-ink-100 p-3 transition-colors hover:border-primary-200">
