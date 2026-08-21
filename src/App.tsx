@@ -102,7 +102,14 @@ export default function App() {
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/donate" element={<Donate />} />
-            <Route path="/apply" element={<Apply />} />
+            <Route
+              path="/apply"
+              element={
+                <ProtectedRoute unauthenticatedTo="/signup">
+                  <Apply />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/reset-password" element={<ResetPassword />} />

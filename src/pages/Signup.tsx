@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, UserPlus, Eye, EyeOff, GraduationCap, Briefcase, Heart } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { isAdminRole } from '@/lib/supabase';
@@ -8,6 +8,7 @@ import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 import AuthLayout from '@/components/AuthLayout';
 import { cn } from '@/lib/utils';
+import { safeInternalPath } from '@/lib/navigation';
 
 const roles: { value: UserRole; label: string; desc: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { value: 'intern', label: 'Intern', desc: 'Learn & grow', icon: GraduationCap },
@@ -18,6 +19,8 @@ const roles: { value: UserRole; label: string; desc: string; icon: React.Compone
 export default function Signup() {
   const { signUp, user, profile } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const requestedPath = safeInternalPath((location.state as { from?: string })?.from, '/dashboard');
 
   const [form, setForm] = useState({ full_name: '', email: '', password: '', role: 'intern' as UserRole });
   const [showPassword, setShowPassword] = useState(false);
@@ -28,9 +31,9 @@ export default function Signup() {
   useEffect(() => {
     if (user && profile) {
       const isAdmin = isAdminRole(user.app_metadata?.role) && isAdminRole(profile.role);
-      navigate(isAdmin ? '/admin' : '/dashboard', { replace: true });
+      navigate(isAdmin ? '/admin' : requestedPath, { replace: true });
     }
-  }, [navigate, profile, user]);
+  }, [navigate, profile, requestedPath, user]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +47,7 @@ export default function Signup() {
     setLoading(false);
     if (error) setError(error);
     else if (requiresEmailConfirmation) setConfirmationRequired(true);
-    else navigate('/dashboard', { replace: true });
+    else navigate(requestedPath, { replace: true });
   };
 
   return (
@@ -58,7 +61,7 @@ export default function Signup() {
           <p className="mt-2 text-sm text-ink-500">Join the CCC community and start your journey</p>
         </div>
         {confirmationRequired ? (
-          <div className="mt-8"><Alert type="success" message="Account created. Check your email to verify your address, then sign in." /><Link to="/login" className="btn-primary mt-5 w-full">Continue to Sign In</Link></div>
+          <div className="mt-8"><Alert type="success" message="Account created. Check your email to verify your address, then sign in." /><Link to="/login" state={{ from: requestedPath }} className="btn-primary mt-5 w-full">Continue to Sign In</Link></div>
         ) : <form onSubmit={submit} className="mt-8 space-y-5">
           {error && <Alert type="error" message={error} />}
           <div>
@@ -109,7 +112,7 @@ export default function Signup() {
         </form>}
         <p className="mt-7 text-center text-sm text-ink-500">
           Already have an account?{' '}
-          <Link to="/login" className="font-semibold text-primary-700 hover:underline">Sign in</Link>
+          <Link to="/login" state={{ from: requestedPath }} className="font-semibold text-primary-700 hover:underline">Sign in</Link>
         </p>
       </div>
     </AuthLayout>

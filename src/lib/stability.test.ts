@@ -23,6 +23,7 @@ describe('protected route decisions', () => {
   it('sends anonymous users to the correct login', () => {
     expect(protectedRouteDestination({ hasUser: false, profileRole: null, metadataRole: null, adminOnly: false })).toBe('/login');
     expect(protectedRouteDestination({ hasUser: false, profileRole: null, metadataRole: null, adminOnly: true })).toBe('/admin/login');
+    expect(protectedRouteDestination({ hasUser: false, profileRole: null, metadataRole: null, adminOnly: false, unauthenticatedTo: '/signup' })).toBe('/signup');
   });
 
   it('requires both trusted metadata and profile roles for admin access', () => {

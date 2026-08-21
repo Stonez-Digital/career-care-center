@@ -7,6 +7,7 @@ type Props = {
   children: React.ReactNode;
   adminOnly?: boolean;
   roles?: UserRole[];
+  unauthenticatedTo?: string;
 };
 
 type AccessInput = {
@@ -15,6 +16,7 @@ type AccessInput = {
   metadataRole: unknown;
   adminOnly: boolean;
   roles?: UserRole[];
+  unauthenticatedTo?: string;
 };
 
 export function protectedRouteDestination({
@@ -23,8 +25,9 @@ export function protectedRouteDestination({
   metadataRole,
   adminOnly,
   roles,
+  unauthenticatedTo,
 }: AccessInput): string | null {
-  if (!hasUser) return adminOnly ? '/admin/login' : '/login';
+  if (!hasUser) return unauthenticatedTo ?? (adminOnly ? '/admin/login' : '/login');
   const isAdmin = isAdminRole(metadataRole) && isAdminRole(profileRole);
   if (adminOnly && !isAdmin) return '/unauthorized';
   if (roles?.length && (!profileRole || !roles.includes(profileRole))) {
@@ -33,7 +36,7 @@ export function protectedRouteDestination({
   return null;
 }
 
-export default function ProtectedRoute({ children, adminOnly = false, roles }: Props) {
+export default function ProtectedRoute({ children, adminOnly = false, roles, unauthenticatedTo }: Props) {
   const { user, profile, loading } = useAuth();
   const location = useLocation();
 
@@ -45,6 +48,7 @@ export default function ProtectedRoute({ children, adminOnly = false, roles }: P
     metadataRole: user?.app_metadata?.role,
     adminOnly,
     roles,
+    unauthenticatedTo,
   });
   if (destination) {
     return <Navigate to={destination} state={!user ? { from: location.pathname } : undefined} replace />;
