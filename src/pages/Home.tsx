@@ -41,14 +41,15 @@ export default function Home() {
         <div className="container-page relative py-16 sm:py-24 lg:py-28">
           <div className="grid items-center gap-14 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16">
             <div className="text-center lg:text-left">
-            <div className="mx-auto w-full max-w-xl rounded-[2rem] border border-white/30 bg-white/95 px-6 py-5 shadow-2xl backdrop-blur-sm animate-fade-in-up animate-fill-back sm:px-10 sm:py-7 lg:mx-0">
+            <h1 className="sr-only">Career Care Center — uplifting talents to make a meaningful impact</h1>
+            <div className="mx-auto w-full max-w-sm rounded-3xl border border-white/30 bg-white/95 px-8 py-5 shadow-2xl backdrop-blur-sm animate-fade-in-up animate-fill-back lg:mx-0">
               <img
                 src="/career-care-logo.png?v=6"
                 alt="Career Care Center — uplifting talents to make a meaningful impact"
                 width={556}
                 height={312}
                 fetchPriority="high"
-                className="mx-auto h-auto w-full"
+                className="mx-auto h-auto w-full max-w-[20rem]"
               />
             </div>
             <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-primary-100 text-pretty sm:text-xl lg:mx-0 animate-fade-in-up animate-fill-back animate-delay-100">

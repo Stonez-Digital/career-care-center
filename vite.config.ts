@@ -9,7 +9,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: false,
-      includeAssets: ['robots.txt', 'career-care-logo.png', 'pwa-192.png', 'pwa-512.png'],
+      includeAssets: ['robots.txt', 'career-care-logo.png', 'social-preview.png', 'pwa-192.png', 'pwa-512.png'],
       manifest: {
         name: 'Career Care Center',
         short_name: 'CCC',

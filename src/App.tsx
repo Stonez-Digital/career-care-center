@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import Maintenance from './pages/Maintenance';
+import Seo from './components/Seo';
 
 // ── Public Website ──
 const Home = lazy(() => import('./pages/Home'));
@@ -82,6 +83,7 @@ export default function App() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <Seo />
       {!isPortal && <Navbar />}
       <main className="flex-1">
         <Suspense fallback={<PageLoader />}>
