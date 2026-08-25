@@ -88,7 +88,7 @@ export default function AdminSessions() {
     }
 
     setSubmitting(true);
-    const { error: insertError } = await supabase.from('mentor_sessions').insert({
+    const { data: createdSession, error: insertError } = await supabase.from('mentor_sessions').insert({
       mentor_id: form.mentor_id,
       mentee_id: form.mentee_id,
       scheduled_at: new Date(form.scheduled_at).toISOString(),
@@ -96,7 +96,7 @@ export default function AdminSessions() {
       meeting_url: form.meeting_url.trim(),
       notes: form.notes.trim() || null,
       status: 'scheduled',
-    });
+    }).select('id').single();
 
     if (insertError) {
       setSubmitting(false);
@@ -110,10 +110,21 @@ export default function AdminSessions() {
       { user_id: form.mentee_id, title: 'New Mentorship Session', body: `You have been assigned a mentorship session on ${when}: ${form.topic.trim()}`, type: 'mentorship' },
     ]);
 
+    const { data: invitationResult, error: invitationError } = await supabase.functions.invoke('send-session-invitations', {
+      body: { session_id: createdSession.id },
+    });
+
     setSubmitting(false);
     setModalOpen(false);
     setForm(emptyForm);
-    setSuccess(notificationError ? 'Session assigned. Participant notification delivery needs attention.' : 'Session assigned and both participants notified.');
+    if (invitationError || !invitationResult?.success) {
+      setSuccess(null);
+      setError(`Session assigned, but email invitations could not be sent. ${invitationResult?.error ?? invitationError?.message ?? 'Please try again or contact support.'}`);
+    } else if (notificationError) {
+      setSuccess('Email invitations sent to both participants. In-app notification delivery needs attention.');
+    } else {
+      setSuccess('Session assigned. Email invitations and in-app notifications sent to both participants.');
+    }
     await load();
   };
 

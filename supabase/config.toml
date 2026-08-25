@@ -49,6 +49,9 @@ verify_jwt = true
 [functions.send-contact-reply]
 verify_jwt = true
 
+[functions.send-session-invitations]
+verify_jwt = true
+
 # Resend authenticates this public endpoint with signed Svix headers.
 [functions.resend-webhook]
 verify_jwt = false
