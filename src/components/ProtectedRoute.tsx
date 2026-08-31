@@ -14,6 +14,7 @@ type AccessInput = {
   hasUser: boolean;
   profileRole: UserRole | null;
   metadataRole: unknown;
+  profileSuspended?: boolean;
   adminOnly: boolean;
   roles?: UserRole[];
   unauthenticatedTo?: string;
@@ -23,11 +24,13 @@ export function protectedRouteDestination({
   hasUser,
   profileRole,
   metadataRole,
+  profileSuspended = false,
   adminOnly,
   roles,
   unauthenticatedTo,
 }: AccessInput): string | null {
   if (!hasUser) return unauthenticatedTo ?? (adminOnly ? '/admin/login' : '/login');
+  if (profileSuspended) return '/unauthorized';
   const isAdmin = isAdminRole(metadataRole) && isAdminRole(profileRole);
   if (adminOnly && !isAdmin) return '/unauthorized';
   if (roles?.length && (!profileRole || !roles.includes(profileRole))) {
@@ -46,6 +49,7 @@ export default function ProtectedRoute({ children, adminOnly = false, roles, una
     hasUser: Boolean(user),
     profileRole: profile?.role ?? null,
     metadataRole: user?.app_metadata?.role,
+    profileSuspended: profile?.is_suspended ?? false,
     adminOnly,
     roles,
     unauthenticatedTo,

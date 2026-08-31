@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { enforceRateLimit, readBoundedJson } from "../_shared/public-request-guard.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -20,11 +21,20 @@ Deno.serve(async (req: Request) => {
   try {
     if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+      { auth: { persistSession: false } }
+    );
+    if (!await enforceRateLimit(req, supabase, "contact-form", 5, 600)) {
+      return json({ error: "Too many messages. Please wait before trying again." }, 429);
+    }
+
     let body: Record<string, unknown>;
     try {
-      body = await req.json();
-    } catch {
-      return json({ error: "Invalid JSON body" }, 400);
+      body = await readBoundedJson(req);
+    } catch (error) {
+      return json({ error: error instanceof Error && error.message === "request_too_large" ? "Request body is too large." : "Invalid JSON body" }, 400);
     }
 
     const { name, email, phone, subject, message } = body as Record<string, string>;
@@ -37,12 +47,6 @@ Deno.serve(async (req: Request) => {
     if (message?.trim().length > 5000) errors.push("Message must be under 5000 characters.");
     if (name?.trim().length > 200) errors.push("Name must be under 200 characters.");
     if (errors.length) return json({ error: errors.join(" ") }, 422);
-
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-      { auth: { persistSession: false } }
-    );
 
     const { error: insertError } = await supabase.from("contact_messages").insert({
       name: name.trim().slice(0, 200),

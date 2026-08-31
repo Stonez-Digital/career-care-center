@@ -46,6 +46,18 @@ verify_jwt = true
 [functions.welcome-email]
 verify_jwt = true
 
+[functions.admin-update-user-role]
+verify_jwt = true
+
+[functions.contact-form]
+verify_jwt = true
+
+[functions.process-donation]
+verify_jwt = true
+
+[functions.submit-application]
+verify_jwt = true
+
 [functions.send-contact-reply]
 verify_jwt = true
 

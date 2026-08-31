@@ -5,11 +5,6 @@ export const RESOURCE_TYPES = [...IMAGE_TYPES, 'application/pdf', 'video/mp4', '
 export const GALLERY_VIDEO_TYPES = ['video/mp4', 'video/webm'];
 export const GALLERY_MEDIA_TYPES = [...IMAGE_TYPES, ...GALLERY_VIDEO_TYPES];
 
-const safeName = (name: string) => {
-  const extension = name.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
-  return `${crypto.randomUUID()}.${extension}`;
-};
-
 export async function uploadPublicMedia(options: {
   bucket: 'profile-images' | 'resource-media';
   folder: string;
@@ -21,11 +16,13 @@ export async function uploadPublicMedia(options: {
   if (!allowedTypes.includes(file.type)) throw new Error('Unsupported file type. Choose a permitted image, PDF, MP4, or WebM file.');
   if (file.size > maxBytes) throw new Error(`File is too large. Maximum size is ${Math.round(maxBytes / 1024 / 1024)} MB.`);
 
-  const path = `${folder}/${safeName(file.name)}`;
+  const path = bucket === 'profile-images'
+    ? `${folder}/avatar`
+    : `${folder}/${crypto.randomUUID()}.${file.name.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin'}`;
   const { error } = await supabase.storage.from(bucket).upload(path, file, {
     cacheControl: '3600',
     contentType: file.type,
-    upsert: false,
+    upsert: bucket === 'profile-images',
   });
   if (error) throw new Error(error.message || 'Upload failed. Please check your connection and try again.');
 

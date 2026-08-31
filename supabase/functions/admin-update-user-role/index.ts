@@ -22,8 +22,16 @@ Deno.serve(async (req: Request) => {
 
     const adminClient = createClient(url, serviceKey, { auth: { persistSession: false } });
     const { data: caller, error: callerError } = await adminClient.auth.getUser(authHeader.slice(7));
-    const callerRole = caller.user?.app_metadata?.role;
-    if (callerError || !["admin", "super_admin"].includes(callerRole)) return respond({ error: "Administrator access required." }, 403);
+    if (callerError || !caller.user) return respond({ error: "Administrator access required." }, 403);
+    const { data: callerProfile } = await adminClient
+      .from("profiles")
+      .select("role, is_suspended")
+      .eq("id", caller.user.id)
+      .maybeSingle();
+    const callerRole = callerProfile?.role;
+    if (!callerProfile || callerProfile.is_suspended || callerRole !== "super_admin" || caller.user.app_metadata?.role !== callerRole) {
+      return respond({ error: "Super administrator access required." }, 403);
+    }
 
     const { user_id, role } = await req.json() as { user_id?: string; role?: string };
     if (!user_id || !role || !roles.has(role)) return respond({ error: "Valid user and role are required." }, 422);
@@ -31,9 +39,6 @@ Deno.serve(async (req: Request) => {
 
     const { data: target, error: targetError } = await adminClient.auth.admin.getUserById(user_id);
     if (targetError || !target.user) return respond({ error: "User not found." }, 404);
-    if ((role === "super_admin" || target.user.app_metadata?.role === "super_admin") && callerRole !== "super_admin") {
-      return respond({ error: "Only a super administrator can manage the super administrator role." }, 403);
-    }
     const appMetadata = { ...target.user.app_metadata, role };
     const { error: authError } = await adminClient.auth.admin.updateUserById(user_id, { app_metadata: appMetadata });
     if (authError) throw authError;

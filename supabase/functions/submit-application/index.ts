@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { enforceRateLimit, readBoundedJson } from "../_shared/public-request-guard.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -26,6 +27,10 @@ Deno.serve(async (req: Request) => {
     if (!supabaseUrl || !serviceRoleKey) return json({ error: "Service configuration error." }, 503);
 
     const supabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
+
+    const allowed = await enforceRateLimit(req, supabase, "application", 5, 15 * 60);
+    if (!allowed) return json({ error: "Too many requests. Please try again later." }, 429);
+
     let userId: string | null = null;
     const authHeader = req.headers.get("Authorization") ?? "";
     if (authHeader.startsWith("Bearer ")) {
@@ -35,7 +40,7 @@ Deno.serve(async (req: Request) => {
 
     let body: Record<string, unknown>;
     try {
-      body = await req.json();
+      body = await readBoundedJson(req);
     } catch {
       return json({ error: "Invalid JSON body." }, 400);
     }

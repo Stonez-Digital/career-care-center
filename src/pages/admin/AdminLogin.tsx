@@ -20,10 +20,10 @@ export default function AdminLogin() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!authLoading && isAdminRole(user?.app_metadata?.role) && isAdminRole(profile?.role)) {
+    if (!authLoading && !profile?.is_suspended && isAdminRole(user?.app_metadata?.role) && isAdminRole(profile?.role)) {
       navigate('/admin', { replace: true });
     }
-  }, [authLoading, navigate, profile?.role, user]);
+  }, [authLoading, navigate, profile?.is_suspended, profile?.role, user]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -73,7 +73,7 @@ export function exportToCSV(filename: string, rows: Record<string, any>[]) {
     headers.join(','),
     ...rows.map((row) =>
       headers.map((h) => {
-        const val = String(row[h] ?? '').replace(/"/g, '""');
+        const val = spreadsheetSafeCell(row[h]).replace(/"/g, '""');
         return `"${val}"`;
       }).join(',')
     ),
@@ -85,4 +85,13 @@ export function exportToCSV(filename: string, rows: Record<string, any>[]) {
   link.download = `${filename}-${new Date().toISOString().slice(0, 10)}.csv`;
   link.click();
   URL.revokeObjectURL(url);
+}
+
+export function spreadsheetSafeCell(value: unknown) {
+  const text = String(value ?? '');
+  if (typeof value === 'number' || typeof value === 'bigint') return text;
+  const firstMeaningful = Array.from(text).find((character) => (
+    character.charCodeAt(0) > 32 && !/\s/u.test(character)
+  ));
+  return firstMeaningful && '=+-@'.includes(firstMeaningful) ? `'${text}` : text;
 }

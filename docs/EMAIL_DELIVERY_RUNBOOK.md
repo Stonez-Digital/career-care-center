@@ -13,7 +13,10 @@ Function. A message is marked `replied` only after a signed
 5. Create a sending API key restricted to email sending.
 6. In the linked Supabase project, add the key as the Edge Function secret
    `RESEND_API_KEY`. Never commit or share the key in chat.
-7. Optionally add these Supabase secrets if different addresses are required:
+7. Add a random `PUBLIC_RATE_LIMIT_PEPPER` Supabase secret of at least 32
+   characters. Public contact submissions fail closed when it is missing, so
+   configure it before deploying `contact-form`. Never expose it to the browser.
+8. Optionally add these Supabase secrets if different addresses are required:
    - `CONTACT_REPLY_FROM=Career Care Center <info@careercarecenter.com.ng>`
    - `CONTACT_REPLY_TO=info@careercarecenter.com.ng`
 

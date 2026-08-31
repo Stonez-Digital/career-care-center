@@ -196,11 +196,11 @@ export default function AdminUsers() {
 
             <div>
               <label className="label">Role</label>
-              <select className="input" value={viewing.role} onChange={(e) => changeRole(viewing.id, e.target.value as UserRole)} disabled={viewing.id === user?.id || (viewing.role === 'super_admin' && !isSuperAdmin)}>
+              <select className="input" value={viewing.role} onChange={(e) => changeRole(viewing.id, e.target.value as UserRole)} disabled={!isSuperAdmin || viewing.id === user?.id}>
                 <option value="intern">Intern</option>
                 <option value="volunteer">Volunteer</option>
                 <option value="mentor">Mentor</option>
-                <option value="admin">Administrator</option>
+                {isSuperAdmin && <option value="admin">Administrator</option>}
                 {isSuperAdmin && <option value="super_admin">Super Administrator</option>}
               </select>
               {viewing.id === user?.id && <p className="mt-1 text-xs text-ink-400">You cannot change your own role.</p>}

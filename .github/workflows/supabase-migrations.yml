@@ -23,20 +23,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: production
-    env:
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
-      MIGRATIONS_READY: ${{ vars.SUPABASE_MIGRATIONS_READY }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - uses: supabase/setup-cli@v1
+      - uses: supabase/setup-cli@ad077b4817fff9ecc3c1fd20d271ec351e2d7244 # v1.7.0
         with:
           # 2.112.0 currently rejects one Management API key timestamp for
           # this project during `supabase link`. Keep CI on the verified CLI.
           version: 2.101.0
 
       - name: Validate protected configuration
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
         shell: bash
         run: |
           missing=0
@@ -49,11 +48,17 @@ jobs:
           exit "$missing"
 
       - name: Link database
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
         run: supabase link --project-ref "$SUPABASE_PROJECT_ID"
 
       - name: Sync production auth redirects
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         shell: bash
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
         run: |
           payload="$(jq -n \
             '{
@@ -68,25 +73,38 @@ jobs:
             "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_ID/config/auth"
 
       - name: Compare migration history
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: supabase migration list
 
       - name: Migration dry run
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: supabase db push --dry-run
 
       - name: Apply migrations after reconciliation
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && env.MIGRATIONS_READY == 'true'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.SUPABASE_MIGRATIONS_READY == 'true'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: supabase db push
 
-      - name: Deploy contact reply email functions
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && env.MIGRATIONS_READY == 'true'
+      - name: Deploy protected Edge Functions
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.SUPABASE_MIGRATIONS_READY == 'true'
         shell: bash
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
         run: |
+          supabase functions deploy admin-update-user-role
+          supabase functions deploy contact-form
+          supabase functions deploy process-donation
+          supabase functions deploy submit-application
           supabase functions deploy send-contact-reply
           supabase functions deploy resend-webhook --no-verify-jwt
           supabase functions deploy send-session-invitations
 
       - name: Explain production interlock
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && env.MIGRATIONS_READY != 'true'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.SUPABASE_MIGRATIONS_READY != 'true'
         shell: bash
         run: |
           echo "Migration validation completed without applying production changes." >> "$GITHUB_STEP_SUMMARY"
