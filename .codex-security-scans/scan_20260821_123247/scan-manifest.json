@@ -1,0 +1,92 @@
+{
+  "documentType": "codex-security.scan-manifest",
+  "scan": {
+    "artifacts": [
+      {
+        "mediaType": "application/json",
+        "path": "findings.json",
+        "sha256": "273feccd833d5b1a165cf07d2461fc082d7e224159a5d2eca3de2c33257409f5"
+      },
+      {
+        "mediaType": "application/json",
+        "path": "coverage.json",
+        "sha256": "5e21474a8f189f5d1b859684a7906342abd36323dbfe644c20b776a19960ddfc"
+      }
+    ],
+    "completedAt": "2026-08-21T11:32:47Z",
+    "coverageRef": "coverage.json",
+    "findingsRef": "findings.json",
+    "id": "scan_20260821_123247",
+    "producer": {
+      "name": "codex-security-plugin",
+      "version": "0.1.21"
+    },
+    "scope": {
+      "excludePaths": [
+        ".git/",
+        "node_modules/",
+        "dist/",
+        ".env",
+        ".env.local",
+        "career-care-center"
+      ],
+      "includePaths": [
+        "."
+      ],
+      "limitations": [
+        "No runtime penetration testing or external service probing was performed.",
+        "Worker capacity was three usable slots rather than the recommended six."
+      ],
+      "summary": "Repository-wide static security review of tracked application source, Supabase functions and migrations, deployment configuration, and security-sensitive client flows.",
+      "validationMode": "Independent static source validation"
+    },
+    "sealedAt": "2026-08-21T11:32:47Z",
+    "startedAt": "2026-08-21T11:25:00Z",
+    "status": "completed",
+    "target": {
+      "displayName": "Onoja217/career-care-center",
+      "kind": "git_worktree",
+      "remote": "https://github.com/Onoja217/career-care-center.git",
+      "revision": "f946ed4586aa05b8d804ccbff1a5e651b7d7b232",
+      "snapshotDigest": "codex-security-snapshot/v1:sha256:878b366f5596a00cf0371748ad076368e913f6a9cffc3e47b9f1e57fc487ebf0",
+      "targetId": "career-care-center-f946ed45"
+    },
+    "threatModel": {
+      "assets": [
+        "User and administrator identities",
+        "Donor and partnership PII",
+        "Applications and contact messages",
+        "Authorization roles and suspension state",
+        "Payment-provider and email-provider capacity",
+        "Supabase service-role authority"
+      ],
+      "assumptions": [
+        "Tracked Supabase migrations represent the production policy state",
+        "Configured JWT verification is enabled for functions marked verify_jwt=true",
+        "Public anonymous keys are available to browser users by design"
+      ],
+      "attackerCapabilities": [
+        "Unauthenticated requests using the public project credentials",
+        "Ordinary authenticated account",
+        "Suspended administrator retaining an unexpired session",
+        "Automation of public submission endpoints"
+      ],
+      "securityObjectives": [
+        "Enforce suspension and role authorization server-side",
+        "Keep operational PII staff-only",
+        "Prevent automated resource amplification",
+        "Require consent for subscriptions",
+        "Protect payment and email workflows"
+      ],
+      "summary": "A public Vite application uses Supabase Auth, PostgREST/RLS, Storage, and service-role Edge Functions for career applications, donations, contact intake, administration, and email workflows.",
+      "trustBoundaries": [
+        "Internet caller to browser application",
+        "Browser/anonymous key to Supabase RLS",
+        "Public request to Edge Function",
+        "Edge Function to service-role database client",
+        "Edge Function to Paystack and Resend"
+      ]
+    }
+  },
+  "schemaVersion": "1.0"
+}

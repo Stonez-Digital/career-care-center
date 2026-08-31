@@ -1,0 +1,129 @@
+{
+  "completeness": "partial",
+  "deferred": [
+    {
+      "id": "dependency-advisory-lookup",
+      "paths": [
+        "package.json",
+        "package-lock.json"
+      ],
+      "reason": "Current advisory lookup requires network-backed package intelligence and was outside the offline source-review phase.",
+      "surfaceIds": [
+        "surface_dependencies"
+      ]
+    },
+    {
+      "id": "runtime-policy-verification",
+      "paths": [
+        "supabase/migrations/"
+      ],
+      "reason": "No production penetration testing was authorized; findings rely on the tracked effective migration sequence.",
+      "surfaceIds": [
+        "surface_rls",
+        "surface_admin_auth"
+      ]
+    }
+  ],
+  "documentType": "codex-security.coverage",
+  "excludePaths": [
+    ".git/",
+    "node_modules/",
+    "dist/",
+    ".env",
+    ".env.local",
+    "career-care-center"
+  ],
+  "explicitExclusions": [
+    {
+      "pattern": "node_modules/",
+      "reason": "Vendored dependencies were excluded from source audit; lockfile and manifest were reviewed structurally."
+    },
+    {
+      "pattern": ".env*",
+      "reason": "Local secret-bearing environment files were intentionally not read."
+    },
+    {
+      "pattern": "public/*.png",
+      "reason": "Binary brand and media assets have no executable security surface."
+    }
+  ],
+  "includePaths": [
+    "."
+  ],
+  "inventoryStrategy": "repository",
+  "mode": "repository",
+  "openQuestions": [
+    {
+      "followUpPrompt": "Review Supabase/Vercel firewall, rate-limit, and challenge configuration.",
+      "question": "Are platform-level rate limits or bot controls configured outside this repository?"
+    }
+  ],
+  "scanId": "scan_20260821_123247",
+  "schemaVersion": "1.0",
+  "surfaces": [
+    {
+      "disposition": "reported",
+      "id": "surface_rls",
+      "label": "Supabase RLS and database authorization",
+      "receiptRefs": [],
+      "riskArea": "authorization and privacy"
+    },
+    {
+      "disposition": "reported",
+      "id": "surface_admin_auth",
+      "label": "Administrator identity, roles, and suspension",
+      "receiptRefs": [],
+      "riskArea": "privilege management"
+    },
+    {
+      "disposition": "reported",
+      "id": "surface_edge",
+      "label": "Public and privileged Edge Functions",
+      "receiptRefs": [],
+      "riskArea": "abuse and service-role boundary"
+    },
+    {
+      "disposition": "reported",
+      "id": "surface_payments",
+      "label": "Donation and Paystack initialization",
+      "receiptRefs": [],
+      "riskArea": "resource amplification"
+    },
+    {
+      "disposition": "no_issue_found",
+      "id": "surface_email",
+      "label": "Resend webhooks and contact replies",
+      "receiptRefs": [],
+      "riskArea": "webhook integrity and injection"
+    },
+    {
+      "disposition": "no_issue_found",
+      "id": "surface_storage",
+      "label": "Supabase media storage and uploads",
+      "receiptRefs": [],
+      "riskArea": "object ownership and file validation"
+    },
+    {
+      "disposition": "no_issue_found",
+      "id": "surface_frontend",
+      "label": "React rendering, route guards, and redirects",
+      "receiptRefs": [],
+      "riskArea": "XSS and client-side access control"
+    },
+    {
+      "disposition": "no_issue_found",
+      "id": "surface_secrets",
+      "label": "Committed credentials and security headers",
+      "receiptRefs": [],
+      "riskArea": "configuration"
+    },
+    {
+      "disposition": "needs_follow_up",
+      "id": "surface_dependencies",
+      "label": "Third-party dependency advisories",
+      "notes": "Offline source review did not query current vulnerability databases.",
+      "receiptRefs": [],
+      "riskArea": "supply chain"
+    }
+  ]
+}

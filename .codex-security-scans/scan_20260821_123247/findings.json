@@ -1,0 +1,554 @@
+{
+  "documentType": "codex-security.findings",
+  "findings": [
+    {
+      "attackPath": {
+        "dataflow": {
+          "outcome": "Durable role modification",
+          "sink": "auth.admin.updateUserById",
+          "source": "Bearer token",
+          "summary": "Valid suspended-admin JWT -> app_metadata role check -> service-role user update"
+        },
+        "reachability": {
+          "attacker": "Suspended administrator",
+          "entrypoint": "admin-update-user-role",
+          "outcome": "Continued privileged access",
+          "sink": "Role mutation",
+          "summary": "Directly reachable while the suspended administrator session remains valid."
+        },
+        "summary": "Suspended admin reuses a valid bearer token to call privileged APIs and direct RLS-protected operations."
+      },
+      "confidence": {
+        "level": "high",
+        "rationale": "Direct source review shows is_admin reads only app metadata and admin-update-user-role omits the suspension check used by a sibling privileged function."
+      },
+      "findingId": "csf_884067d3e0ca2d546a32021f",
+      "fingerprints": {
+        "algorithm": "codex-security/v1",
+        "primary": "codex-security/v1:sha256:39c246cda439926f6723b6ee03f4216d2fd7713bdbb9ce298d0f8d9989e49282"
+      },
+      "identity": {
+        "anchor": "admin-suspension-bypass"
+      },
+      "locations": [
+        {
+          "endLine": 27,
+          "path": "supabase/migrations/20260807041000_add_super_admin_and_assign_roles.sql",
+          "role": "root_control",
+          "startLine": 9
+        },
+        {
+          "endLine": 40,
+          "path": "supabase/functions/admin-update-user-role/index.ts",
+          "role": "sink",
+          "startLine": 23
+        },
+        {
+          "endLine": 59,
+          "path": "supabase/functions/send-contact-reply/index.ts",
+          "role": "counterexample",
+          "startLine": 53
+        }
+      ],
+      "occurrenceId": "occ_bbe468809622472edc84bb1e",
+      "provenance": {
+        "source": "local_plugin"
+      },
+      "remediation": "Make the central authorization check require an unsuspended profile and agreement between profile and signed metadata roles. Apply it consistently to every admin RLS policy and privileged Edge Function; revoke sessions when suspending an account.",
+      "rootCause": {
+        "summary": "Administrative authorization is derived from role metadata without consulting the account suspension state."
+      },
+      "ruleId": "authorization.suspension-not-enforced",
+      "severity": {
+        "level": "high",
+        "rationale": "A constrained attacker who previously held admin access can create durable replacement admins and continue accessing admin-protected data after suspension.",
+        "score": 8.1,
+        "scoringSystem": "CVSS:3.1"
+      },
+      "summary": "The central admin authorization helper and role-management endpoint trust signed role metadata without enforcing profiles.is_suspended, allowing a suspended admin with a live session to retain database and role-management privileges.",
+      "taxonomy": {
+        "category": "broken-access-control",
+        "cwe": [
+          "CWE-284"
+        ]
+      },
+      "title": "Suspended administrators retain broad privileged access",
+      "validation": {
+        "counterEvidence": [
+          "send-contact-reply correctly checks is_suspended, demonstrating the intended control, but that check is not centralized."
+        ],
+        "method": "Static source trace",
+        "status": "confirmed",
+        "summary": "The same suspended identity remains accepted by is_admin-backed RLS and can reach auth.admin.updateUserById through the role endpoint."
+      }
+    },
+    {
+      "attackPath": {
+        "dataflow": {
+          "outcome": "Donor PII disclosure",
+          "sink": "Donations table",
+          "source": "Anonymous database request",
+          "summary": "Public anon key -> donations SELECT -> USING (true) -> PII response"
+        },
+        "reachability": {
+          "attacker": "Internet user",
+          "entrypoint": "Supabase REST API",
+          "outcome": "Bulk disclosure",
+          "sink": "donations SELECT",
+          "summary": "No authentication is required."
+        },
+        "summary": "Anonymous PostgREST SELECT returns donor rows."
+      },
+      "confidence": {
+        "level": "high",
+        "rationale": "The effective migration sequence explicitly grants anon SELECT USING (true), and later hardening changes only INSERT."
+      },
+      "findingId": "csf_5605efe37a15c3cbb2c71d18",
+      "fingerprints": {
+        "algorithm": "codex-security/v1",
+        "primary": "codex-security/v1:sha256:c6cb0e2fa9446c4f942e682657e59683f975aea0cd198cd9926187f893969aa5"
+      },
+      "identity": {
+        "anchor": "donations-public-select"
+      },
+      "locations": [
+        {
+          "endLine": 383,
+          "path": "supabase/migrations/20260626052737_create_ccc_schema.sql",
+          "role": "data_definition",
+          "startLine": 372
+        },
+        {
+          "endLine": 270,
+          "path": "supabase/migrations/20260628001529_fix_rls_infinite_recursion.sql",
+          "role": "root_control",
+          "startLine": 269
+        },
+        {
+          "endLine": 29,
+          "path": "supabase/migrations/20260701000851_security_rls_policy_hardening.sql",
+          "role": "counterexample",
+          "startLine": 18
+        }
+      ],
+      "occurrenceId": "occ_06b260919b427a8ba92dbdfb",
+      "provenance": {
+        "source": "local_plugin"
+      },
+      "remediation": "Drop donations_select_public. Allow SELECT only to authenticated administrators through a suspension-aware admin check; expose only de-identified aggregates through a separate narrow view if public totals are needed.",
+      "rootCause": {
+        "summary": "A permissive public SELECT policy was introduced for an operational table containing donor PII and never removed."
+      },
+      "ruleId": "privacy.public-donor-records",
+      "severity": {
+        "level": "high",
+        "rationale": "Unauthenticated, low-complexity enumeration exposes sensitive donor PII and financial relationships across all records.",
+        "score": 8.2,
+        "scoringSystem": "CVSS:3.1"
+      },
+      "summary": "An unconditional anon SELECT policy exposes names, emails, phones, organizations, donation amounts, frequency, status, and messages through PostgREST.",
+      "taxonomy": {
+        "category": "sensitive-data-exposure",
+        "cwe": [
+          "CWE-862",
+          "CWE-200"
+        ]
+      },
+      "title": "Anonymous users can read all donor records and financial metadata",
+      "validation": {
+        "method": "Effective migration-order analysis",
+        "status": "confirmed",
+        "summary": "PostgreSQL permissive policies are OR-combined, so the admin-read policy cannot narrow the unconditional public policy."
+      }
+    },
+    {
+      "attackPath": {
+        "dataflow": {
+          "outcome": "Inquiry disclosure",
+          "sink": "Partners table",
+          "source": "Anonymous database request",
+          "summary": "Public anon key -> partners SELECT -> USING (true) -> inquiry response"
+        },
+        "reachability": {
+          "attacker": "Internet user",
+          "entrypoint": "Supabase REST API",
+          "outcome": "Bulk disclosure",
+          "sink": "partners SELECT",
+          "summary": "No authentication is required."
+        },
+        "summary": "Anonymous PostgREST SELECT returns partnership submissions."
+      },
+      "confidence": {
+        "level": "high",
+        "rationale": "The schema and unconditional anon SELECT policy directly establish exposure."
+      },
+      "findingId": "csf_a40640c0f7110e2d16e4f53f",
+      "fingerprints": {
+        "algorithm": "codex-security/v1",
+        "primary": "codex-security/v1:sha256:91f44048e8f5a37653e1e6631fc91a37d8506e48e5834e105a0a14c3e6dba333"
+      },
+      "identity": {
+        "anchor": "partners-public-select"
+      },
+      "locations": [
+        {
+          "endLine": 410,
+          "path": "supabase/migrations/20260626052737_create_ccc_schema.sql",
+          "role": "data_definition",
+          "startLine": 401
+        },
+        {
+          "endLine": 292,
+          "path": "supabase/migrations/20260628001529_fix_rls_infinite_recursion.sql",
+          "role": "root_control",
+          "startLine": 291
+        }
+      ],
+      "occurrenceId": "occ_d9eb8e6a3426269a788897e6",
+      "provenance": {
+        "source": "local_plugin"
+      },
+      "remediation": "Separate submitted inquiries from approved public partner profiles. Remove public SELECT from the inquiry table and expose only reviewed publication fields from a dedicated table or filtered view.",
+      "rootCause": {
+        "summary": "Public partner profiles and private partnership submissions share one table protected by an unconditional public SELECT policy."
+      },
+      "ruleId": "privacy.public-partnership-inquiries",
+      "severity": {
+        "level": "medium",
+        "rationale": "Unauthenticated bulk disclosure exposes business contact information and private proposal content.",
+        "score": 6.5,
+        "scoringSystem": "CVSS:3.1"
+      },
+      "summary": "The partners table mixes public presentation data with private inquiry names, emails, organizations, interests, and messages, then exposes every row publicly.",
+      "taxonomy": {
+        "category": "sensitive-data-exposure",
+        "cwe": [
+          "CWE-862",
+          "CWE-200"
+        ]
+      },
+      "title": "Anonymous users can read all partnership inquiries",
+      "validation": {
+        "method": "Effective migration-order analysis",
+        "status": "confirmed",
+        "summary": "No later migration removes or filters partners_select_public."
+      }
+    },
+    {
+      "attackPath": {
+        "dataflow": {
+          "outcome": "Storage and workflow exhaustion",
+          "sink": "contact_messages and notifications",
+          "source": "Public HTTP request",
+          "summary": "Anonymous JSON -> service-role contact insert -> admin query -> notification fan-out"
+        },
+        "reachability": {
+          "attacker": "Internet bot",
+          "entrypoint": "contact-form",
+          "outcome": "Amplified spam",
+          "sink": "Service-role writes",
+          "summary": "Reachable with public browser credentials."
+        },
+        "summary": "Automated POSTs create contacts and admin notifications."
+      },
+      "confidence": {
+        "level": "high",
+        "rationale": "The source contains no application-level abuse control before either privileged write."
+      },
+      "findingId": "csf_d2df6877ca3e884e7dce8a35",
+      "fingerprints": {
+        "algorithm": "codex-security/v1",
+        "primary": "codex-security/v1:sha256:f71ffcc973134a48bd70a39be4a8fdcda9eab862e215084e5a02883a54e6b341"
+      },
+      "identity": {
+        "anchor": "contact-service-role-amplification"
+      },
+      "locations": [
+        {
+          "endLine": 47,
+          "path": "supabase/functions/contact-form/index.ts",
+          "role": "entrypoint",
+          "startLine": 17
+        },
+        {
+          "endLine": 72,
+          "path": "supabase/functions/contact-form/index.ts",
+          "role": "sink",
+          "startLine": 61
+        },
+        {
+          "endLine": 17,
+          "path": "supabase/migrations/20260701000851_security_rls_policy_hardening.sql",
+          "role": "alternate_entrypoint",
+          "startLine": 8
+        }
+      ],
+      "occurrenceId": "occ_b6cb48d2aa2e995291d71342",
+      "provenance": {
+        "source": "local_plugin"
+      },
+      "remediation": "Add edge rate limits, bot challenges, burst/deduplication controls, and monitoring before service-role work. Revoke direct public table INSERT and funnel submissions through the controlled endpoint; aggregate admin notifications.",
+      "rootCause": {
+        "summary": "Anonymous intake is unmetered and privileged writes amplify each request; direct public INSERT also bypasses any future function-only control."
+      },
+      "ruleId": "resource-exhaustion.contact-submission",
+      "severity": {
+        "level": "medium",
+        "rationale": "Low-complexity automation can consume storage and make the administrator inbox unusable.",
+        "score": 6.5,
+        "scoringSystem": "CVSS:3.1"
+      },
+      "summary": "Every unauthenticated request can create a service-role contact row and one attacker-controlled notification per active administrator without rate limiting, bot proof, or deduplication.",
+      "taxonomy": {
+        "category": "resource-exhaustion",
+        "cwe": [
+          "CWE-770"
+        ]
+      },
+      "title": "Public contact intake permits unbounded database and notification amplification",
+      "validation": {
+        "method": "Static source trace",
+        "status": "confirmed",
+        "summary": "Basic field limits bound each row but do not bound request count or fan-out."
+      }
+    },
+    {
+      "attackPath": {
+        "dataflow": {
+          "outcome": "Resource consumption and reporting pollution",
+          "sink": "Database and Paystack API",
+          "source": "Public HTTP request",
+          "summary": "Anonymous JSON -> service-role donation insert -> Paystack secret-backed initialization"
+        },
+        "reachability": {
+          "attacker": "Internet bot",
+          "entrypoint": "process-donation",
+          "outcome": "Unbounded provider operations",
+          "sink": "Paystack initialization",
+          "summary": "Reachable with public browser credentials."
+        },
+        "summary": "Automated donation POSTs create rows and initialize Paystack transactions."
+      },
+      "confidence": {
+        "level": "high",
+        "rationale": "The service-role insert and Paystack call are directly reachable with no rate, challenge, quota, or idempotency control."
+      },
+      "findingId": "csf_5cb3734a23e3161a0bf01262",
+      "fingerprints": {
+        "algorithm": "codex-security/v1",
+        "primary": "codex-security/v1:sha256:8f4ebf34247279510507c2dabc0ad80753c54341b840d9f50a644892513338a1"
+      },
+      "identity": {
+        "anchor": "donation-paystack-amplification"
+      },
+      "locations": [
+        {
+          "endLine": 68,
+          "path": "supabase/functions/process-donation/index.ts",
+          "role": "entrypoint",
+          "startLine": 33
+        },
+        {
+          "endLine": 99,
+          "path": "supabase/functions/process-donation/index.ts",
+          "role": "sink",
+          "startLine": 95
+        },
+        {
+          "endLine": 145,
+          "path": "supabase/functions/process-donation/index.ts",
+          "role": "sink",
+          "startLine": 134
+        }
+      ],
+      "occurrenceId": "occ_9796b50370099c9dfc7071ff",
+      "provenance": {
+        "source": "local_plugin"
+      },
+      "remediation": "Apply edge rate limits and bot proof before insertion, use idempotency keys and pending-row expiry, monitor provider volume, revoke redundant direct public donation INSERT, and implement signed server-side Paystack reconciliation.",
+      "rootCause": {
+        "summary": "A public request triggers privileged persistence and a paid external-provider operation without abuse controls or idempotency."
+      },
+      "ruleId": "resource-exhaustion.donation-initialization",
+      "severity": {
+        "level": "medium",
+        "rationale": "Automation consumes database, function, provider, and operational capacity without compromising payment completion integrity.",
+        "score": 6.5,
+        "scoringSystem": "CVSS:3.1"
+      },
+      "summary": "Anonymous callers can create unlimited pending donation records and Paystack transaction initializations; failed or abandoned initializations retain records.",
+      "taxonomy": {
+        "category": "resource-exhaustion",
+        "cwe": [
+          "CWE-770"
+        ]
+      },
+      "title": "Donation initialization is an unmetered database and payment-provider operation",
+      "validation": {
+        "method": "Static source trace",
+        "status": "confirmed",
+        "summary": "Per-request amount and field validation do not restrict request volume; no completion webhook or pending-record expiry was found."
+      }
+    },
+    {
+      "attackPath": {
+        "dataflow": {
+          "outcome": "Unauthorized submission, flooding, and status disclosure",
+          "sink": "Applications and status logs",
+          "source": "Public HTTP request",
+          "summary": "Unauthenticated request -> optional auth fallthrough -> service-role duplicate query/insert"
+        },
+        "reachability": {
+          "attacker": "Internet user",
+          "entrypoint": "submit-application",
+          "outcome": "Account-control bypass",
+          "sink": "Service-role application operations",
+          "summary": "Directly reachable without using the guarded UI."
+        },
+        "summary": "Direct public invocation bypasses signup and probes or creates applications."
+      },
+      "confidence": {
+        "level": "high",
+        "rationale": "Invalid authentication explicitly falls through to userId=null and the duplicate response embeds existing.status."
+      },
+      "findingId": "csf_fa57d88dd45dfb27eb537483",
+      "fingerprints": {
+        "algorithm": "codex-security/v1",
+        "primary": "codex-security/v1:sha256:08b800f1b1e9c5c91a5a98f82ae5c32ab8c91ba4cf5532ca336ef9a6461e972d"
+      },
+      "identity": {
+        "anchor": "application-account-bypass-and-oracle"
+      },
+      "locations": [
+        {
+          "endLine": 109,
+          "path": "src/App.tsx",
+          "role": "expected_control",
+          "startLine": 101
+        },
+        {
+          "endLine": 35,
+          "path": "supabase/functions/submit-application/index.ts",
+          "role": "root_control",
+          "startLine": 28
+        },
+        {
+          "endLine": 73,
+          "path": "supabase/functions/submit-application/index.ts",
+          "role": "information_disclosure",
+          "startLine": 62
+        },
+        {
+          "endLine": 104,
+          "path": "supabase/functions/submit-application/index.ts",
+          "role": "sink",
+          "startLine": 76
+        }
+      ],
+      "occurrenceId": "occ_200e2a80488a181de6d71eb0",
+      "provenance": {
+        "source": "local_plugin"
+      },
+      "remediation": "Require and validate a user bearer token, derive applicant identity and email from that user/profile, return a generic duplicate response without status, add rate limits and bot controls, and replace permissive direct INSERT policies with authenticated owner-only policies.",
+      "rootCause": {
+        "summary": "The account requirement exists only in client routing; the privileged backend treats authentication as optional and returns distinguishable private duplicate state."
+      },
+      "ruleId": "authorization.public-application-endpoint",
+      "severity": {
+        "level": "medium",
+        "rationale": "The public path defeats the intended registration control, supports review-workflow flooding, and leaks limited applicant state to an attacker who knows an email and public program ID.",
+        "score": 5.8,
+        "scoringSystem": "CVSS:3.1"
+      },
+      "summary": "The UI requires signup, but the service-role endpoint accepts missing or invalid authentication, creates two rows per application, and reveals whether a supplied email/program pair exists plus its workflow status.",
+      "taxonomy": {
+        "category": "missing-authentication",
+        "cwe": [
+          "CWE-306",
+          "CWE-203",
+          "CWE-770"
+        ]
+      },
+      "title": "Public application endpoint bypasses the account requirement and leaks application status",
+      "validation": {
+        "method": "Client-to-function source trace",
+        "status": "confirmed",
+        "summary": "A direct caller bypasses React routing; duplicate checks and inserts use service-role authority."
+      }
+    },
+    {
+      "attackPath": {
+        "dataflow": {
+          "outcome": "Consent-state corruption",
+          "sink": "newsletter_subscribers",
+          "source": "Public HTTP request",
+          "summary": "Victim email -> public endpoint -> service-role insert/update is_active=true"
+        },
+        "reachability": {
+          "attacker": "Internet user",
+          "entrypoint": "newsletter-subscribe",
+          "outcome": "Unauthorized enrollment/reactivation",
+          "sink": "Subscription state",
+          "summary": "No authentication or mailbox proof is required."
+        },
+        "summary": "Anonymous caller submits a victim email and the service-role client activates it."
+      },
+      "confidence": {
+        "level": "high",
+        "rationale": "The endpoint sets is_active=true based solely on a syntactically valid email string."
+      },
+      "findingId": "csf_52f4dbfb1245db13ca20b4ef",
+      "fingerprints": {
+        "algorithm": "codex-security/v1",
+        "primary": "codex-security/v1:sha256:1b1523c22cf2a8a0bc8785de35f15d0fd3d071c14331c379f6235a9653c1013e"
+      },
+      "identity": {
+        "anchor": "newsletter-unverified-opt-in"
+      },
+      "locations": [
+        {
+          "endLine": 39,
+          "path": "supabase/functions/newsletter-subscribe/index.ts",
+          "role": "entrypoint",
+          "startLine": 32
+        },
+        {
+          "endLine": 60,
+          "path": "supabase/functions/newsletter-subscribe/index.ts",
+          "role": "sink",
+          "startLine": 44
+        }
+      ],
+      "occurrenceId": "occ_22e1a56ed08ef8ecc6231d76",
+      "provenance": {
+        "source": "local_plugin"
+      },
+      "remediation": "Implement confirmed opt-in with single-use expiring tokens. Store new requests as pending and never reactivate an unsubscribed address without fresh mailbox confirmation; add rate limiting and non-enumerating responses.",
+      "rootCause": {
+        "summary": "Subscription activation does not require a single-use confirmation proving control of the target mailbox."
+      },
+      "ruleId": "consent.newsletter-reactivation",
+      "severity": {
+        "level": "low",
+        "rationale": "The issue corrupts consent state and enables list pollution; no active campaign sender was established in repository source.",
+        "score": 3.7,
+        "scoringSystem": "CVSS:3.1"
+      },
+      "summary": "Any anonymous caller who supplies another person's email can create an active subscription or reverse an inactive state without proving mailbox control.",
+      "taxonomy": {
+        "category": "missing-authorization",
+        "cwe": [
+          "CWE-862"
+        ]
+      },
+      "title": "Newsletter endpoint can reactivate unsubscribed addresses without consent",
+      "validation": {
+        "method": "Static source trace",
+        "status": "confirmed",
+        "summary": "Possession of the email string is the only requirement for initial activation or reactivation."
+      }
+    }
+  ],
+  "scanId": "scan_20260821_123247",
+  "schemaVersion": "1.0"
+}
