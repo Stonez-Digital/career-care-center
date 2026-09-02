@@ -29,7 +29,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const { error } = await signIn(email, password);
+    const { error } = await signIn(email, password, 'admin');
     setLoading(false);
     if (error) {
       setError(error);

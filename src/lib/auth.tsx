@@ -9,7 +9,7 @@ interface AuthContextValue {
   user: User | null;
   profile: Profile | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signIn: (email: string, password: string, portal?: 'user' | 'admin') => Promise<{ error: string | null }>;
   signUp: (email: string, password: string, fullName: string, role: UserRole) => Promise<{ error: string | null; requiresEmailConfirmation: boolean }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -131,13 +131,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  const signIn = useCallback(async (email: string, password: string) => {
+  const signIn = useCallback(async (email: string, password: string, portal: 'user' | 'admin' = 'user') => {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
         console.error('[CCC] signIn error:', error);
         return { error: extractErrorMessage(error) };
       }
+      const { error: activityError } = await supabase.functions.invoke('record-login', { body: { portal } });
+      if (activityError) console.warn('[CCC] Login activity could not be recorded:', activityError.message);
       return { error: null };
     } catch (err) {
       console.error('[CCC] signIn unexpected error:', err);

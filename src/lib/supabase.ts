@@ -268,6 +268,18 @@ export interface AuditLog {
   created_at: string;
 }
 
+export interface LoginActivity {
+  id: string;
+  user_id: string;
+  email: string;
+  full_name: string | null;
+  role: UserRole | null;
+  portal: 'user' | 'admin';
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string;
+}
+
 export interface NewsletterSubscriber {
   id: string;
   email: string;

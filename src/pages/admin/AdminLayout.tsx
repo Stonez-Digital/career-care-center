@@ -5,14 +5,14 @@ import {
   PenSquare, Star, HeartHandshake, HandCoins,
   Mail, Bell, BarChart3, Settings, LogOut, Home, ChevronDown,
   Plus, Archive, CalendarCheck, UserCheck, Activity,
-  Sparkles, MailOpen, UserRound,
+  Sparkles, MailOpen, UserRound, LogIn,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import ThemeToggle from '@/components/ThemeToggle';
 
-type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; end?: boolean };
+type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; end?: boolean; superAdminOnly?: boolean };
 type NavGroup = { label: string; items: NavItem[] };
 
 const navGroups: NavGroup[] = [
@@ -120,6 +120,7 @@ const navGroups: NavGroup[] = [
     items: [
       { to: '/admin/profile', label: 'My Profile', icon: UserRound },
       { to: '/admin/audit-logs', label: 'Audit Logs', icon: Activity },
+      { to: '/admin/login-activity', label: 'Login Activity', icon: LogIn, superAdminOnly: true },
       { to: '/admin/settings', label: 'Site & SEO Settings', icon: Settings },
     ],
   },
@@ -214,7 +215,7 @@ export default function AdminLayout() {
                   </button>
                   {!collapsed[group.label] && (
                     <div className="mb-1 space-y-0.5">
-                      {group.items.map((item) => (
+                      {group.items.filter((item) => !item.superAdminOnly || profile?.role === 'super_admin').map((item) => (
                         <AdminNavLink key={item.to} item={item} />
                       ))}
                     </div>
