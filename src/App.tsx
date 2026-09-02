@@ -97,7 +97,14 @@ export default function App() {
             <Route path="/events" element={<Events />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/success-stories" element={<SuccessStories />} />
-            <Route path="/volunteer" element={<Volunteer />} />
+            <Route
+              path="/volunteer"
+              element={
+                <ProtectedRoute unauthenticatedTo="/login">
+                  <Volunteer />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/contact" element={<Contact />} />
