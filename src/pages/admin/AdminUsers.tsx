@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Search, ShieldCheck, Ban, CheckCircle2, Trash2, Download, Mail } from 'lucide-react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Search, ShieldCheck, Ban, CheckCircle2, Trash2, Download, Mail, Users, RotateCcw, Send, Eye } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Profile, UserRole } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth';
@@ -12,6 +12,13 @@ import { formatDate, cn, exportToCSV } from '@/lib/utils';
 
 const roleVariant: Record<string, 'primary' | 'secondary' | 'accent' | 'neutral'> = {
   super_admin: 'primary', admin: 'primary', intern: 'secondary', mentor: 'accent', volunteer: 'neutral',
+};
+
+type BroadcastAudience = 'all' | 'active' | UserRole;
+
+const audienceLabels: Record<BroadcastAudience, string> = {
+  all: 'All registered users', active: 'Active users only', intern: 'Interns',
+  volunteer: 'Volunteers', mentor: 'Mentors', admin: 'Administrators', super_admin: 'Super administrators',
 };
 
 export default function AdminUsers() {
@@ -29,7 +36,10 @@ export default function AdminUsers() {
   const [showBroadcast, setShowBroadcast] = useState(false);
   const [broadcastSubject, setBroadcastSubject] = useState('');
   const [broadcastMessage, setBroadcastMessage] = useState('');
+  const [broadcastAudience, setBroadcastAudience] = useState<BroadcastAudience>('active');
+  const [previewingBroadcast, setPreviewingBroadcast] = useState(false);
   const [sendingBroadcast, setSendingBroadcast] = useState(false);
+  const [sendingTest, setSendingTest] = useState(false);
   const [page, setPage] = useState(0);
   const pageSize = 20;
 
@@ -39,7 +49,8 @@ export default function AdminUsers() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
+      const { data, error: loadError } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
+      if (loadError) setError(`Users could not be loaded: ${loadError.message}`);
       setUsers((data as Profile[]) ?? []);
       setLoading(false);
     })();
@@ -53,6 +64,11 @@ export default function AdminUsers() {
 
   const paginated = filtered.slice(page * pageSize, (page + 1) * pageSize);
   const totalPages = Math.ceil(filtered.length / pageSize);
+  const audienceCount = users.filter((candidate) => {
+    if (broadcastAudience === 'all') return true;
+    if (broadcastAudience === 'active') return !candidate.is_suspended;
+    return candidate.role === broadcastAudience;
+  }).length;
 
   const changeRole = async (id: string, role: UserRole) => {
     setError(null);
@@ -87,27 +103,43 @@ export default function AdminUsers() {
     })));
   };
 
-  const sendBroadcast = async () => {
+  const deliverBroadcast = async (test = false) => {
     if (!broadcastSubject.trim() || !broadcastMessage.trim()) return;
     setError(null);
     setNotice(null);
-    setSendingBroadcast(true);
+    if (test) setSendingTest(true);
+    else setSendingBroadcast(true);
     const { data, error: requestError } = await supabase.functions.invoke('send-user-broadcast', {
       body: {
         subject: broadcastSubject.trim(),
         message: broadcastMessage.trim(),
+        audience: broadcastAudience,
+        test,
         request_id: crypto.randomUUID(),
       },
     });
-    setSendingBroadcast(false);
+    if (test) setSendingTest(false);
+    else setSendingBroadcast(false);
     if (requestError || data?.error) {
       setError(data?.error ?? requestError?.message ?? 'Unable to send the email.');
       return;
     }
-    setNotice(`Email accepted for delivery to ${data.sent} users.`);
+    if (test) {
+      setNotice(`Test email sent to ${data.recipient}.`);
+      return;
+    }
+    setNotice(`Email sent to ${data.sent} ${data.sent === 1 ? 'user' : 'users'}.`);
     setShowBroadcast(false);
+    setPreviewingBroadcast(false);
     setBroadcastSubject('');
     setBroadcastMessage('');
+  };
+
+  const clearFilters = () => {
+    setSearch('');
+    setRoleFilter('all');
+    setSearchParams({});
+    setPage(0);
   };
 
   if (loading) return <PageLoader />;
@@ -120,13 +152,21 @@ export default function AdminUsers() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-heading text-2xl font-bold text-ink-900">User Management</h1>
-          <p className="text-sm text-ink-500">{filtered.length} users</p>
+          <p className="text-sm text-ink-500">
+            {filtered.length === users.length ? `${users.length} total users` : `${filtered.length} shown · ${users.length} total users`}
+          </p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => { setError(null); setNotice(null); setShowBroadcast(true); }} className="btn-primary text-sm"><Mail className="h-4 w-4" /> Email All Users</button>
+          {isSuperAdmin && <button onClick={() => { setError(null); setNotice(null); setPreviewingBroadcast(false); setShowBroadcast(true); }} className="btn-primary text-sm"><Mail className="h-4 w-4" /> Email Users</button>}
           <button onClick={handleExport} className="btn-outline text-sm"><Download className="h-4 w-4" /> Export</button>
         </div>
       </div>
+
+      {(search || roleFilter !== 'all') && (
+        <button type="button" onClick={clearFilters} className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-700 hover:underline">
+          <RotateCcw className="h-4 w-4" /> Clear filters
+        </button>
+      )}
 
       {/* Filters */}
       <div className="flex flex-col gap-3 sm:flex-row">
@@ -191,6 +231,13 @@ export default function AdminUsers() {
             </tbody>
           </table>
         </div>
+        {filtered.length === 0 && (
+          <div className="px-6 py-14 text-center">
+            <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-ink-100 text-ink-400"><Users className="h-6 w-6" /></div>
+            <p className="font-semibold text-ink-800">No {roleFilter === 'all' ? 'users' : audienceLabels[roleFilter as UserRole].toLowerCase()} found</p>
+            <p className="mt-1 text-sm text-ink-500">Try another search or clear the current filters.</p>
+          </div>
+        )}
         {totalPages > 1 && (
           <div className="flex items-center justify-between border-t border-ink-100 px-4 py-3">
             <p className="text-xs text-ink-500">Page {page + 1} of {totalPages}</p>
@@ -248,9 +295,18 @@ export default function AdminUsers() {
         )}
       </Modal>
 
-      <Modal open={showBroadcast} onClose={() => !sendingBroadcast && setShowBroadcast(false)} title="Email All Users" size="md">
+      <Modal open={showBroadcast} onClose={() => !sendingBroadcast && !sendingTest && setShowBroadcast(false)} title={previewingBroadcast ? 'Review Broadcast' : 'Email Users'} size="md">
         <div className="space-y-4">
-          <Alert type="warning" message={`This sends a private copy to every registered user (${users.length} profiles), including suspended accounts. Review the message carefully before sending.`} />
+          {error && <Alert type="error" message={error} />}
+          {notice && <Alert type="success" message={notice} />}
+          <Alert type="warning" message={previewingBroadcast ? `Confirm this message before sending it to ${audienceCount} ${audienceCount === 1 ? 'recipient' : 'recipients'}.` : 'Only super administrators can send broadcasts. Start with a test email and review the message before delivery.'} />
+          {!previewingBroadcast && <div>
+            <label className="label" htmlFor="broadcast-audience">Recipients</label>
+            <select id="broadcast-audience" className="input" value={broadcastAudience} onChange={(event) => setBroadcastAudience(event.target.value as BroadcastAudience)} disabled={sendingBroadcast || sendingTest}>
+              {Object.entries(audienceLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            </select>
+            <p className="mt-1 text-xs text-ink-500">{audienceCount} matching {audienceCount === 1 ? 'profile' : 'profiles'}</p>
+          </div>}
           <div>
             <label className="label" htmlFor="broadcast-subject">Subject</label>
             <input
@@ -260,7 +316,7 @@ export default function AdminUsers() {
               onChange={(event) => setBroadcastSubject(event.target.value)}
               maxLength={150}
               placeholder="Important update from Career Care Center"
-              disabled={sendingBroadcast}
+              disabled={sendingBroadcast || sendingTest || previewingBroadcast}
             />
           </div>
           <div>
@@ -272,21 +328,24 @@ export default function AdminUsers() {
               onChange={(event) => setBroadcastMessage(event.target.value)}
               maxLength={10000}
               placeholder="Write the email message..."
-              disabled={sendingBroadcast}
+              disabled={sendingBroadcast || sendingTest || previewingBroadcast}
             />
             <p className="mt-1 text-right text-xs text-ink-400">{broadcastMessage.length}/10,000</p>
           </div>
+          {previewingBroadcast && (
+            <div className="rounded-xl border border-ink-200 bg-white p-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-ink-400">{audienceLabels[broadcastAudience]}</p>
+              <p className="mt-2 font-heading text-lg font-semibold text-ink-900">{broadcastSubject}</p>
+              <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-ink-700">Hello [recipient name],{`\n\n`}{broadcastMessage}{`\n\n`}Kind regards,{`\n`}Career Care Center for Youth Development Initiative</p>
+            </div>
+          )}
           <div className="flex justify-end gap-2">
-            <button type="button" className="btn-outline" onClick={() => setShowBroadcast(false)} disabled={sendingBroadcast}>Cancel</button>
-            <button
-              type="button"
-              className="btn-primary"
-              onClick={sendBroadcast}
-              disabled={sendingBroadcast || !broadcastSubject.trim() || !broadcastMessage.trim()}
-            >
-              <Mail className="h-4 w-4" /> {sendingBroadcast ? 'Sending…' : `Send to ${users.length} Users`}
-            </button>
+            <button type="button" className="btn-outline" onClick={() => previewingBroadcast ? setPreviewingBroadcast(false) : setShowBroadcast(false)} disabled={sendingBroadcast || sendingTest}>{previewingBroadcast ? 'Back' : 'Cancel'}</button>
+            {!previewingBroadcast && <button type="button" className="btn-outline" onClick={() => deliverBroadcast(true)} disabled={sendingTest || sendingBroadcast || !broadcastSubject.trim() || !broadcastMessage.trim()}><Send className="h-4 w-4" /> {sendingTest ? 'Sending…' : 'Send Test'}</button>}
+            {!previewingBroadcast && <button type="button" className="btn-primary" onClick={() => setPreviewingBroadcast(true)} disabled={!audienceCount || !broadcastSubject.trim() || !broadcastMessage.trim()}><Eye className="h-4 w-4" /> Review</button>}
+            {previewingBroadcast && <button type="button" className="btn-primary" onClick={() => deliverBroadcast(false)} disabled={sendingBroadcast || !audienceCount}><Mail className="h-4 w-4" /> {sendingBroadcast ? 'Sending…' : `Confirm & Send to ${audienceCount}`}</button>}
           </div>
+          <p className="text-xs text-ink-500">Test and broadcast deliveries are recorded in <Link to="/admin/audit-logs" className="font-semibold text-primary-700 hover:underline">Audit Logs</Link>.</p>
         </div>
       </Modal>
     </div>

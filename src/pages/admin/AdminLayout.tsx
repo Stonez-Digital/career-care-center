@@ -1,4 +1,4 @@
-import { NavLink, Outlet, Link, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, GraduationCap, Heart, Briefcase, ShieldCheck,
   BookOpen, ClipboardList, FileText, Calendar, Video, Library, Images,
@@ -127,13 +127,18 @@ const navGroups: NavGroup[] = [
 
 
 function AdminNavLink({ item }: { item: NavItem }) {
+  const location = useLocation();
+  const [itemPath, itemSearch = ''] = item.to.split('?');
+  const isExactMatch = location.pathname === itemPath
+    && new URLSearchParams(location.search).toString() === new URLSearchParams(itemSearch).toString();
+
   return (
     <NavLink
       to={item.to}
       end={item.end}
-      className={({ isActive }) =>
+      className={() =>
         cn('flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all',
-          isActive ? 'bg-primary-50 text-primary-700 shadow-soft' : 'text-ink-600 hover:bg-ink-50')
+          isExactMatch ? 'bg-primary-50 text-primary-700 shadow-soft' : 'text-ink-600 hover:bg-ink-50')
       }
     >
       <item.icon className="h-4 w-4 shrink-0 text-ink-400" />

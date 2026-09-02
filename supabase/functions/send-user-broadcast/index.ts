@@ -23,6 +23,7 @@ function escapeHtml(value: string) {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const AUDIENCES = ["all", "active", "intern", "volunteer", "mentor", "admin", "super_admin"] as const;
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
@@ -53,7 +54,7 @@ Deno.serve(async (req: Request) => {
     if (
       !callerProfile
       || callerProfile.is_suspended
-      || !["admin", "super_admin"].includes(callerRole)
+      || callerRole !== "super_admin"
       || caller.user.app_metadata?.role !== callerRole
     ) {
       return json({ error: "Administrator access required." }, 403);
@@ -73,17 +74,28 @@ Deno.serve(async (req: Request) => {
     const subject = String(body.subject ?? "").trim();
     const message = String(body.message ?? "").trim();
     const requestId = String(body.request_id ?? "").trim();
+    const audience = String(body.audience ?? "active").trim();
+    const test = body.test === true;
     if (!subject || subject.length > 150) return json({ error: "Subject must be between 1 and 150 characters." }, 422);
     if (!message || message.length > 10_000) return json({ error: "Message must be between 1 and 10,000 characters." }, 422);
     if (!UUID_RE.test(requestId)) return json({ error: "A valid request ID is required." }, 422);
+    if (!AUDIENCES.includes(audience as typeof AUDIENCES[number])) return json({ error: "A valid recipient group is required." }, 422);
 
     const recipients = new Map<string, string>();
-    for (let offset = 0; offset < 5_000; offset += 500) {
-      const { data: profiles, error: profileError } = await adminClient
+    if (test) {
+      const email = String(caller.user.email ?? "").trim().toLowerCase();
+      if (!EMAIL_RE.test(email)) return json({ error: "Your administrator account does not have a valid email address." }, 422);
+      recipients.set(email, String(caller.user.user_metadata?.full_name ?? "").trim());
+    }
+    for (let offset = 0; !test && offset < 5_000; offset += 500) {
+      let profilesQuery = adminClient
         .from("profiles")
         .select("full_name, email")
         .order("id")
         .range(offset, offset + 499);
+      if (audience === "active") profilesQuery = profilesQuery.eq("is_suspended", false);
+      else if (audience !== "all") profilesQuery = profilesQuery.eq("role", audience);
+      const { data: profiles, error: profileError } = await profilesQuery;
       if (profileError) return json({ error: "Could not load user email addresses." }, 500);
       for (const profile of profiles ?? []) {
         const email = String(profile.email ?? "").trim().toLowerCase();
@@ -92,7 +104,7 @@ Deno.serve(async (req: Request) => {
       if ((profiles?.length ?? 0) < 500) break;
       if (offset === 4_500) return json({ error: "The recipient limit for one broadcast was exceeded." }, 422);
     }
-    if (!recipients.size) return json({ error: "No user email addresses are available." }, 422);
+    if (!recipients.size) return json({ error: "No valid email addresses match this recipient group." }, 422);
 
     const safeMessage = escapeHtml(message).replaceAll("\n", "<br />");
     const messages = Array.from(recipients, ([email, name]) => ({
@@ -122,7 +134,16 @@ Deno.serve(async (req: Request) => {
       sent += Math.min(100, messages.length - index);
     }
 
-    return json({ success: true, sent });
+    const { error: auditError } = await adminClient.from("audit_logs").insert({
+      user_id: caller.user.id,
+      action: test ? "user_broadcast_test_sent" : "user_broadcast_sent",
+      entity_type: "email_broadcast",
+      entity_id: requestId,
+      details: JSON.stringify({ subject, audience, recipients: sent }),
+    });
+    if (auditError) console.error("[send-user-broadcast] Could not write audit log:", auditError.message);
+
+    return json({ success: true, sent, recipient: test ? caller.user.email : undefined });
   } catch (error) {
     console.error("[send-user-broadcast] Failed:", error instanceof Error ? error.message : "Unknown error");
     return json({ error: "Unable to send the broadcast email." }, 500);
