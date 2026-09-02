@@ -102,6 +102,7 @@ jobs:
           supabase functions deploy send-contact-reply
           supabase functions deploy resend-webhook --no-verify-jwt
           supabase functions deploy send-session-invitations
+          supabase functions deploy send-user-broadcast
 
       - name: Explain production interlock
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.SUPABASE_MIGRATIONS_READY != 'true'

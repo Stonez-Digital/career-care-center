@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, ShieldCheck, Ban, CheckCircle2, Trash2, Download } from 'lucide-react';
+import { Search, ShieldCheck, Ban, CheckCircle2, Trash2, Download, Mail } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Profile, UserRole } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth';
@@ -25,6 +25,11 @@ export default function AdminUsers() {
   const [roleFilter, setRoleFilter] = useState(initialRole);
   const [viewing, setViewing] = useState<Profile | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [showBroadcast, setShowBroadcast] = useState(false);
+  const [broadcastSubject, setBroadcastSubject] = useState('');
+  const [broadcastMessage, setBroadcastMessage] = useState('');
+  const [sendingBroadcast, setSendingBroadcast] = useState(false);
   const [page, setPage] = useState(0);
   const pageSize = 20;
 
@@ -82,11 +87,35 @@ export default function AdminUsers() {
     })));
   };
 
+  const sendBroadcast = async () => {
+    if (!broadcastSubject.trim() || !broadcastMessage.trim()) return;
+    setError(null);
+    setNotice(null);
+    setSendingBroadcast(true);
+    const { data, error: requestError } = await supabase.functions.invoke('send-user-broadcast', {
+      body: {
+        subject: broadcastSubject.trim(),
+        message: broadcastMessage.trim(),
+        request_id: crypto.randomUUID(),
+      },
+    });
+    setSendingBroadcast(false);
+    if (requestError || data?.error) {
+      setError(data?.error ?? requestError?.message ?? 'Unable to send the email.');
+      return;
+    }
+    setNotice(`Email accepted for delivery to ${data.sent} users.`);
+    setShowBroadcast(false);
+    setBroadcastSubject('');
+    setBroadcastMessage('');
+  };
+
   if (loading) return <PageLoader />;
 
   return (
     <div className="space-y-4">
       {error && <Alert type="error" message={error} />}
+      {notice && <Alert type="success" message={notice} />}
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -94,6 +123,7 @@ export default function AdminUsers() {
           <p className="text-sm text-ink-500">{filtered.length} users</p>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={() => { setError(null); setNotice(null); setShowBroadcast(true); }} className="btn-primary text-sm"><Mail className="h-4 w-4" /> Email All Users</button>
           <button onClick={handleExport} className="btn-outline text-sm"><Download className="h-4 w-4" /> Export</button>
         </div>
       </div>
@@ -216,6 +246,48 @@ export default function AdminUsers() {
             </div>
           </div>
         )}
+      </Modal>
+
+      <Modal open={showBroadcast} onClose={() => !sendingBroadcast && setShowBroadcast(false)} title="Email All Users" size="md">
+        <div className="space-y-4">
+          <Alert type="warning" message={`This sends a private copy to every registered user (${users.length} profiles), including suspended accounts. Review the message carefully before sending.`} />
+          <div>
+            <label className="label" htmlFor="broadcast-subject">Subject</label>
+            <input
+              id="broadcast-subject"
+              className="input"
+              value={broadcastSubject}
+              onChange={(event) => setBroadcastSubject(event.target.value)}
+              maxLength={150}
+              placeholder="Important update from Career Care Center"
+              disabled={sendingBroadcast}
+            />
+          </div>
+          <div>
+            <label className="label" htmlFor="broadcast-message">Message</label>
+            <textarea
+              id="broadcast-message"
+              className="input min-h-48 resize-y"
+              value={broadcastMessage}
+              onChange={(event) => setBroadcastMessage(event.target.value)}
+              maxLength={10000}
+              placeholder="Write the email message..."
+              disabled={sendingBroadcast}
+            />
+            <p className="mt-1 text-right text-xs text-ink-400">{broadcastMessage.length}/10,000</p>
+          </div>
+          <div className="flex justify-end gap-2">
+            <button type="button" className="btn-outline" onClick={() => setShowBroadcast(false)} disabled={sendingBroadcast}>Cancel</button>
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={sendBroadcast}
+              disabled={sendingBroadcast || !broadcastSubject.trim() || !broadcastMessage.trim()}
+            >
+              <Mail className="h-4 w-4" /> {sendingBroadcast ? 'Sending…' : `Send to ${users.length} Users`}
+            </button>
+          </div>
+        </div>
       </Modal>
     </div>
   );
