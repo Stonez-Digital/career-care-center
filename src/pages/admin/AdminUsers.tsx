@@ -21,6 +21,25 @@ const audienceLabels: Record<BroadcastAudience, string> = {
   volunteer: 'Volunteers', mentor: 'Mentors', admin: 'Administrators', super_admin: 'Super administrators',
 };
 
+function UserAvatar({ profile, large = false }: { profile: Profile; large?: boolean }) {
+  const size = large ? 'h-16 w-16 rounded-2xl text-2xl' : 'h-9 w-9 rounded-lg text-sm';
+  return (
+    <div className={cn('relative grid shrink-0 place-items-center overflow-hidden bg-primary-50 font-bold text-primary-700', size)}>
+      <span aria-hidden="true">{profile.full_name?.[0]?.toUpperCase() ?? 'U'}</span>
+      {profile.avatar_url ? (
+        <img
+          src={profile.avatar_url}
+          alt={`${profile.full_name ?? 'User'} profile`}
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          onError={(event) => { event.currentTarget.style.display = 'none'; }}
+        />
+      ) : null}
+    </div>
+  );
+}
+
 export default function AdminUsers() {
   const { user } = useAuth();
   const isSuperAdmin = user?.app_metadata?.role === 'super_admin';
@@ -203,9 +222,7 @@ export default function AdminUsers() {
                 <tr key={u.id} className="transition-colors hover:bg-ink-50/50">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary-50 text-sm font-bold text-primary-700">
-                        {u.full_name?.[0]?.toUpperCase() ?? 'U'}
-                      </div>
+                      <UserAvatar profile={u} />
                       <div className="min-w-0">
                         <p className="truncate font-medium text-ink-900">{u.full_name ?? 'Unknown'}</p>
                         <p className="truncate text-xs text-ink-500">{u.email}</p>
@@ -255,9 +272,7 @@ export default function AdminUsers() {
           <div className="space-y-4">
             {error && <Alert type="error" message={error} />}
             <div className="flex items-center gap-4">
-              <div className="grid h-16 w-16 place-items-center rounded-2xl bg-primary-50 text-2xl font-bold text-primary-700">
-                {viewing.full_name?.[0]?.toUpperCase() ?? 'U'}
-              </div>
+              <UserAvatar profile={viewing} large />
               <div>
                 <p className="font-heading text-lg font-semibold text-ink-900">{viewing.full_name ?? 'Unknown'}</p>
                 <p className="text-sm text-ink-500">{viewing.email}</p>
