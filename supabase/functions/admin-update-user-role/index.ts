@@ -43,7 +43,19 @@ Deno.serve(async (req: Request) => {
     const { error: authError } = await adminClient.auth.admin.updateUserById(user_id, { app_metadata: appMetadata });
     if (authError) throw authError;
     const { error: profileError } = await adminClient.from("profiles").update({ role }).eq("id", user_id);
-    if (profileError) throw profileError;
+    if (profileError) {
+      await adminClient.auth.admin.updateUserById(user_id, { app_metadata: target.user.app_metadata });
+      throw profileError;
+    }
+    const { data: updatedProfile, error: verifyError } = await adminClient
+      .from("profiles")
+      .select("role")
+      .eq("id", user_id)
+      .maybeSingle();
+    if (verifyError || updatedProfile?.role !== role) {
+      await adminClient.auth.admin.updateUserById(user_id, { app_metadata: target.user.app_metadata });
+      return respond({ error: "The profile role could not be synchronized. Please try again." }, 409);
+    }
 
     return respond({ success: true, role });
   } catch (error) {
