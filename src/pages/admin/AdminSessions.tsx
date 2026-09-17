@@ -28,7 +28,7 @@ const statusVariant: Record<MentorSession['status'], 'primary' | 'success' | 'er
 
 const emptyForm = {
   mentor_id: '',
-  mentee_id: '',
+  mentee_ids: [] as string[],
   scheduled_at: '',
   topic: '',
   meeting_url: '',
@@ -74,8 +74,12 @@ export default function AdminSessions() {
     event.preventDefault();
     setError(null);
     setSuccess(null);
-    if (form.mentor_id === form.mentee_id) {
-      setError('The mentor and mentee must be different users.');
+    if (form.mentee_ids.length === 0) {
+      setError('Select at least one mentee.');
+      return;
+    }
+    if (form.mentee_ids.includes(form.mentor_id)) {
+      setError('The mentor and mentees must be different users.');
       return;
     }
     if (!isTeamsUrl(form.meeting_url)) {
@@ -88,15 +92,17 @@ export default function AdminSessions() {
     }
 
     setSubmitting(true);
-    const { data: createdSession, error: insertError } = await supabase.from('mentor_sessions').insert({
-      mentor_id: form.mentor_id,
-      mentee_id: form.mentee_id,
-      scheduled_at: new Date(form.scheduled_at).toISOString(),
-      topic: form.topic.trim(),
-      meeting_url: form.meeting_url.trim(),
-      notes: form.notes.trim() || null,
-      status: 'scheduled',
-    }).select('id').single();
+    const { data: createdSessions, error: insertError } = await supabase.from('mentor_sessions').insert(
+      form.mentee_ids.map((mentee_id) => ({
+        mentor_id: form.mentor_id,
+        mentee_id,
+        scheduled_at: new Date(form.scheduled_at).toISOString(),
+        topic: form.topic.trim(),
+        meeting_url: form.meeting_url.trim(),
+        notes: form.notes.trim() || null,
+        status: 'scheduled',
+      })),
+    ).select('id');
 
     if (insertError) {
       setSubmitting(false);
@@ -107,11 +113,11 @@ export default function AdminSessions() {
     const when = formatDateTime(new Date(form.scheduled_at).toISOString());
     const { error: notificationError } = await supabase.from('notifications').insert([
       { user_id: form.mentor_id, title: 'New Mentorship Session', body: `You have been assigned a mentorship session on ${when}: ${form.topic.trim()}`, type: 'mentorship' },
-      { user_id: form.mentee_id, title: 'New Mentorship Session', body: `You have been assigned a mentorship session on ${when}: ${form.topic.trim()}`, type: 'mentorship' },
+      ...form.mentee_ids.map((mentee_id) => ({ user_id: mentee_id, title: 'New Mentorship Session', body: `You have been assigned a mentorship session on ${when}: ${form.topic.trim()}`, type: 'mentorship' })),
     ]);
 
     const { data: invitationResult, error: invitationError } = await supabase.functions.invoke('send-session-invitations', {
-      body: { session_id: createdSession.id },
+      body: { session_ids: (createdSessions ?? []).map((session) => session.id) },
     });
 
     setSubmitting(false);
@@ -121,9 +127,9 @@ export default function AdminSessions() {
       setSuccess(null);
       setError(`Session assigned, but email invitations could not be sent. ${invitationResult?.error ?? invitationError?.message ?? 'Please try again or contact support.'}`);
     } else if (notificationError) {
-      setSuccess('Email invitations sent to both participants. In-app notification delivery needs attention.');
+      setSuccess(`Email invitations sent to the mentor and ${form.mentee_ids.length} mentee${form.mentee_ids.length === 1 ? '' : 's'}. In-app notification delivery needs attention.`);
     } else {
-      setSuccess('Session assigned. Email invitations and in-app notifications sent to both participants.');
+      setSuccess(`Session assigned for ${form.mentee_ids.length} mentee${form.mentee_ids.length === 1 ? '' : 's'}. Email invitations and in-app notifications sent.`);
     }
     await load();
   };
@@ -204,7 +210,7 @@ export default function AdminSessions() {
           {error && <Alert type="error" message={error} />}
           <div className="grid gap-4 sm:grid-cols-2">
             <div><label className="label">Mentor *</label><select className="input" required value={form.mentor_id} onChange={(e) => setForm({ ...form, mentor_id: e.target.value })}><option value="">Select mentor...</option>{mentors.map((mentor) => <option key={mentor.id} value={mentor.id}>{mentor.full_name ?? mentor.email}{mentor.is_available === false ? ' (unavailable)' : ''}</option>)}</select></div>
-            <div><label className="label">Mentee *</label><select className="input" required value={form.mentee_id} onChange={(e) => setForm({ ...form, mentee_id: e.target.value })}><option value="">Select mentee...</option>{mentees.map((mentee) => <option key={mentee.id} value={mentee.id}>{mentee.full_name ?? mentee.email}</option>)}</select></div>
+            <div><label className="label">Mentees * ({form.mentee_ids.length} selected)</label><select className="input min-h-[110px]" required multiple value={form.mentee_ids} onChange={(e) => setForm({ ...form, mentee_ids: Array.from(e.target.selectedOptions, (option) => option.value) })}>{mentees.map((mentee) => <option key={mentee.id} value={mentee.id}>{mentee.full_name ?? mentee.email}</option>)}</select></div>
           </div>
           {selectedMentor && (
             <div className="rounded-lg border border-ink-200 bg-ink-50 p-3 text-sm">
@@ -217,7 +223,7 @@ export default function AdminSessions() {
           <div><label className="label">Date & Time *</label><input type="datetime-local" className="input" required value={form.scheduled_at} onChange={(e) => setForm({ ...form, scheduled_at: e.target.value })} /></div>
           <div><label className="label">Microsoft Teams Meeting URL *</label><input type="url" className="input" required placeholder="https://teams.microsoft.com/l/meetup-join/..." value={form.meeting_url} onChange={(e) => setForm({ ...form, meeting_url: e.target.value })} /></div>
           <div><label className="label">Notes</label><textarea className="input min-h-[90px]" maxLength={2000} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
-          <button type="submit" disabled={submitting || mentors.length === 0 || mentees.length === 0} className="btn-primary w-full">{submitting ? <Spinner /> : 'Assign Session'}</button>
+          <button type="submit" disabled={submitting || mentors.length === 0 || mentees.length === 0 || form.mentee_ids.length === 0} className="btn-primary w-full">{submitting ? <Spinner /> : 'Assign Session'}</button>
         </form>
       </Modal>
     </div>

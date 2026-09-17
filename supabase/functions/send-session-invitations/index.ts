@@ -64,24 +64,30 @@ Deno.serve(async (req: Request) => {
   } catch {
     return json({ error: "Invalid JSON body." }, 400);
   }
-  const sessionId = String(body.session_id ?? "");
-  if (!/^[0-9a-f-]{36}$/i.test(sessionId)) return json({ error: "Invalid session ID." }, 422);
+  const requestedSessionIds = Array.isArray(body.session_ids)
+    ? body.session_ids.map(String)
+    : [String(body.session_id ?? "")];
+  const sessionIds = [...new Set(requestedSessionIds)];
+  if (sessionIds.length === 0 || sessionIds.length > 100 || sessionIds.some((id) => !/^[0-9a-f-]{36}$/i.test(id))) {
+    return json({ error: "Invalid session IDs." }, 422);
+  }
 
-  const { data: session, error: sessionError } = await adminClient
+  const { data: sessions, error: sessionError } = await adminClient
     .from("mentor_sessions")
     .select("id, topic, scheduled_at, meeting_url, notes, status, mentor:profiles!mentor_sessions_mentor_id_fkey(full_name, email), mentee:profiles!mentor_sessions_mentee_id_fkey(full_name, email)")
-    .eq("id", sessionId)
-    .maybeSingle();
+    .in("id", sessionIds);
   if (sessionError) return json({ error: "Could not load the session." }, 500);
-  if (!session) return json({ error: "Session not found." }, 404);
-  if (session.status !== "scheduled" || !session.meeting_url) {
+  if (!sessions || sessions.length !== sessionIds.length) return json({ error: "One or more sessions were not found." }, 404);
+  const session = sessions[0];
+  if (sessions.some((item) => item.status !== "scheduled" || !item.meeting_url)) {
     return json({ error: "Only scheduled sessions with a meeting link can be emailed." }, 422);
   }
 
-  const participants = [session.mentor, session.mentee].flat().filter(
+  const participants = [session.mentor, ...sessions.map((item) => item.mentee)].flat().filter(
     (participant): participant is { full_name: string | null; email: string } => Boolean(participant?.email),
   );
-  if (participants.length !== 2) return json({ error: "Both participant email addresses are required." }, 422);
+  const uniqueParticipants = [...new Map(participants.map((participant) => [participant.email, participant])).values()];
+  if (uniqueParticipants.length !== sessions.length + 1) return json({ error: "All participant email addresses are required." }, 422);
 
   const when = new Intl.DateTimeFormat("en-NG", {
     dateStyle: "full",
@@ -93,14 +99,14 @@ Deno.serve(async (req: Request) => {
   const safeUrl = escapeHtml(session.meeting_url);
   const safeNotes = session.notes ? escapeHtml(session.notes).replaceAll("\n", "<br />") : "";
 
-  const results = await Promise.all(participants.map(async (participant, index) => {
+  const results = await Promise.all(uniqueParticipants.map(async (participant, index) => {
     const name = participant.full_name?.trim() || "there";
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${resendApiKey}`,
         "Content-Type": "application/json",
-        "Idempotency-Key": `session-invitation/${session.id}/${index}`,
+        "Idempotency-Key": `session-invitation/${sessionIds.join("-")}/${index}`,
       },
       body: JSON.stringify({
         from: fromAddress,
