@@ -104,7 +104,7 @@ export default function Home() {
               Meet our 2026/27 Executive Committee
             </h2>
             <img
-              src="/executive-committee-2026-27.webp"
+              src="/executive-committee-2026-27.jpg"
               alt="Career Care Center 2026/27 Executive Committee — Favor Cletus, President; Prisca Ohale, Vice President; Ogechi Eze, Secretary-General; Christiana Aso, Financial Secretary/Treasurer; Emeka Chilaka, Media/Publicity Secretary. Inaugurated Sunday, 4 October 2026."
               width={640}
               height={640}
