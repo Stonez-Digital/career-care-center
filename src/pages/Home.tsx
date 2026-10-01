@@ -100,43 +100,19 @@ export default function Home() {
       <section aria-labelledby="executive-committee-heading" className="section bg-white">
         <div className="container-page">
           <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-xl">
-            <div className="bg-gradient-to-r from-primary-900 via-primary-800 to-primary-900 px-6 py-8 text-center text-white sm:px-10 sm:py-10">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary-300">Career Care Center</p>
-              <h2 id="executive-committee-heading" className="mt-3 font-heading text-3xl font-extrabold leading-tight sm:text-4xl">
-                Meet our <span className="text-secondary-400">2026/27</span> Executive Committee
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-primary-100 sm:text-lg">
-                Five people, chosen through a structured appointment process, will carry Career Care Center's mission forward this term.
-              </p>
-              <p className="mt-5 inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white">
-                Inauguration: Sunday, 4 October 2026
-              </p>
-            </div>
-            <div className="grid gap-3 p-5 sm:grid-cols-2 sm:gap-4 sm:p-8">
-              <div className="rounded-2xl border border-ink-100 bg-ink-50/70 p-5 sm:col-span-2 sm:mx-auto sm:w-full sm:max-w-xl">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-secondary-600">President</p>
-                <p className="mt-1 font-heading text-2xl font-bold text-primary-900">Favor Cletus</p>
-              </div>
-              <div className="rounded-2xl border border-ink-100 p-5">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-secondary-600">Vice President</p>
-                <p className="mt-1 font-heading text-xl font-bold text-primary-900">Prisca Ohale</p>
-              </div>
-              <div className="rounded-2xl border border-ink-100 p-5">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-secondary-600">Secretary-General</p>
-                <p className="mt-1 font-heading text-xl font-bold text-primary-900">Ogechi Eze</p>
-              </div>
-              <div className="rounded-2xl border border-ink-100 p-5">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-secondary-600">Financial Secretary / Treasurer</p>
-                <p className="mt-1 font-heading text-xl font-bold text-primary-900">Christiana Aso</p>
-              </div>
-              <div className="rounded-2xl border border-ink-100 p-5">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-secondary-600">Media / Publicity Secretary</p>
-                <p className="mt-1 font-heading text-xl font-bold text-primary-900">Emeka Chilaka</p>
-              </div>
-            </div>
-            <div className="border-t border-ink-100 px-6 py-4 text-center">
-              <p className="text-sm italic text-ink-500">Uplifting talents to make a meaningful impact.</p>
-            </div>
+            <h2 id="executive-committee-heading" className="sr-only">
+              Meet our 2026/27 Executive Committee
+            </h2>
+            <img
+              src="/executive-committee-2026-27.webp"
+              alt="Career Care Center 2026/27 Executive Committee — Favor Cletus, President; Prisca Ohale, Vice President; Ogechi Eze, Secretary-General; Christiana Aso, Financial Secretary/Treasurer; Emeka Chilaka, Media/Publicity Secretary. Inaugurated Sunday, 4 October 2026."
+              width={640}
+              height={640}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              className="block h-auto w-full"
+            />
           </div>
         </div>
       </section>
