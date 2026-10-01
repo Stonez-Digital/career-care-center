@@ -34,4 +34,3 @@ jobs:
         run: npx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-# Homepage executive committee asset deployed with commit 699175e13e09c26eadb98b553f255c895d62808f
