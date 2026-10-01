@@ -19,7 +19,7 @@ jobs:
     env:
       CLOUDFLARE_ACCOUNT_ID: 91d34eb3e665e3d3eafd92d99dfe7bb7
       VITE_SUPABASE_URL: https://tthzvaguegpmcbxqfcms.supabase.co
-      VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0aHp2YWd1ZWdwbXNieHFmY21zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5MDAyNDUsImV4cCI6MjEwNTQ3NjI0NX0.CApKCV4AAULIW7BeXCcE5wxrIGNNlvDPIuH_xGWRi_E
+      /VITE_SUPABASE_ANON_KEY: sb_publishable_hKCrWSpzIuLW5FOK9fbz7Q_QsoqvnBb/
       VITE_SITE_URL: https://careercarecenter.com.ng
       VITE_MAINTENANCE_MODE: "false"
     steps:
