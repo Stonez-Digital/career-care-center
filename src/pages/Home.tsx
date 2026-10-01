@@ -100,16 +100,6 @@ export default function Home() {
       <section aria-labelledby="executive-committee-heading" className="section bg-white">
         <div className="container-page">
           <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-xl">
-            <figure className="bg-ink-50">
-              <img
-                src="/executive-committee-2026-27.jpg"
-                alt="Career Care Center 2026/27 Executive Committee"
-                width={220}
-                height={220}
-                loading="eager"
-                className="mx-auto h-auto w-full object-contain"
-              />
-            </figure>
             <div className="bg-gradient-to-r from-primary-900 via-primary-800 to-primary-900 px-6 py-8 text-center text-white sm:px-10 sm:py-10">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary-300">Career Care Center</p>
               <h2 id="executive-committee-heading" className="mt-3 font-heading text-3xl font-extrabold leading-tight sm:text-4xl">
