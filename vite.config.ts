@@ -9,7 +9,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: false,
-      includeAssets: ['robots.txt', 'career-care-logo.png', 'social-preview.png', 'pwa-192.png', 'pwa-512.png'],
+      includeAssets: ['robots.txt', 'career-care-logo.png', 'social-preview.png', 'pwa-192.png', 'pwa-512.png', 'executive-committee-2026-27.jpg'],
       manifest: {
         name: 'Career Care Center',
         short_name: 'CCC',
@@ -31,7 +31,7 @@ export default defineConfig({
         clientsClaim: true,
         cleanupOutdatedCaches: true,
         navigateFallback: '/index.html',
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,webp,svg,woff2}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/images\.pexels\.com\/.*/i,
