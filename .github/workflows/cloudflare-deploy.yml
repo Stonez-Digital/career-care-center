@@ -18,8 +18,8 @@ jobs:
     timeout-minutes: 20
     env:
       CLOUDFLARE_ACCOUNT_ID: 91d34eb3e665e3d3eafd92d99dfe7bb7
-      VITE_SUPABASE_URL: https://tthzvaguegpmcbxqfcms.supabase.co
-      VITE_SUPABASE_ANON_KEY: sb_publishable_hKCrWSpzIuLW5FOK9fbz7Q_QsoqvnBb
+      VITE_SUPABASE_URL: https://bqiexkhyfvufjbafmufr.supabase.co
+      VITE_SUPABASE_ANON_KEY: sb_publishable_WZU67nsV6nAexepfb3l4KA_bKmNxdTm
       VITE_SITE_URL: https://careercarecenter.com.ng
       VITE_MAINTENANCE_MODE: "false"
     steps:
