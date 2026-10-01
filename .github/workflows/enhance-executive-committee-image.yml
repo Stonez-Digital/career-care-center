@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "public/executive-committee-2026-27.jpg"
+      - ".github/workflows/enhance-executive-committee-image.yml"
 
 permissions:
   contents: write
