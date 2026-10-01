@@ -24,7 +24,8 @@ jobs:
       - name: Enhance image
         run: |
           python - <<'PY'
-          from PIL import Image, ImageFilter, ImageOps
+          from PIL import Image, ImageFilter, ImageOps, ImageFile
+          ImageFile.LOAD_TRUNCATED_IMAGES = True
 
           path = "public/executive-committee-2026-27.jpg"
           img = Image.open(path).convert("RGB")
