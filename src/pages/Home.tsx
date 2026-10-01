@@ -100,45 +100,42 @@ export default function Home() {
       <section aria-labelledby="executive-committee-heading" className="section bg-white">
         <div className="container-page">
           <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-xl">
-            <div className="grid items-center gap-8 p-5 sm:p-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-10 lg:p-10">
-              <div className="order-2 lg:order-1">
-                <span className="eyebrow">A new chapter of leadership</span>
-                <h2 id="executive-committee-heading" className="mt-3 font-heading text-3xl font-bold leading-tight text-primary-900 sm:text-4xl">
-                  Meet our 2026/27 Executive Committee
-                </h2>
-                <p className="mt-4 text-base leading-relaxed text-ink-600 sm:text-lg">
-                  Five people, chosen through a structured appointment process, will carry Career Care Center's mission forward this term.
-                </p>
-                <p className="mt-5 text-sm font-medium text-ink-500">
-                  Inaugurated Sunday, 4 October 2026
-                </p>
-                <a
-                  href="/executive-committee-2026-27.jpg"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-6 inline-flex items-center gap-2 font-semibold text-primary-700 underline decoration-secondary-500 underline-offset-4 transition-colors hover:text-primary-900"
-                  aria-label="Open the full 2026/27 Executive Committee poster"
-                >
-                  View full announcement <ArrowRight className="h-4 w-4" />
-                </a>
+            <div className="bg-gradient-to-r from-primary-900 via-primary-800 to-primary-900 px-6 py-8 text-center text-white sm:px-10 sm:py-10">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary-300">Career Care Center</p>
+              <h2 id="executive-committee-heading" className="mt-3 font-heading text-3xl font-extrabold leading-tight sm:text-4xl">
+                Meet our <span className="text-secondary-400">2026/27</span> Executive Committee
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-primary-100 sm:text-lg">
+                Five people, chosen through a structured appointment process, will carry Career Care Center's mission forward this term.
+              </p>
+              <p className="mt-5 inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white">
+                Inauguration: Sunday, 4 October 2026
+              </p>
+            </div>
+            <div className="grid gap-3 p-5 sm:grid-cols-2 sm:gap-4 sm:p-8">
+              <div className="rounded-2xl border border-ink-100 bg-ink-50/70 p-5 sm:col-span-2 sm:mx-auto sm:w-full sm:max-w-xl">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-secondary-600">President</p>
+                <p className="mt-1 font-heading text-2xl font-bold text-primary-900">Favor Cletus</p>
               </div>
-              <a
-                href="/executive-committee-2026-27.jpg"
-                target="_blank"
-                rel="noreferrer"
-                className="order-1 block overflow-hidden rounded-2xl bg-ink-50 ring-1 ring-ink-100 transition-shadow hover:shadow-lg lg:order-2"
-                aria-label="Open the full 2026/27 Executive Committee poster"
-              >
-                <img
-                  src="/executive-committee-2026-27.jpg"
-                  alt="Career Care Center 2026/27 Executive Committee poster featuring President Favor Cletus, Vice President Prisca Ohale, Secretary-General Ogechi Eze, Financial Secretary/Treasurer Christiana Aso, and Media/Publicity Secretary Emeka Chilaka."
-                  width={1254}
-                  height={1254}
-                  loading="lazy"
-                  decoding="async"
-                  className="mx-auto h-auto max-h-[760px] w-full object-contain"
-                />
-              </a>
+              <div className="rounded-2xl border border-ink-100 p-5">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-secondary-600">Vice President</p>
+                <p className="mt-1 font-heading text-xl font-bold text-primary-900">Prisca Ohale</p>
+              </div>
+              <div className="rounded-2xl border border-ink-100 p-5">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-secondary-600">Secretary-General</p>
+                <p className="mt-1 font-heading text-xl font-bold text-primary-900">Ogechi Eze</p>
+              </div>
+              <div className="rounded-2xl border border-ink-100 p-5">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-secondary-600">Financial Secretary / Treasurer</p>
+                <p className="mt-1 font-heading text-xl font-bold text-primary-900">Christiana Aso</p>
+              </div>
+              <div className="rounded-2xl border border-ink-100 p-5">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-secondary-600">Media / Publicity Secretary</p>
+                <p className="mt-1 font-heading text-xl font-bold text-primary-900">Emeka Chilaka</p>
+              </div>
+            </div>
+            <div className="border-t border-ink-100 px-6 py-4 text-center">
+              <p className="text-sm italic text-ink-500">Uplifting talents to make a meaningful impact.</p>
             </div>
           </div>
         </div>
