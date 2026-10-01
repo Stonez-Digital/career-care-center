@@ -96,6 +96,54 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
       </section>
 
+      {/* 2026/27 Executive Committee announcement */}
+      <section aria-labelledby="executive-committee-heading" className="section bg-white">
+        <div className="container-page">
+          <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-xl">
+            <div className="grid items-center gap-8 p-5 sm:p-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-10 lg:p-10">
+              <div className="order-2 lg:order-1">
+                <span className="eyebrow">A new chapter of leadership</span>
+                <h2 id="executive-committee-heading" className="mt-3 font-heading text-3xl font-bold leading-tight text-primary-900 sm:text-4xl">
+                  Meet our 2026/27 Executive Committee
+                </h2>
+                <p className="mt-4 text-base leading-relaxed text-ink-600 sm:text-lg">
+                  Five people, chosen through a structured appointment process, will carry Career Care Center's mission forward this term.
+                </p>
+                <p className="mt-5 text-sm font-medium text-ink-500">
+                  Inaugurated Sunday, 4 October 2026
+                </p>
+                <a
+                  href="/executive-committee-2026-27.jpg"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-6 inline-flex items-center gap-2 font-semibold text-primary-700 underline decoration-secondary-500 underline-offset-4 transition-colors hover:text-primary-900"
+                  aria-label="Open the full 2026/27 Executive Committee poster"
+                >
+                  View full announcement <ArrowRight className="h-4 w-4" />
+                </a>
+              </div>
+              <a
+                href="/executive-committee-2026-27.jpg"
+                target="_blank"
+                rel="noreferrer"
+                className="order-1 block overflow-hidden rounded-2xl bg-ink-50 ring-1 ring-ink-100 transition-shadow hover:shadow-lg lg:order-2"
+                aria-label="Open the full 2026/27 Executive Committee poster"
+              >
+                <img
+                  src="/executive-committee-2026-27.jpg"
+                  alt="Career Care Center 2026/27 Executive Committee poster featuring President Favor Cletus, Vice President Prisca Ohale, Secretary-General Ogechi Eze, Financial Secretary/Treasurer Christiana Aso, and Media/Publicity Secretary Emeka Chilaka."
+                  width={1254}
+                  height={1254}
+                  loading="lazy"
+                  decoding="async"
+                  className="mx-auto h-auto max-h-[760px] w-full object-contain"
+                />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Impact Counters */}
       <section className="relative -mt-px bg-gradient-to-br from-primary-800 to-primary-900 py-20">
         <div className="absolute inset-0 grid-pattern opacity-20" />
