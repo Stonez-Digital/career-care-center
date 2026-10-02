@@ -99,89 +99,20 @@ export default function Home() {
       {/* 2026/27 Executive Committee announcement */}
       <section aria-labelledby="executive-committee-heading" className="section bg-white">
         <div className="container-page">
-          <div className="mx-auto max-w-6xl text-center">
-            <span className="eyebrow">Leadership</span>
-            <h2 id="executive-committee-heading" className="mt-3 heading-2">
+          <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-xl">
+            <h2 id="executive-committee-heading" className="sr-only">
               Meet our 2026/27 Executive Committee
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-ink-600 text-pretty">
-              Five leaders carrying Career Care Center's mission forward this term.
-              Each profile keeps the member's image, name, office and portfolio together.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                name: 'Favor Cletus',
-                role: 'President',
-                image: '/executive-favor.svg?v=20261002',
-                portfolio: 'Provides overall leadership, coordinates the executive committee and represents Career Care Center’s mission and priorities.',
-              },
-              {
-                name: 'Prisca Ohale',
-                role: 'Vice President',
-                image: '/executive-prisca.svg?v=20261002',
-                portfolio: 'Supports the President, helps coordinate executive activities and strengthens delivery across the Centre’s programmes and community.',
-              },
-              {
-                name: 'Ogechi Eze',
-                role: 'Secretary-General',
-                image: '/executive-ogechi.svg?v=20261002',
-                portfolio: 'Coordinates official records, meeting documentation, communications and follow-through on executive decisions.',
-              },
-              {
-                name: 'Christiana Aso',
-                role: 'Financial Secretary / Treasurer',
-                image: '/executive-christiana.svg?v=20261002',
-                portfolio: 'Oversees financial records, treasury coordination and transparent financial administration for the organisation.',
-              },
-              {
-                name: 'Emeka Chilaka',
-                role: 'Media / Publicity Secretary',
-                image: '/executive-emeka.svg?v=20261002',
-                portfolio: 'Leads public communication, media coordination and visibility for Career Care Center programmes and activities.',
-              },
-            ].map((member) => (
-              <article
-                key={member.name}
-                className="group overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-              >
-                <div className="overflow-hidden border-b border-ink-100 bg-ink-50">
-                  <img
-                    src={member.image}
-                    alt={`${member.name} — ${member.role}`}
-                    width={660}
-                    height={135}
-                    loading="eager"
-                    decoding="async"
-                    className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
-                  />
-                </div>
-                <div className="p-6 text-left">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary-700">
-                    {member.role}
-                  </p>
-                  <h3 className="mt-2 font-heading text-xl font-bold text-ink-900">
-                    {member.name}
-                  </h3>
-                  <div className="mt-5 border-t border-ink-100 pt-5">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-secondary-600">
-                      Portfolio
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-ink-600">
-                      {member.portfolio}
-                    </p>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <div className="mt-10 text-center">
-            <p className="text-sm font-medium text-ink-500">
-              Inauguration: Sunday, 4 October 2026
-            </p>
+            <img
+              src="/executive-committee-2026-27-poster.svg?v=20261002"
+              alt="Career Care Center 2026/27 Executive Committee — Favor Cletus, President; Prisca Ohale, Vice President; Ogechi Eze, Secretary-General; Christiana Aso, Financial Secretary/Treasurer; Emeka Chilaka, Media/Publicity Secretary. Inaugurated Sunday, 4 October 2026."
+              width={1600}
+              height={1000}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              className="block h-auto w-full"
+            />
           </div>
         </div>
       </section>
