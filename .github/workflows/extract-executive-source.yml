@@ -21,11 +21,15 @@ jobs:
         run: |
           python -m pip install pillow --quiet
           python - <<'PY'
-          import base64, subprocess
+          import base64, subprocess, io
+          from PIL import Image, ImageFile
+          ImageFile.LOAD_TRUNCATED_IMAGES = True
           src = subprocess.check_output([
               "git", "show",
               "7a40b07018c49ec16510b95152d34d867e41d0f0:public/executive-committee-2026-27.jpg"
           ])
+          im = Image.open(io.BytesIO(src)).convert("RGB")
+          im.thumbnail((320,320))
           b64 = base64.b64encode(src).decode()
           svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320"><image href="data:image/jpeg;base64,{b64}" width="320" height="320" preserveAspectRatio="none"/></svg>'''
           open("public/executive-committee-preview.svg","w",encoding="utf-8").write(svg)
