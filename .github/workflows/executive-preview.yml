@@ -18,6 +18,7 @@ jobs:
           fetch-depth: 0
       - name: Create low-resolution preview
         run: |
+          python -m pip install pillow --quiet
           python - <<'PY'
           import base64, subprocess, io
           from PIL import Image
