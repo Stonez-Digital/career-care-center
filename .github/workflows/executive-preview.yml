@@ -21,8 +21,8 @@ jobs:
           python -m pip install pillow --quiet
           python - <<'PY'
           import base64, subprocess, io
-          from PIL import Image
-          src = subprocess.check_output(["git","show","699175e13e09c26eadb98b553f255c895d62808f:public/executive-committee-2026-27.jpg"])
+          from PIL import Image, ImageFile\n          ImageFile.LOAD_TRUNCATED_IMAGES = True
+          src = subprocess.check_output(["git","show","7a40b07018c49ec16510b95152d34d867e41d0f0:public/executive-committee-2026-27.jpg"])
           im = Image.open(io.BytesIO(src)).convert("RGB")
           im.thumbnail((320,320))
           buf=io.BytesIO()
