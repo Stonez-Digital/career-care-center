@@ -96,23 +96,45 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
       </section>
 
-      {/* 2026/27 Executive Committee announcement */}
+      {/* 2026/27 Executive Committee */}
       <section aria-labelledby="executive-committee-heading" className="section bg-white">
         <div className="container-page">
-          <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-xl">
-            <h2 id="executive-committee-heading" className="sr-only">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="eyebrow">Leadership · 2026/27</span>
+            <h2 id="executive-committee-heading" className="mt-3 heading-2">
               Meet our 2026/27 Executive Committee
             </h2>
-            <img
-              src="/executive-committee-2026-27-poster.svg?v=20261002"
-              alt="Career Care Center 2026/27 Executive Committee — Favor Cletus, President; Prisca Ohale, Vice President; Ogechi Eze, Secretary-General; Christiana Aso, Financial Secretary/Treasurer; Emeka Chilaka, Media/Publicity Secretary. Inaugurated Sunday, 4 October 2026."
-              width={1600}
-              height={1000}
-              loading="eager"
-              fetchPriority="high"
-              decoding="async"
-              className="block h-auto w-full"
-            />
+            <p className="mt-4 text-lg text-ink-600">
+              Five people, chosen through a structured appointment process, will carry Career Care Center's mission forward this term.
+            </p>
+            <p className="mt-3 font-semibold text-primary-800">
+              Inauguration: Sunday, 4 October 2026
+            </p>
+          </div>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { name: 'Favor Cletus', position: 'President', image: '/executives/favor-cletus.webp' },
+              { name: 'Prisca Ohale', position: 'Vice President', image: '/executives/prisca-ohale.webp' },
+              { name: 'Ogechi Eze', position: 'Secretary-General', image: '/executives/ogechi-eze.webp' },
+              { name: 'Christiana Aso', position: 'Financial Secretary/Treasurer', image: '/executives/christiana-aso.webp' },
+              { name: 'Emeka Chilaka', position: 'Media/Publicity Secretary', image: '/executives/emeka-chilaka.webp' },
+            ].map((person) => (
+              <article key={person.name} className="overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-md">
+                <img
+                  src={person.image}
+                  alt={person.name}
+                  width={640}
+                  height={800}
+                  loading="lazy"
+                  decoding="async"
+                  className="aspect-[4/5] w-full object-cover object-top"
+                />
+                <div className="p-5 text-center">
+                  <h3 className="font-heading text-xl font-bold text-primary-900">{person.name}</h3>
+                  <p className="mt-1 text-sm font-semibold text-ink-600">{person.position}</p>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
