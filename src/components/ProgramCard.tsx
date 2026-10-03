@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { CheckCircle2, ArrowRight, Clock } from 'lucide-react';
 import type { Program } from '@/lib/supabase';
+import SafeImage from '@/components/SafeImage';
 
 const categoryColors: Record<string, string> = {
   'Career Coaching': 'from-primary-600 to-primary-800',
@@ -30,10 +31,12 @@ export default function ProgramCard({ program }: { program: Program }) {
 
       {program.image_url ? (
         <div className="mb-5 h-44 overflow-hidden rounded-2xl bg-ink-100">
-          <img
+          <SafeImage
             src={program.image_url}
+            fallbackSrc="/career-hero-portrait.png"
             alt={program.title}
             loading="lazy"
+            referrerPolicy="no-referrer"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </div>
