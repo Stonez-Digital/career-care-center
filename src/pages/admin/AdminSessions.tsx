@@ -205,12 +205,45 @@ export default function AdminSessions() {
         </div>
       </div>
 
-      <Modal open={modalOpen} onClose={() => !submitting && setModalOpen(false)} title="Assign Mentorship Session" description="Pair a mentor and mentee with a Microsoft Teams meeting.">
+      <Modal open={modalOpen} onClose={() => !submitting && setModalOpen(false)} title="Assign Mentorship Session" description="Pair one mentor with one or more mentees in the same Microsoft Teams session.">
         <form onSubmit={assignSession} className="space-y-4">
           {error && <Alert type="error" message={error} />}
           <div className="grid gap-4 sm:grid-cols-2">
             <div><label className="label">Mentor *</label><select className="input" required value={form.mentor_id} onChange={(e) => setForm({ ...form, mentor_id: e.target.value })}><option value="">Select mentor...</option>{mentors.map((mentor) => <option key={mentor.id} value={mentor.id}>{mentor.full_name ?? mentor.email}{mentor.is_available === false ? ' (unavailable)' : ''}</option>)}</select></div>
-            <div><label className="label">Mentees * ({form.mentee_ids.length} selected)</label><select className="input min-h-[110px]" required multiple value={form.mentee_ids} onChange={(e) => setForm({ ...form, mentee_ids: Array.from(e.target.selectedOptions, (option) => option.value) })}>{mentees.map((mentee) => <option key={mentee.id} value={mentee.id}>{mentee.full_name ?? mentee.email}</option>)}</select></div>
+            <div>
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <label className="label mb-0">Mentees * ({form.mentee_ids.length} selected)</label>
+                <div className="flex gap-2 text-xs">
+                  <button type="button" className="font-medium text-primary-700 hover:underline" onClick={() => setForm({ ...form, mentee_ids: mentees.filter((mentee) => mentee.id !== form.mentor_id).map((mentee) => mentee.id) })}>Select all</button>
+                  <button type="button" className="font-medium text-ink-500 hover:underline" onClick={() => setForm({ ...form, mentee_ids: [] })}>Clear</button>
+                </div>
+              </div>
+              <div className="max-h-48 space-y-1 overflow-y-auto rounded-lg border border-ink-200 p-2" aria-label="Select mentees">
+                {mentees.length === 0 ? (
+                  <p className="px-2 py-3 text-sm text-ink-500">No eligible mentees available.</p>
+                ) : mentees.map((mentee) => {
+                  const selected = form.mentee_ids.includes(mentee.id);
+                  const disabled = mentee.id === form.mentor_id;
+                  return (
+                    <label key={mentee.id} className={`flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 hover:bg-ink-50 ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}>
+                      <input
+                        type="checkbox"
+                        checked={selected}
+                        disabled={disabled}
+                        onChange={(e) => setForm({
+                          ...form,
+                          mentee_ids: e.target.checked
+                            ? [...form.mentee_ids, mentee.id]
+                            : form.mentee_ids.filter((id) => id !== mentee.id),
+                        })}
+                      />
+                      <span className="text-sm text-ink-900">{mentee.full_name ?? mentee.email}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              <p className="mt-1 text-xs text-ink-500">Select one or multiple mentees for this session.</p>
+            </div>
           </div>
           {selectedMentor && (
             <div className="rounded-lg border border-ink-200 bg-ink-50 p-3 text-sm">
