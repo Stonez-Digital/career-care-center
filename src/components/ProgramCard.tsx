@@ -28,6 +28,17 @@ export default function ProgramCard({ program }: { program: Program }) {
     <article className="card-hover group relative flex flex-col overflow-hidden p-6">
       <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
 
+      {program.image_url ? (
+        <div className="mb-5 h-44 overflow-hidden rounded-2xl bg-ink-100">
+          <img
+            src={program.image_url}
+            alt={program.title}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
+      ) : null}
+
       <div className="mb-5 flex items-start justify-between">
         <div className={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br ${gradient} text-white shadow-soft`}>
           <span className="font-heading text-xl font-bold">{program.category[0]}</span>
