@@ -130,8 +130,8 @@ export default function Home() {
                   className="aspect-[4/5] w-full object-cover object-top"
                 />
                 <div className="p-5 text-center">
-                  <h3 className="font-heading text-xl font-bold text-primary-900">{person.name}</h3>
-                  <p className="mt-1 text-sm font-semibold text-ink-600">{person.position}</p>
+                  <h3 className="font-heading text-xl font-bold text-primary-900 dark:text-red-500">{person.name}</h3>
+                  <p className="mt-1 text-sm font-semibold text-ink-600 dark:text-red-400">{person.position}</p>
                 </div>
               </article>
             ))}
