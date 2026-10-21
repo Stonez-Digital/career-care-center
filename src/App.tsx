@@ -17,6 +17,7 @@ const SuccessStories = lazy(() => import('./pages/SuccessStories'));
 const Volunteer = lazy(() => import('./pages/Volunteer'));
 const Blog = lazy(() => import('./pages/Blog'));
 const BlogPost = lazy(() => import('./pages/BlogPost'));
+const TagArchive = lazy(() => import('./pages/TagArchive'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Donate = lazy(() => import('./pages/Donate'));
 const Apply = lazy(() => import('./pages/Apply'));
@@ -108,6 +109,7 @@ export default function App() {
             />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/tag/:tag" element={<TagArchive />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/donate" element={<Donate />} />
             <Route
