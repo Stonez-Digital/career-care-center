@@ -19,6 +19,11 @@ jobs:
   enhance-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      VITE_SUPABASE_URL: https://bqiexkhyfvufjbafmufr.supabase.co
+      VITE_SUPABASE_ANON_KEY: sb_publishable_WZU67nsV6nAexepfb3l4KA_bKmNxdTm
+      VITE_SITE_URL: https://careercarecenter.com.ng
+      VITE_MAINTENANCE_MODE: "false"
     steps:
       - name: Check out main
         uses: actions/checkout@v5
