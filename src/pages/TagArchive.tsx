@@ -28,13 +28,16 @@ export default function TagArchive() {
   const { tag = '' } = useParams();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const topic = titleFromSlug(tag);
+  const normalizedTag = toSlug(tag);
 
   useEffect(() => {
     let active = true;
 
     (async () => {
       setLoading(true);
+      setLoadError(false);
       const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
@@ -43,13 +46,22 @@ export default function TagArchive() {
 
       if (!active) return;
 
+      if (error) {
+        setPosts([]);
+        setLoadError(true);
+        setLoading(false);
+        return;
+      }
+
       const publishedPosts = (data as BlogPost[]) ?? [];
-      // The current blog schema stores a category, but has no separate tags field.
-      // Keep legacy /tag/:tag links useful by matching the archive slug to category.
+      // This schema stores a category rather than a separate tags array.
+      // Match both an exact category slug and a single-word tag such as
+      // /tag/web against a category like "Web Development".
       setPosts(
-        error
-          ? []
-          : publishedPosts.filter((post) => toSlug(post.category ?? '') === tag.toLowerCase())
+        publishedPosts.filter((post) => {
+          const categorySlug = toSlug(post.category ?? '');
+          return categorySlug === normalizedTag || categorySlug.split('-').includes(normalizedTag);
+        })
       );
       setLoading(false);
     })();
@@ -57,7 +69,7 @@ export default function TagArchive() {
     return () => {
       active = false;
     };
-  }, [tag]);
+  }, [normalizedTag]);
 
   return (
     <div>
@@ -71,6 +83,14 @@ export default function TagArchive() {
         <div className="container-page">
           {loading ? (
             <PageLoader />
+          ) : loadError ? (
+            <div className="py-20 text-center">
+              <h2 className="heading-3">Articles could not be loaded</h2>
+              <p className="mt-3 text-ink-500">
+                Please try again shortly, or browse all articles.
+              </p>
+              <Link to="/blog" className="btn-primary mt-6">Browse all articles</Link>
+            </div>
           ) : posts.length === 0 ? (
             <div className="py-20 text-center">
               <h2 className="heading-3">No articles found</h2>
