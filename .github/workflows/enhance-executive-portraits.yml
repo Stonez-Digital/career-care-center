@@ -2,6 +2,10 @@ name: Enhance Executive Portraits
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/enhance-executive-portraits.yml'
 
 permissions:
   contents: write
