@@ -6,6 +6,7 @@ import type { BlogPost } from '@/lib/supabase';
 import PageHero from '@/components/PageHero';
 import { PageLoader } from '@/components/Spinner';
 import Badge from '@/components/Badge';
+import SafeImage from '@/components/SafeImage';
 import { formatDate } from '@/lib/utils';
 
 export default function Blog() {
@@ -43,8 +44,9 @@ export default function Blog() {
               {posts.map((p) => (
                 <Link key={p.id} to={`/blog/${p.slug}`} className="card group overflow-hidden transition-all hover:shadow-lift">
                   <div className="h-48 overflow-hidden">
-                    <img
-                      src={p.cover_image_url ?? 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg'}
+                    <SafeImage
+                      src={p.cover_image_url?.trim() || '/resource-cover.svg'}
+                      fallbackSrc="/resource-cover.svg"
                       alt={p.title}
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
