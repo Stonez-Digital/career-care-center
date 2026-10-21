@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import '@testing-library/jest-dom/vitest';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import SeasonalSanta from './SeasonalSanta';
@@ -9,6 +10,7 @@ describe('SeasonalSanta', () => {
   });
 
   it('renders the transparent character and can be dismissed', () => {
+    vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-12-15T12:00:00.000Z'));
     render(<SeasonalSanta />);
 
