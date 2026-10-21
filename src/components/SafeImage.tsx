@@ -11,7 +11,12 @@ export default function SafeImage({ fallbackSrc, onError, ...props }: SafeImageP
       onError={(event) => {
         onError?.(event);
         const image = event.currentTarget;
-        if (image.src !== fallbackSrc) image.src = fallbackSrc;
+        // A relative fallback URL is resolved to an absolute URL by the browser.
+        // Track the fallback attempt so a failed fallback cannot loop forever.
+        if (image.dataset.fallbackApplied !== 'true') {
+          image.dataset.fallbackApplied = 'true';
+          image.src = fallbackSrc;
+        }
       }}
     />
   );

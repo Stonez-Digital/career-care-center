@@ -8,6 +8,7 @@ import Modal from '@/components/Modal';
 import Alert from '@/components/Alert';
 import Spinner from '@/components/Spinner';
 import Badge from '@/components/Badge';
+import SafeImage from '@/components/SafeImage';
 import { slugify, formatDate, exportToCSV } from '@/lib/utils';
 import MediaUpload from '@/components/MediaUpload';
 import { IMAGE_TYPES } from '@/lib/media';
@@ -163,8 +164,9 @@ export default function AdminBlog() {
           posts.map((p) => (
             <div key={p.id} className="card flex items-center gap-4 p-4">
               {p.cover_image_url ? (
-                <img
-                  src={p.cover_image_url}
+                <SafeImage
+                  src={p.cover_image_url?.trim() || '/resource-cover.svg'}
+                  fallbackSrc="/resource-cover.svg"
                   alt={p.title}
                   loading="lazy"
                   className="h-16 w-16 shrink-0 rounded-lg object-cover"
