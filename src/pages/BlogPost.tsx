@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import type { BlogPost } from '@/lib/supabase';
 import { PageLoader } from '@/components/Spinner';
 import Badge from '@/components/Badge';
+import SafeImage from '@/components/SafeImage';
 import { formatDate } from '@/lib/utils';
 
 export default function BlogPost() {
@@ -48,7 +49,7 @@ export default function BlogPost() {
     <div>
       <article>
         <div className="relative h-[40vh] min-h-[280px] overflow-hidden">
-          <img src={post.cover_image_url ?? 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg'} alt={post.title} className="h-full w-full object-cover" />
+          <SafeImage src={post.cover_image_url?.trim() || '/resource-cover.svg'} fallbackSrc="/resource-cover.svg" alt={post.title} className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-ink-900/80 to-transparent" />
           <div className="absolute bottom-0 container-page pb-8">
             <Link to="/blog" className="inline-flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white">
@@ -88,7 +89,7 @@ export default function BlogPost() {
               {related.map((r) => (
                 <Link key={r.id} to={`/blog/${r.slug}`} className="card group overflow-hidden transition-all hover:shadow-lift">
                   <div className="h-40 overflow-hidden">
-                    <img src={r.cover_image_url ?? 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg'} alt={r.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <SafeImage src={r.cover_image_url?.trim() || '/resource-cover.svg'} fallbackSrc="/resource-cover.svg" alt={r.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   </div>
                   <div className="p-4">
                     <Badge variant="secondary">{r.category}</Badge>
