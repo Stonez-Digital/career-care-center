@@ -111,23 +111,13 @@ export default function Home() {
               Inauguration: Sunday, 4 October 2026
             </p>
           </div>
-          {/* Subtle sharpening improves perceived portrait clarity without inventing facial details. */}
-          <svg aria-hidden="true" className="absolute h-0 w-0 overflow-hidden" focusable="false">
-            <filter id="executive-photo-sharpen" x="-5%" y="-5%" width="110%" height="110%">
-              <feConvolveMatrix
-                order="3"
-                kernelMatrix="0 -0.35 0 -0.35 2.4 -0.35 0 -0.35 0"
-                preserveAlpha="true"
-              />
-            </filter>
-          </svg>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { name: 'Favor Cletus', position: 'President', image: '/executives/favor-cletus.webp' },
-              { name: 'Prisca Ohale', position: 'Vice President', image: '/executives/prisca-ohale.webp' },
-              { name: 'Ogechi Eze', position: 'Secretary-General', image: '/executives/ogechi-eze.webp' },
-              { name: 'Christiana Aso', position: 'Financial Secretary/Treasurer', image: '/executives/christiana-aso.webp' },
-              { name: 'Emeka Chilaka', position: 'Media/Publicity Secretary', image: '/executives/emeka-chilaka.webp' },
+              { name: 'Favor Cletus', position: 'President', image: '/executives/enhanced/favor-cletus.webp' },
+              { name: 'Prisca Ohale', position: 'Vice President', image: '/executives/enhanced/prisca-ohale.webp' },
+              { name: 'Ogechi Eze', position: 'Secretary-General', image: '/executives/enhanced/ogechi-eze.webp' },
+              { name: 'Christiana Aso', position: 'Financial Secretary/Treasurer', image: '/executives/enhanced/christiana-aso.webp' },
+              { name: 'Emeka Chilaka', position: 'Media/Publicity Secretary', image: '/executives/enhanced/emeka-chilaka.webp' },
             ].map((person) => (
               <article key={person.name} className="overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-md">
                 <img
@@ -137,7 +127,7 @@ export default function Home() {
                   height={800}
                   loading="lazy"
                   decoding="async"
-                  className="aspect-[4/5] w-full object-cover object-top [filter:url(#executive-photo-sharpen)]"
+                  className="aspect-[4/5] w-full object-cover object-top"
                 />
                 <div className="p-5 text-center">
                   <h3 className="font-heading text-xl font-bold text-primary-900 dark:text-red-500">{person.name}</h3>
