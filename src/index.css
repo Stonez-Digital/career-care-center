@@ -238,3 +238,21 @@
   .animate-delay-500 { animation-delay: 500ms; }
   .animate-fill-back { animation-fill-mode: both; }
 }
+
+
+/* Subtle continuous rotation for the homepage brand logo. */
+@keyframes career-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-career-logo-spin {
+  transform-origin: center;
+  animation: career-logo-spin 24s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-career-logo-spin {
+    animation: none;
+  }
+}
