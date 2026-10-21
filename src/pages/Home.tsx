@@ -50,7 +50,7 @@ export default function Home() {
                 width={556}
                 height={312}
                 fetchPriority="high"
-                className="mx-auto h-auto w-full max-w-[20rem]"
+                className="mx-auto h-auto w-full max-w-[20rem] animate-career-logo-spin"
               />
             </div>
             <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-primary-100 text-pretty sm:text-xl lg:mx-0 animate-fade-in-up animate-fill-back animate-delay-100">
