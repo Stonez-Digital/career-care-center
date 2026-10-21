@@ -1,0 +1,70 @@
+.seasonal-santa {
+  position: fixed;
+  z-index: 40;
+  right: max(0.75rem, env(safe-area-inset-right));
+  bottom: max(0.75rem, env(safe-area-inset-bottom));
+  width: clamp(5.5rem, 12vw, 9rem);
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.seasonal-santa__character {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 5px 10px rgb(15 23 42 / 0.18));
+  transform-origin: 50% 88%;
+  animation: seasonal-santa-dance 2.8s ease-in-out infinite;
+}
+
+.seasonal-santa__close {
+  position: absolute;
+  top: 0.15rem;
+  right: 0.15rem;
+  display: grid;
+  width: 1.65rem;
+  height: 1.65rem;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 0.9);
+  border-radius: 9999px;
+  background: #10245d;
+  color: #fff;
+  box-shadow: 0 2px 8px rgb(15 23 42 / 0.25);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.seasonal-santa__close:hover {
+  background: #b80f2e;
+}
+
+.seasonal-santa__close:focus-visible {
+  outline: 3px solid #f5c451;
+  outline-offset: 3px;
+}
+
+@keyframes seasonal-santa-dance {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  25% { transform: translateY(-5px) rotate(2deg); }
+  50% { transform: translateY(0) rotate(4deg); }
+  75% { transform: translateY(-3px) rotate(-1deg); }
+}
+
+@media (max-width: 480px) {
+  .seasonal-santa {
+    width: clamp(4.5rem, 23vw, 6rem);
+    right: max(0.5rem, env(safe-area-inset-right));
+    bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+
+  .seasonal-santa__close {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seasonal-santa__character {
+    animation: none;
+  }
+}

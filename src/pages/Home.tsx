@@ -6,6 +6,7 @@ import type { Program, CCCEvent, Testimonial } from '@/lib/supabase';
 import Counter from '@/components/Counter';
 import ProgramCard from '@/components/ProgramCard';
 import EventCard from '@/components/EventCard';
+import SeasonalSanta from '@/components/SeasonalSanta';
 
 export default function Home() {
   const [programs, setPrograms] = useState<Program[]>([]);
@@ -285,6 +286,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <SeasonalSanta />
     </div>
   );
 }
