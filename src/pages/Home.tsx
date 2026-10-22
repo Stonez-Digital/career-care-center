@@ -53,11 +53,11 @@ export default function Home() {
                 className="mx-auto h-auto w-full max-w-[20rem] animate-career-logo-spin"
               />
             </div>
-            <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-primary-100 text-pretty sm:text-xl lg:mx-0 animate-fade-in-up animate-fill-back animate-delay-100">
+            <p className="career-hero-copy-pop mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-primary-100 text-pretty sm:text-xl lg:mx-0">
               We equip talents with the skills, networks, knowledge, opportunities and tools
               needed to navigate the professional world and excel in their chosen career.
             </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start animate-fade-in-up animate-fill-back animate-delay-200">
+            <div className="career-hero-actions-pop mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start">
               <Link to="/signup" className="btn-accent btn-lg w-full sm:w-auto">
                 Get Started <ArrowRight className="h-4 w-4" />
               </Link>
