@@ -256,3 +256,35 @@
     animation: none;
   }
 }
+
+/* Give the existing homepage portrait a gentle, welcoming motion without
+   replacing or editing the original image asset. */
+@keyframes career-hero-portrait-welcome {
+  0%, 100% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-3px) scale(1.008); }
+  68% { transform: translateY(1px) scale(1.004); }
+}
+
+@keyframes career-hero-portrait-glow {
+  0%, 100% { box-shadow: 0 20px 55px rgb(0 0 0 / 0.22), 0 0 0 1px rgb(255 255 255 / 0.08); }
+  50% { box-shadow: 0 24px 60px rgb(0 0 0 / 0.26), 0 0 0 3px rgb(255 255 255 / 0.14); }
+}
+
+.career-hero-portrait-motion {
+  transform-origin: 50% 45%;
+  animation: career-hero-portrait-welcome 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.career-hero-portrait-frame {
+  animation: career-hero-portrait-glow 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .career-hero-portrait-motion,
+  .career-hero-portrait-frame {
+    animation: none;
+    will-change: auto;
+  }
+}
+
