@@ -72,14 +72,14 @@ export default function Home() {
 
             <div className="relative mx-auto w-full max-w-md animate-fade-in-up animate-fill-back animate-delay-200 lg:max-w-none">
               <div className="absolute -inset-5 rounded-[2.25rem] bg-gradient-to-br from-accent-400/30 via-white/10 to-secondary-500/25 blur-2xl" />
-              <div className="relative overflow-hidden rounded-[2rem] border border-white/20 bg-white/10 p-2 shadow-2xl backdrop-blur-sm">
+              <div className="career-hero-portrait-frame relative overflow-hidden rounded-[2rem] border border-white/20 bg-white/10 p-2 shadow-2xl backdrop-blur-sm">
                 <img
                   src="/career-hero-portrait.png"
                   alt="A young professional preparing to build her career"
                   width={1114}
                   height={1404}
                   fetchPriority="high"
-                  className="aspect-[4/5] w-full rounded-[1.6rem] object-cover object-center"
+                  className="career-hero-portrait-motion aspect-[4/5] w-full rounded-[1.6rem] object-cover object-center"
                 />
                 <div className="absolute inset-x-5 bottom-5 rounded-2xl border border-white/30 bg-primary-950/80 p-4 text-left shadow-lift backdrop-blur-md sm:inset-x-7 sm:bottom-7">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-300">Your future starts here</p>
