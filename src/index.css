@@ -257,27 +257,33 @@
   }
 }
 
-/* Give the existing homepage portrait a gentle, welcoming motion without
-   replacing or editing the original image asset. */
+/* Add a more lively, welcoming rhythm to the existing homepage portrait.
+   Keep the original image unchanged and respect reduced-motion preferences. */
 @keyframes career-hero-portrait-welcome {
-  0%, 100% { transform: translateY(0) scale(1); }
-  35% { transform: translateY(-3px) scale(1.008); }
-  68% { transform: translateY(1px) scale(1.004); }
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  18% { transform: translate3d(0, -8px, 0) rotate(-0.6deg) scale(1.012); }
+  38% { transform: translate3d(0, 2px, 0) rotate(0.45deg) scale(1.006); }
+  58% { transform: translate3d(0, -5px, 0) rotate(0deg) scale(1.014); }
+  78% { transform: translate3d(0, 1px, 0) rotate(0.35deg) scale(1.004); }
 }
 
 @keyframes career-hero-portrait-glow {
-  0%, 100% { box-shadow: 0 20px 55px rgb(0 0 0 / 0.22), 0 0 0 1px rgb(255 255 255 / 0.08); }
-  50% { box-shadow: 0 24px 60px rgb(0 0 0 / 0.26), 0 0 0 3px rgb(255 255 255 / 0.14); }
+  0%, 100% {
+    box-shadow: 0 20px 55px rgb(0 0 0 / 0.22), 0 0 0 1px rgb(255 255 255 / 0.08);
+  }
+  50% {
+    box-shadow: 0 28px 68px rgb(0 0 0 / 0.3), 0 0 0 4px rgb(255 255 255 / 0.2), 0 0 30px rgb(203 16 29 / 0.2);
+  }
 }
 
 .career-hero-portrait-motion {
   transform-origin: 50% 45%;
-  animation: career-hero-portrait-welcome 6s ease-in-out infinite;
+  animation: career-hero-portrait-welcome 3.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
   will-change: transform;
 }
 
 .career-hero-portrait-frame {
-  animation: career-hero-portrait-glow 6s ease-in-out infinite;
+  animation: career-hero-portrait-glow 3.8s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -287,4 +293,3 @@
     will-change: auto;
   }
 }
-
