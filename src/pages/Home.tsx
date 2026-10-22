@@ -54,8 +54,9 @@ export default function Home() {
               />
             </div>
             <p className="career-hero-copy-pop mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-primary-100 text-pretty sm:text-xl lg:mx-0">
-              We equip talents with the skills, networks, knowledge, opportunities and tools
-              needed to navigate the professional world and excel in their chosen career.
+              Discover your strengths, build career confidence, and explore opportunities
+              that match your interests. We provide the skills, guidance, and connections
+              to help you move forward in your professional journey.
             </p>
             <div className="career-hero-actions-pop mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start">
               <Link to="/signup" className="btn-accent btn-lg w-full sm:w-auto">
@@ -90,7 +91,8 @@ export default function Home() {
                 />
                 <div className="absolute inset-x-5 bottom-5 rounded-2xl border border-white/30 bg-primary-950/80 p-4 text-left shadow-lift backdrop-blur-md sm:inset-x-7 sm:bottom-7">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-300">Your future starts here</p>
-                  <p className="mt-1 font-heading text-lg font-semibold text-white">Skills. Confidence. Opportunity.</p>
+                  <p className="mt-1 font-heading text-lg font-semibold text-white">Skills. Confidence. Opportunities.</p>
+                  <p className="mt-2 text-sm font-medium text-primary-100">Take a 30-minute career test <span aria-hidden="true">↗</span></p>
                 </div>
                 </div>
               </a>
