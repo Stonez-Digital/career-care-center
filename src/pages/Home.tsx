@@ -72,7 +72,14 @@ export default function Home() {
 
             <div className="relative mx-auto w-full max-w-md animate-fade-in-up animate-fill-back animate-delay-200 lg:max-w-none">
               <div className="absolute -inset-5 rounded-[2.25rem] bg-gradient-to-br from-accent-400/30 via-white/10 to-secondary-500/25 blur-2xl" />
-              <div className="career-hero-portrait-frame relative overflow-hidden rounded-[2rem] border border-white/20 bg-white/10 p-2 shadow-2xl backdrop-blur-sm">
+              <a
+                href="https://www.careerexplorer.com/career-test/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Take the CareerExplorer career test (opens in a new tab)"
+                className="group block rounded-[2rem] focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-4 focus-visible:ring-offset-primary-800"
+              >
+                <div className="career-hero-portrait-frame relative overflow-hidden rounded-[2rem] border border-white/20 bg-white/10 p-2 shadow-2xl backdrop-blur-sm transition duration-300 group-hover:border-white/50 group-hover:shadow-lift">
                 <img
                   src="/career-hero-portrait.png"
                   alt="A young professional preparing to build her career"
@@ -85,7 +92,8 @@ export default function Home() {
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-300">Your future starts here</p>
                   <p className="mt-1 font-heading text-lg font-semibold text-white">Skills. Confidence. Opportunity.</p>
                 </div>
-              </div>
+                </div>
+              </a>
               <div className="absolute -right-3 top-8 hidden rounded-2xl border border-white/30 bg-white/95 px-4 py-3 text-left shadow-lift sm:block">
                 <p className="font-heading text-xl font-bold text-primary-800">500+</p>
                 <p className="text-xs font-medium text-ink-500">Youth reached</p>
